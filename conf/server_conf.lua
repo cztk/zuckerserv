@@ -309,9 +309,9 @@ server.disable_commands({
 --server.module("mapbattle")                             -- Vote for map at intermission
 --server.module("mapsucks")                              -- Module for #mapsucks
 --server.module("flagrun")                               -- Record and display best flagrun time
-server.module("rugby")                                 -- Allows passing of the flag between mates in ctf modes. Not tested for ihold/protect.
+server.module("rugby")                                   -- Allows passing of the flag between mates in ctf modes. Not tested for ihold/protect.
 server.rugby_enabled = 0
-
+server.rugby_mode = 0
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 --IRC MODULES
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
