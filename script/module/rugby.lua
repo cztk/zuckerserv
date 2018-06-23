@@ -6,7 +6,7 @@ server.event_handler("damage", function(target, actor, damage, gun)
             end
             if server.rugby_mode == 1 then
                 server.passflag(actor, target)
-                server.log(string.format("%s passed the flag to %s - some random great job message.", server.player_name(actor), server.player_name(target)))
+                server.msg(string.format("%s passed the flag to %s - some random great job message.", server.player_name(actor), server.player_name(target)))
             end
             return -1
         end
