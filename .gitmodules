@@ -1,0 +1,9 @@
+[submodule "src/asio"]
+	path = src/asio
+	url = https://github.com/chriskohlhoff/asio.git
+[submodule "src/libmaxminddb"]
+	path = src/libmaxminddb
+	url = https://github.com/maxmind/libmaxminddb.git
+[submodule "src/luatz"]
+	path = src/luatz
+	url = https://github.com/daurnimator/luatz.git

@@ -1,0 +1,8 @@
+language: c
+
+before_install:
+  - sudo apt-get install lua5.1 luarocks -y
+  - sudo luarocks install busted
+
+script:
+  - busted
