@@ -139,6 +139,9 @@ namespace server
     extern int gamespeed;
     extern void real_cn(int &n);
     extern int spycn;
+    extern int rugby_enabled; // RUGBY MOD
+    extern int rugby_mode; // RUGBY MOD
+
 }
 
 #endif

@@ -49,6 +49,8 @@ static void bind_function(lua_State * L, int table, const char * name, lua_CFunc
 
 void bind_core_functions(lua_State * L, int T)
 {
+    bind_function(L, T, "passflag", server::passflag); // RUGBY MOD
+    bind_function(L, T, "has_flag", server::hasFlag); // RUGBY MOD but useful anyway
     bind_function(L, T, "player_msg", server::player_msg);
     bind_function(L, T, "player_name", server::player_name);
     bind_function(L, T, "player_rename", server::player_rename);
@@ -439,7 +441,10 @@ void bind_core_variables(lua_State * L, int T)
     bind_var(L, T, "flood_protect_disc_max", server::message::disc_msgs);
 
     bind_var(L, T, "set_player_privilege_message", server::message::set_player_privilege);
-    
+   // RUGBY MOD
+    bind_var(L, T, "rugby_enabled", server::rugby_enabled);
+    bind_var(L, T, "rugby_mode", server::rugby_mode);
+ 
     bind_ro_var(L, T, "tx_bytes", tx_bytes);
     bind_ro_var(L, T, "rx_bytes", rx_bytes);
     bind_ro_var(L, T, "tx_packets", tx_packets);

@@ -563,6 +563,9 @@ namespace server
     bool restrictgamespeed = false;
     
     int hide_and_seek = 0; //MOD
+    int rugby_enabled = 0; //RUGBY MOD
+    int rugby_mode    = 0; //RUGBY MOD
+
     
     vector<uint> allowedips;
     
@@ -746,6 +749,22 @@ namespace server
     ctfservmode ctfmode;
     collectservmode collectmode;
     servmode *smode = NULL;
+
+    // RUGBY MOD
+    void passflag(int a, int b)
+    {
+        ctfmode.pass_flag(a,b);
+    }
+
+    // RUGBY MOD but useful anyway
+    int hasFlag(int cn) {
+        int result = 0;
+        int &a = ctfmode.flags[0].owner;
+        int &b = ctfmode.flags[1].owner;
+        if(cn == a || cn == b) result = 1;
+        return result;
+    }
+
     
     bool canspawnitem(int type) { return !m_noitems && (type>=I_SHELLS && type<=I_QUAD && (!m_noammo || type<I_SHELLS || type>I_CARTRIDGES)); }
 
@@ -2497,6 +2516,9 @@ namespace server
 
     void noclients()
     {
+        rugby_mode = 0; // depends - if u want to make sure RUGBY MOD gets disabled again after messing aroung
+        rugby_enabled = 0; // some say it should be done, some say it shouldn't even be listed ... it's crowded, ppl have fun. it's fun *hug*
+
         event_clearbans_request(event_listeners(), std::make_tuple(-1));
         aiman::clearai();
     }

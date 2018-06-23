@@ -436,6 +436,7 @@ class anticheat
     bool impossible(int c, int info)
     {
         //if (mod_gamemode) return false;
+        if (1 == rugby_enabled) return false;
         char cheat_info[1000];
         switch (c)
         {

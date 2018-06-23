@@ -2,6 +2,7 @@ bin/monitor
 bin/sauer_server
 bin/utils/keygen
 bin/utils/luapp
+bin/sauer_authserver
 debug-build/
 release_build/
 lib/

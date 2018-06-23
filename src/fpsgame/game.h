@@ -364,6 +364,8 @@ static const struct guninfo { int sound, attackdelay, damage, spread, projspeed,
 
 namespace server {
     extern int hide_and_seek; //MOD
+    extern int rugby_mode; // RUGBY MOD
+    extern int rugby_enabled; // RUGBY MOD
 }
 
 // inherited by fpsent and server clients

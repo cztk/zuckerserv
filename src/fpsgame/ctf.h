@@ -363,6 +363,44 @@ struct ctfclientmode : clientmode
         if(score >= FLAGLIMIT) startintermission();
     }
 
+    /* RUGBY MOD
+     * helper to server passflag. could be improved :)
+     * maybe add check if target is dead on arrival ( of flag ).
+     * else it may happen it gets stuck on dead body. Use #slay.
+     * but this is unusual use case. Also make sure there are no
+     * damage events when dieing before getting flag passed.
+     * either hax or bug: get damage right after respawn.
+     */
+    void pass_flag(int fromclientnum, int toclientnum)
+    {
+        clientinfo *ci = getinfo(fromclientnum);
+        clientinfo *cito = getinfo(toclientnum);
+
+        loopv(flags) if(flags[i].owner == ci->clientnum)
+        {
+            dropflag(ci);
+
+            std::cerr<<"do take flag "
+                     <<toclientnum<<" ctio, "
+                     <<i<<" i, "
+                     <<flags[i].version<<" version, "
+                     <<std::endl;
+
+
+            ownflag(i, cito->clientnum, lastmillis);
+
+            sendf(-1, 1, "ri4", N_TAKEFLAG, cito->clientnum, i, ++flags[i].version);
+            event_takeflag(event_listeners(), std::make_tuple(cito->clientnum, ctfflagteam(flags[i].team)));
+
+            std::cerr<<"did take flag "
+                     <<toclientnum<<" ctio, "
+                     <<i<<" i, "
+                     <<flags[i].version<<" version, "
+                     <<std::endl;
+        }
+
+    }
+
     void takeflag(clientinfo *ci, int i, int version)
     {
         if(notgotflags || !flags.inrange(i) || ci->state.state!=CS_ALIVE || !ci->team[0]) return;
