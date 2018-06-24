@@ -61,6 +61,8 @@ lua::event< std::tuple<const char *> >                             event_varchan
 lua::event< std::tuple<> >                                         event_sleep("sleep");
 lua::event< std::tuple<> >                                         event_interval("interval");
 lua::event< std::tuple<int, int, int, const char *> >              event_cheat("cheat");
+lua::event< std::tuple<int, int> >                                 event_passflag("passflag"); // RUGBY MOD
+lua::event< std::tuple<int, const char *, int, int, std::vector<rlPlayerCnType>>  >    event_creditflaghelpers("creditflaghelpers"); // RUGBY MOD
 
 void register_event_idents(lua::event_environment & env)
 {
@@ -126,8 +128,10 @@ void register_event_idents(lua::event_environment & env)
         & event_sleep,
         & event_interval,
         & event_cheat,
+        & event_passflag,
+        & event_creditflaghelpers,
         NULL
-    };
+    }; // RUGBY MOD event_passflag,event_creditflaghelpers,
     
     env.register_event_idents(events);
 }

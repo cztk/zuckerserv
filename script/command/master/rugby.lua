@@ -1,4 +1,4 @@
-local usage = "#rugby -1=off | 0=migration mode | 1 = on"
+local usage = "#rugby -1=off | 0=migration mode | 1 = on | 2 = +1 flag for helper | 3 = "
 
 return function(cn, status)
 

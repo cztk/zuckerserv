@@ -51,6 +51,7 @@ void bind_core_functions(lua_State * L, int T)
 {
     bind_function(L, T, "passflag", server::passflag); // RUGBY MOD
     bind_function(L, T, "has_flag", server::hasFlag); // RUGBY MOD but useful anyway
+    bind_function(L, T, "player_add_flagcount", server::player_add_flagcount); // RUGBY MOD
     bind_function(L, T, "player_msg", server::player_msg);
     bind_function(L, T, "player_name", server::player_name);
     bind_function(L, T, "player_rename", server::player_rename);

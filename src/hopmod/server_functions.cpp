@@ -39,6 +39,16 @@ namespace message{
     
 } //namespace message
 
+//RUGBY MOD START
+
+void player_add_flagcount(int cn, int i)
+{
+    get_ci(cn)->state.flags = get_ci(cn)->state.flags + i;
+}
+
+// RUGBY MOD END
+
+
 string ext_admin_pass = "";
 
 struct disconnect_info

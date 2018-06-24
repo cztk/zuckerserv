@@ -7,6 +7,7 @@
 #include <vector>
 #include "utils/function_traits.hpp"
 #include "utils/tuple.hpp"
+#include "sharedstructs.hpp"
 
 namespace lua{
 
@@ -24,6 +25,7 @@ void push(lua_State *, lua_CFunction);
 void push(lua_State *, const char *);
 void push(lua_State *, const char *, std::size_t);
 void push(lua_State *, const std::string &);
+void push(lua_State* L, std::vector<rlPlayerCnType> const& vec);
 
 template<typename T>
 void push(lua_State * L, const std::vector<T> & value)

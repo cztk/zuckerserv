@@ -565,7 +565,6 @@ namespace server
     int hide_and_seek = 0; //MOD
     int rugby_enabled = 0; //RUGBY MOD
     int rugby_mode    = 0; //RUGBY MOD
-
     
     vector<uint> allowedips;
     
@@ -751,9 +750,11 @@ namespace server
     servmode *smode = NULL;
 
     // RUGBY MOD
+    // a = actor, b = target
     void passflag(int a, int b)
     {
         ctfmode.pass_flag(a,b);
+        event_passflag(event_listeners(), std::make_tuple(a,b));
     }
 
     // RUGBY MOD but useful anyway

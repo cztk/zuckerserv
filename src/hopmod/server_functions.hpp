@@ -95,6 +95,7 @@ namespace server
     void started();
     int hasFlag(int); // RUGBY MOD but useful anyway
     void passflag(int a,int b); // RUGBY MOD
+    void player_add_flagcount(int cn, int i); // RUGBY MOD
     int player_sessionid(int);
     int player_id(lua_State * L);
     int player_ownernum(int);

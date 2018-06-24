@@ -3,6 +3,7 @@
 
 #include <luajit-2.0/lua.hpp>
 #include <string>
+#include <vector>
 
 namespace lua{
 
@@ -17,6 +18,7 @@ void push(lua_State *, lua_CFunction);
 void push(lua_State *, const char *);
 void push(lua_State *, const char *, std::size_t);
 void push(lua_State *, const std::string &);
+void push(lua_State *, std::vector<rlPlayerCnType> const);
 
 } //namespace lua
 

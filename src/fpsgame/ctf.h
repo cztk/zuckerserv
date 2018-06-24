@@ -28,6 +28,8 @@ struct ctfclientmode : clientmode
 #ifdef SERVMODE
         int owner, dropcount, dropper, invistime;
         int tmillis, drops;
+        bool used_rugby; // RUGBY MOD, mark the flag has been passed, to prevent flagrun hacks
+        std::vector<rlPlayerCnType> rugby_clients; // Store plain names of players for RUGBY MOD
 #else
         fpsent *owner;
         float dropangle, spawnangle;
@@ -50,6 +52,8 @@ struct ctfclientmode : clientmode
             invistime = owntime = 0;
             tmillis = -1;
             drops = 0;
+            used_rugby = false; // RUGBY MOD
+            rugby_clients.clear(); // RUGBY MOD
 #else
             if(id >= 0) loopv(players) players[i]->flagpickup &= ~(1<<id);
             owner = NULL;
@@ -134,6 +138,35 @@ struct ctfclientmode : clientmode
         f.owner = owner;
         f.owntime = owntime;
 #ifdef SERVMODE
+        //RUGBY MOD START
+        bool rugbyownerfound = false;
+        bool stoleflagfirst;
+        clientinfo *ci = getinfo(owner);
+
+        stoleflagfirst = (0 == f.rugby_clients.size());
+
+        for (unsigned j=0; j<f.rugby_clients.size(); j++)
+        {
+            // TODO maybe check playername aswell on this stage already
+            if(owner == f.rugby_clients[j].cn)
+            {
+                f.rugby_clients[j].lastowntime = totalmillis;
+                rugbyownerfound = true; break;
+            }
+        }
+
+        if(!rugbyownerfound)
+        {
+            rlPlayerCnType rugbyinfo;
+            strcpy(rugbyinfo.name, ci->name);
+            rugbyinfo.cn = owner;
+            rugbyinfo.owntimems = 0;
+            rugbyinfo.lastowntime = totalmillis;
+            rugbyinfo.passcount = 0;
+            rugbyinfo.stoleflagfirst = stoleflagfirst;
+            f.rugby_clients.push_back(rugbyinfo);
+        }
+        //RUGBY MOD END
         if(owner == f.dropper) { if(f.dropcount < INT_MAX) f.dropcount++; }
         else f.dropcount = 0;
         f.dropper = -1;
@@ -183,6 +216,8 @@ struct ctfclientmode : clientmode
         f.invistime = invistime;
         f.tmillis = -1;
         f.drops = 0;
+        f.used_rugby = false; // RUGBY MOD
+        f.rugby_clients.clear(); // RUGBY MOD
 #else
         loopv(players) players[i]->flagpickup &= ~(1<<f.id);
         f.vistime = vistime;
@@ -300,6 +335,17 @@ struct ctfclientmode : clientmode
             }
             else
             {
+                // RUGBY MOD
+                for (unsigned j=0; j<f.rugby_clients.size(); j++)
+                {
+                   if(ci->clientnum == f.rugby_clients[j].cn)
+                   {
+                       f.rugby_clients[j].owntimems = flags[i].rugby_clients[j].owntimems + ( totalmillis - flags[i].rugby_clients[j].lastowntime );
+                       f.rugby_clients[j].lastowntime = totalmillis;
+                   }
+                }
+                if(f.rugby_clients.size() > 1) f.used_rugby = true;
+
                 ivec o(vec(ci->state.o).mul(DMF));
                 sendf(-1, 1, "ri7", N_DROPFLAG, ci->clientnum, i, ++f.version, o.x, o.y, o.z);
                 event_dropflag(event_listeners(), std::make_tuple(ci->clientnum, ctfflagteam(f.team)));
@@ -351,15 +397,27 @@ struct ctfclientmode : clientmode
     {
         int flagIndex = relay >= 0 ? relay : goal;
         int timetrial = flags[flagIndex].tmillis > -1 ? totalmillis - flags[flagIndex].tmillis : -1;
+        int team = ctfteamflag(ci->team);
 
-        if (!ci->timetrial || timetrial < ci->timetrial) ci->timetrial = timetrial;
+        // RUGBY MOD
+        // sorry but rugby is clearly no flagrun. And flagrun is not about who can turn around the quickest
+        if(!flags[flagIndex].used_rugby)
+        {
+          if (!ci->timetrial || timetrial < ci->timetrial) ci->timetrial = timetrial;
+        }
+        else
+        {
+            event_creditflaghelpers(event_listeners(), std::make_tuple(ci->clientnum, ci->team, scores[team-1], timetrial, flags[flagIndex].rugby_clients));
+        }
 
         returnflag(relay >= 0 ? relay : goal, m_protect ? lastmillis : 0);
         ci->state.flags++;
-        int team = ctfteamflag(ci->team), score = addscore(team, 1);
+
+        int score = addscore(team, 1);
         if(m_hold) spawnflag(goal);
         sendf(-1, 1, "rii9", N_SCOREFLAG, ci->clientnum, relay, relay >= 0 ? ++flags[relay].version : -1, goal, ++flags[goal].version, flags[goal].spawnindex, team, score, ci->state.flags);
         event_scoreflag(event_listeners(), std::make_tuple(ci->clientnum, ci->team, score, timetrial));
+        
         if(score >= FLAGLIMIT) startintermission();
     }
 
@@ -378,25 +436,26 @@ struct ctfclientmode : clientmode
 
         loopv(flags) if(flags[i].owner == ci->clientnum)
         {
+            flags[i].used_rugby = true;
+
+            for (unsigned j=0; j<flags[i].rugby_clients.size(); j++)
+            {
+                if(fromclientnum == flags[i].rugby_clients[j].cn)
+                {
+                   if(flags[i].rugby_clients[j].passcount < INT_MAX)
+                   {
+                       ++flags[i].rugby_clients[j].passcount;
+                   }
+                }
+            }
+
             dropflag(ci);
-
-            std::cerr<<"do take flag "
-                     <<toclientnum<<" ctio, "
-                     <<i<<" i, "
-                     <<flags[i].version<<" version, "
-                     <<std::endl;
-
 
             ownflag(i, cito->clientnum, lastmillis);
 
             sendf(-1, 1, "ri4", N_TAKEFLAG, cito->clientnum, i, ++flags[i].version);
             event_takeflag(event_listeners(), std::make_tuple(cito->clientnum, ctfflagteam(flags[i].team)));
 
-            std::cerr<<"did take flag "
-                     <<toclientnum<<" ctio, "
-                     <<i<<" i, "
-                     <<flags[i].version<<" version, "
-                     <<std::endl;
         }
 
     }

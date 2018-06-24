@@ -1,7 +1,7 @@
 #ifndef HOPMOD_EVENTS_HPP
 #define HOPMOD_EVENTS_HPP
-
 #include "lua/event.hpp"
+
 
 extern lua::event< std::tuple<> >                                         event_init;
 extern lua::event< std::tuple<int, const char *, const char *, const char *, bool> >  event_connecting;
@@ -65,6 +65,8 @@ extern lua::event< std::tuple<const char *> >                             event_
 extern lua::event< std::tuple<> >                                         event_sleep;
 extern lua::event< std::tuple<> >                                         event_interval;
 extern lua::event< std::tuple<int, int, int, const char *> >              event_cheat;
+extern lua::event< std::tuple<int, int> >                                 event_passflag; // RUGBY MOD
+extern lua::event< std::tuple<int, const char *, int, int, std::vector<rlPlayerCnType>> >        event_creditflaghelpers; // RUGBY MOD
 
 void register_event_idents(lua::event_environment &);
 
