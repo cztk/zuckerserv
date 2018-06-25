@@ -42,7 +42,7 @@ mkdir $DEST/log
 mkdir $DEST/log/game
 mkdir $DEST/log/demo
 
-cp $d_main/conf/server.conf $DEST/conf/server.conf
-cp $d_main/conf/maps.conf $DEST/conf/maps.conf
+cp $d_main/conf/server_conf.lua $DEST/conf/server_conf.lua
+cp $d_main/conf/maps.lua $DEST/conf/maps.lua
 cp $d_main/conf/new_maps.conf $DEST/conf/new_maps.conf
 cp $d_main/conf/auth.lua $DEST/conf/auth.lua
