@@ -34,10 +34,10 @@ server.event_handler("creditflaghelpers", function(scoreclientnum, scoreteam, sc
         if(value["stoleflagfirst"]) then
             didittext = " and stole the flag #1"
         end
-        didittext = string.format("%s owned the flag %s ms, passed %s times%s", value["name"], value["owntimems"], value["passcount"], didittext)
+        didittext = string.format("%s(%s) owned the flag %s ms, passed %s times%s", value["name"], value["cn"], value["owntimems"], value["passcount"], didittext)
         if (server.rugby_mode == 2 or server.rugby_mode == 4) and scoreclientnum ~= value["cn"] then
             didittext = didittext .. " +1 Flagscore"
-            server.player_add_flagcount(value["cn"], 1)
+            server.player_add_flagcount(tonumber(value["cn"]), 1)
         end
         server.msg(didittext);
     end

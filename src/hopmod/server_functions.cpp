@@ -44,6 +44,7 @@ namespace message{
 void player_add_flagcount(int cn, int i)
 {
     get_ci(cn)->state.flags = get_ci(cn)->state.flags + i;
+    sendf(-1, 1, "rii9", N_SCOREFLAG, cn, 0, 0, 0, 0, 0, get_ci(cn)->team, 0, get_ci(cn)->state.flags);
 }
 
 // RUGBY MOD END

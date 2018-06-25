@@ -1,3 +1,5 @@
+core
+conf/server.conf
 bin/monitor
 bin/sauer_server
 bin/utils/keygen
