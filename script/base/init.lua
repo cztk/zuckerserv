@@ -16,6 +16,7 @@ add_exec_search_path("script/module")
 
 exec("script/base/pcall.lua")
 exec("script/base/core_function_overloads.lua")
+exec("script/base/globals.lua")
 exec("script/base/event.lua")
 exec("script/base/server.lua")
 exec("script/base/serverexec.lua")

@@ -109,6 +109,14 @@ stats_current = "Current game stats for %{name}:",
 stats_player = "%{red}>>> %{blue}Score %{white}%{score} %{blue}Frags %{white}%{frags} %{blue}Deaths %{white}%{deaths} %{blue}Accuracy %{white}%{acc}%%",
 stats_teamkills = "%{red}>>> %{blue}Teamkills%{white}: %{tk}",
 
-help_command = "#%{command_name} %{help_parameters}: %{help_message}"
+help_command = "#%{command_name} %{help_parameters}: %{help_message}",
+
+rugby_command_disable = "%{blue}%{name} %{red}disabled %{white}rugby mode!",
+rugby_command_enable = "%{blue}%{name} %{green}enabled %{white}rugby mode!",
+rugby_command_enable_mig = "%{blue}%{name} %{green}enabled %{white}rugby - %{orange}migration/training/withdrawal/weaning %{white}mode!",
+rugby_command_enable_credit = "%{blue}%{name} %{green}enabled %{white}rugby mode %{orange}+1 flagscore %{white}for all flagholders!",
+rugby_command_enable_limited = "%{blue}%{name} %{green}enabled %{white}rugby with %{orange}%{weapons} %{white}passing only mode!",
+rugby_command_enable_limited_credit = "%{blue}%{name} %{green}enabled %{white}rugby with %{orange}%{weapons} %{white}passing only mode %{orange}+1 flagscore %{white}for all flagholders!"
+
 
 }

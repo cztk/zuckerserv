@@ -1,6 +1,6 @@
 auth.directory.server{
     id = "tbmc.party",
-    hostname = "to.tbmc.party",
+    hostname = "95.216.153.55",
     port = 28787
 }
 

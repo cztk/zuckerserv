@@ -54,6 +54,7 @@ struct ctfclientmode : clientmode
             drops = 0;
             used_rugby = false; // RUGBY MOD
             rugby_clients.clear(); // RUGBY MOD
+            rugby_clients.resize(0); // RUGBY MOD
 #else
             if(id >= 0) loopv(players) players[i]->flagpickup &= ~(1<<id);
             owner = NULL;
@@ -218,6 +219,7 @@ struct ctfclientmode : clientmode
         f.drops = 0;
         f.used_rugby = false; // RUGBY MOD
         f.rugby_clients.clear(); // RUGBY MOD
+        f.rugby_clients.resize(0); // RUGBY MOD
 #else
         loopv(players) players[i]->flagpickup &= ~(1<<f.id);
         f.vistime = vistime;
@@ -340,7 +342,7 @@ struct ctfclientmode : clientmode
                 {
                    if(ci->clientnum == f.rugby_clients[j].cn)
                    {
-                       f.rugby_clients[j].owntimems = flags[i].rugby_clients[j].owntimems + ( totalmillis - flags[i].rugby_clients[j].lastowntime );
+                       f.rugby_clients[j].owntimems = f.rugby_clients[j].owntimems + ( totalmillis - f.rugby_clients[j].lastowntime );
                        f.rugby_clients[j].lastowntime = totalmillis;
                    }
                 }
@@ -398,9 +400,19 @@ struct ctfclientmode : clientmode
         int flagIndex = relay >= 0 ? relay : goal;
         int timetrial = flags[flagIndex].tmillis > -1 ? totalmillis - flags[flagIndex].tmillis : -1;
         int team = ctfteamflag(ci->team);
+        flag &f = flags[flagIndex];
 
         // RUGBY MOD
         // sorry but rugby is clearly no flagrun. And flagrun is not about who can turn around the quickest
+        for (unsigned j=0; j<f.rugby_clients.size(); j++)
+        {
+            if(ci->clientnum == f.rugby_clients[j].cn)
+            {
+                f.rugby_clients[j].owntimems = f.rugby_clients[j].owntimems + ( totalmillis - f.rugby_clients[j].lastowntime );
+                f.rugby_clients[j].lastowntime = totalmillis;
+            }
+        }
+
         if(!flags[flagIndex].used_rugby)
         {
           if (!ci->timetrial || timetrial < ci->timetrial) ci->timetrial = timetrial;

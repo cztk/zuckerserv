@@ -8,7 +8,7 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- A server name for players to identify your server.
-server.servername = "ztk//SuckerServ"
+server.servername = "glory tbmc party"
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Default connection information:
@@ -20,31 +20,31 @@ server.servername = "ztk//SuckerServ"
 --server.serverip = "0.0.0.0"
 
 -- Game server port.
-server.serverport = 12421
+server.serverport = 10000
 
 -- Register your server with the master server every 1 hour to appear on the public server list.
-server.publicserver = 0
+server.publicserver = 1
 
 -- Set the maximum number of client connections allowed
-server.maxclients = 12
+server.maxclients = 24
 
 -- +1 slot each spectator
-server.specslots = 1
+server.specslots = 2
 
 -- Number of reserved connection slots for admin players
 -- Admin use: /connect <serverip> [<serverport>] <admin_password>
 -- Connecting admin players will have invisible admin status.
 server.reserved_slots = 1
-server.reserved_slots_password = "ElvisIsTiny" -- Allow reserved slot usage without giving them admin privilege
+server.reserved_slots_password = "" -- Allow reserved slot usage without giving them admin privilege
 
 -- Message of the day. This message is sent on player connection.
 server.motd = "%{blue}Attention %{orange}development server"
 
 -- The admin password. Same password used by all admin players to gain admin privilege, by typing /setmaster <admin_password>
-server.admin_password = "ElvisIsTiny"
+server.admin_password = ""
 
 -- The master password. Same password used by all master players to gain master privilege, by typing /setmaster <master_password>. Only useful if allow_setmaster is 0
-server.master_password = "ElvisIsTiny"
+server.master_password = ""
 
 -- Uncomment and set a server password to lock the game server and require connecting players to send the server password to get access.
 -- Note: The Cube 2 client doesn't provide a password dialog GUI: players must use the command line to connect to a server with a given password.
@@ -54,7 +54,7 @@ server.master_password = "ElvisIsTiny"
 server.intermission_time = 30000
 
 -- Toogles wether teamkilling the flag runner in CTF modes should disallow the teamkiller from stealing the flag
-server.ctf_teamkill_penalty = true
+server.ctf_teamkill_penalty = false
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Authkey configuration for Name protection & Admin
@@ -93,7 +93,7 @@ server.module("auth/privileges")                     -- New privileges module to
 -- Stats
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-server.stats_use_sqlite = 0                    -- Use a SQLite3 Database: default option, only if you can't connect to a MySQL server, because some functions are missing
+server.stats_use_sqlite = 1                    -- Use a SQLite3 Database: default option, only if you can't connect to a MySQL server, because some functions are missing
 server.stats_use_json = 0                      -- Use a JSON Database: very incomplete, don't use
 server.stats_use_mysql = 0                     -- Use a MySQL Database: Best option if you have a MySQL server, otherwise, choose SQLite3
 server.stats_use_psql = 0                      -- Use a PostGreSQL database, actually not working.
@@ -113,9 +113,9 @@ server.stats_psql_password = "suckerserv"      -- PostGreSQL database password
 server.stats_psql_database = "suckerserv"      -- PostGreSQL database name
 server.stats_psql_install = true               -- Switch to false after first launch
 
-server.stats_servername = "SuckerServ"         -- Server name, for displaying in scoreboard
+server.stats_servername = "glory tbmc party"   -- Server name, for displaying in scoreboard
 server.stats_use_auth = 1                      -- Use auth with stats
-server.stats_auth_domain = "suckerserv"        -- Domain for auth
+server.stats_auth_domain = "tbmc"              -- Domain for auth
 server.stats_overwrite_name_with_authname = 1  -- Replace current name with authkey's name in stats
 server.stats_tell_auth_name = 1                -- Display authname at intermission and when authkey is validated
 
@@ -131,7 +131,7 @@ server.map_rotation_type = "standard"
 exec("conf/maps.lua")
 
 -- The server's preferred game mode
-server.default_gamemode = "ffa"
+server.default_gamemode = "effic ctf"
 
 -- Change back to the default game mode when the server goes empty
 server.default_game_on_empty = 1
@@ -174,7 +174,7 @@ server.allowed_gamemodes = {
 }
 
 -- Block votes for unknown maps (known maps are released maps found in the official game distribution)
-server.mapvote_disallow_unknown_map = 1
+server.mapvote_disallow_unknown_map = 0
 
 -- Block votes for maps not in the game-mode's map rotation
 server.mapvote_disallow_excluded_map = 0
@@ -184,15 +184,15 @@ server.mapvote_disallow_excluded_map = 0
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 server.default_mastermode = 2         -- Change default mastermode
-server.allow_setmaster = 0            -- Allow /setmaster 1 command to be used for gaining master
-server.allow_mastermode_veto = 0      -- Allow master to set veto mastermode 
-server.allow_mastermode_locked = 0    -- Allow master to set locked mastermode
-server.allow_mastermode_private = 0   -- Allow master to set private mastermode
+server.allow_setmaster = 1            -- Allow /setmaster 1 command to be used for gaining master
+server.allow_mastermode_veto = 1      -- Allow master to set veto mastermode 
+server.allow_mastermode_locked = 1    -- Allow master to set locked mastermode
+server.allow_mastermode_private = 1   -- Allow master to set private mastermode
 server.allow_reconnect_with_private_mastermode = 1 -- Allow a player to reconnect when private mastermode is set
 server.reset_mastermode = 1           -- Reset mastermode when last master leaves / drops privileges
 
-server.restrict_pausegame = 1         -- Restrict pausegame toggle to admins
-server.restrict_gamespeed = 1         -- Restrict gamespeed setting to admins
+server.restrict_pausegame = 0         -- Restrict pausegame toggle to admins
+server.restrict_gamespeed = 0         -- Restrict gamespeed setting to admins
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Web admin configuration
@@ -271,10 +271,10 @@ server.disable_commands({
 -- Modules
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
---server.module("stats")                                 -- Record game statistics to a database (it is needed for the stats and names commands)
+server.module("stats")                                 -- Record game statistics to a database (it is needed for the stats and names commands)
 
---server.module("display/ownage")                        -- Display player achievement messages
---server.module("display/awards")                        -- Show End Stats Game of ended map during the intermission
+server.module("display/ownage")                        -- Display player achievement messages
+server.module("display/awards")                        -- Show End Stats Game of ended map during the intermission
 
 --server.module("detect/camping")                        -- Name and shame players who are found to be camping
 --server.module("detect/camping_penalty")                -- Players who are camping go in specs for 10 seconds (penality)
@@ -290,7 +290,7 @@ server.disable_commands({
 --server.module("override/gameduration")                 -- Change the usual 10 minutes game duration to 15 minutes
 --server.module("override/default_mastermode")           -- Change the default mastermode (to locked by default)
 
---server.module("recordgames")                           -- Auto record demos of every game
+server.module("recordgames")                           -- Auto record demos of every game
 
 --server.module("limit/inactivity")                      -- Move inactive (dead or not moving) players to spectators
 --server.module("limit/spectating")                      -- Disconnect spectators at "intermission", after min. 30 minutes, when server is full and they haven't been active in chat for 5 minutes
@@ -302,7 +302,7 @@ server.disable_commands({
 
 --server.module("jabber/lua_jabber_bot")                 -- A ugly and unstable Jabber Bot
 --server.module("name_lock")                             -- Prevent players from renaming
---server.module("mute_spectators")                       -- Mute all spectators, requiered for #mutespecs and #unmutespecs commands
+server.module("mute_spectators")                       -- Mute all spectators, requiered for #mutespecs and #unmutespecs commands
 
 --server.module("teamkill_protect")			 -- Disallow teamkills if the teamkiller tk/frags ratio is above 0.25
 
@@ -310,8 +310,8 @@ server.disable_commands({
 --server.module("mapsucks")                              -- Module for #mapsucks
 --server.module("flagrun")                               -- Record and display best flagrun time
 server.module("rugby")                                   -- Allows passing of the flag between mates in ctf modes. Not tested for ihold/protect.
-server.rugby_enabled = 0
-server.rugby_mode = 0
+server.rugby_enabled = 1
+server.rugby_mode = 2
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 --IRC MODULES
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
