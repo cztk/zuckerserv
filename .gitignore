@@ -7,6 +7,6 @@ bin/utils/luapp
 bin/sauer_authserver
 debug-build/
 release_build/
-lib/
+/lib
 log/
 script/package/luatz/
