@@ -28,37 +28,21 @@ return function(cn, status, wlist)
     end
   end
 
-  if status == "-1" then
+  if status <= "-1" then
       server.rugby_enabled = 0
       server.rugby_mode = -1
-      server.msg("rugby_command_disable", { name = server.player_displayname(cn) } )
   end
-  if status == "0" then
+  if status >= "0" then
       server.rugby_enabled = 1
       server.rugby_mode = 0
-      server.msg("rugby_command_enable_mig", { name = server.player_displayname(cn) } )
   end
-  if status == "1" then
-      server.rugby_enabled = 1
-      server.rugby_mode = 1
-      server.msg("rugby_command_enable", { name = server.player_displayname(cn) } )
-  end
-  if status == "2" then
-      server.rugby_enabled = 1
-      server.rugby_mode = 2
-      server.msg("rugby_command_enable_credit", { name = server.player_displayname(cn) } )
-  end
-  if status == "3" then
-      server.rugby_enabled = 1
-      server.rugby_mode = 3
-      server.msg("rugby_command_enable_limited", { name = server.player_displayname(cn), weapons = guns } )
-  end
-  if status == "4" then
-      server.rugby_enabled = 1
-      server.rugby_mode = 4
-      server.msg("rugby_command_enable_limited_credit", { name = server.player_displayname(cn), weapons = guns } )
+  if status >= "1" then
+      server.rugby_mode = status
   end
 
+  if rugby_cmd_msgs[server.rugby_mode] then
+    server.msg(rugby_cmd_msgs[server.rugby_mode], { name = server.player_displayname(cn), weapons = guns } )
+  end
 
 end
 

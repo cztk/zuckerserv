@@ -52,23 +52,9 @@ local rugby_notice = function(cn)
         guns = guns .. " " .. weapons_types[index]
       end
     end
-    if server.rugby_mode == -1 then
-      server.msg("rugby_command_disable", { name = "Server" } )
-    end
-    if server.rugby_mode == 0 then
-      server.msg("rugby_command_enable_mig", { name = "Server" } )
-    end
-    if server.rugby_mode == 1 then
-      server.msg("rugby_command_enable", { name = "Server"} )
-    end
-    if server.rugby_mode == 2 then
-      server.msg("rugby_command_enable_credit", { name = "Server" } )
-    end
-    if server.rugby_mode == 3 then
-      server.msg("rugby_command_enable_limited", { name = "Server", weapons = guns } )
-    end
-    if server.rugby_mode == 4 then
-      server.msg("rugby_command_enable_limited_credit", { name = "Server", weapons = guns } )
+
+    if rugby_cmd_msgs[server.rugby_mode] then
+      server.msg(rugby_cmd_msgs[server.rugby_mode], { name = "Server", weapons = guns } )
     end
   end
 end

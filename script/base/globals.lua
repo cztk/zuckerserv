@@ -26,3 +26,12 @@ rugby_weapons =  {
     [10] = 0,
     [11] = 0
 }
+
+rugby_cmd_msgs = { [-1] = "rugby_command_disable",
+                    [0] = "rugby_command_enable_mig",
+                    [1] = "rugby_command_enable",
+                    [2] = "rugby_command_enable_credit",
+                    [3] = "rugby_command_enable_limited",
+                    [4] =  "rugby_command_enable_limited_credit"
+                 }
+

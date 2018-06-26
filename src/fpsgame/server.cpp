@@ -2517,9 +2517,6 @@ namespace server
 
     void noclients()
     {
-        rugby_mode = 0; // depends - if u want to make sure RUGBY MOD gets disabled again after messing aroung
-        rugby_enabled = 0; // some say it should be done, some say it shouldn't even be listed ... it's crowded, ppl have fun. it's fun *hug*
-
         event_clearbans_request(event_listeners(), std::make_tuple(-1));
         aiman::clearai();
     }
