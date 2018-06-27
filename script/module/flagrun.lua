@@ -87,7 +87,6 @@ end
 local function insert_personal_flagrun(flagrun)
     local insert_flagrun_sql = [[INSERT INTO `personal_flagruns` (`serverid`, `mapname`, `playername`, `gamemode`, `time`)
             VALUES (%i, '%s', '%s', '%s', %i) ON DUPLICATE KEY UPDATE
-            `playername` = IF(`time` > VALUES(`time`), VALUES(`playername`), `playername`),
             `time` = IF(`time` > VALUES(`time`), VALUES(`time`), `time`)
             ]]
     if not execute_statement(string.format(
@@ -118,8 +117,8 @@ end
 local function insert_flagrun(flagrun)
     local insert_flagrun_sql = [[INSERT INTO `flagruns` (`serverid`, `mapname`, `playername`, `gamemode`, `time`)
             VALUES (%i, '%s', '%s', '%s', %i) ON DUPLICATE KEY UPDATE
-            `time` = IF(`time` > VALUES(`time`), VALUES(`time`), `time`),
-            `playername` = IF(`time` > VALUES(`time`), VALUES(`playername`), `playername`)
+            `playername` = IF(`time` > VALUES(`time`), VALUES(`playername`), `playername`),
+            `time` = IF(`time` > VALUES(`time`), VALUES(`time`), `time`)
             ]]
     if not execute_statement(string.format(
             insert_flagrun_sql,
@@ -256,6 +255,9 @@ local scoreflag = server.event_handler("scoreflag", function(cn, team, score, ti
     local a,b,c = "no best time",0,"now"
 
     if gamemodeinfo.ctf and timetrial > 0 then
+        if not flagruns[igamemode] then
+            load_flagruns(map, igamemode)
+        end
         local playerauthname = server.player_name(cn)
         local mapname = server.map
         if(1 == server.stats_overwrite_name_with_authname and 1 == server.stats_use_auth and server.player_vars(cn).stats_auth_name) then
