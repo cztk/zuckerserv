@@ -753,8 +753,11 @@ namespace server
     // a = actor, b = target
     void passflag(int a, int b)
     {
-        ctfmode.pass_flag(a,b);
-        event_passflag(event_listeners(), std::make_tuple(a,b));
+        clientinfo *actor  = clients[a];
+        clientinfo *target = clients[b];
+        int dist = distance(actor->state.o, target->state.o);
+        ctfmode.pass_flag(a,b,dist);
+        event_passflag(event_listeners(), std::make_tuple(a,b,dist));
     }
 
     // RUGBY MOD but useful anyway

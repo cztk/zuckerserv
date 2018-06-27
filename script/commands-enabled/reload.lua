@@ -1,0 +1,1 @@
+/home/suckerserv/orig/zuckerserv/script/commands-available/reload.lua

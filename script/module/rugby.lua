@@ -1,5 +1,5 @@
 -- rugby modes
-
+--["regen capture"] ["capture"] ["effic ctf"] ["insta ctf"] ["ctf"] ["effic protect"] ["insta protect"] ["protect"] ["effic hold"] ["insta hold"] ["hold"] ["teamplay"] ["ffa"] ["effic team"] ["efficiency"] ["tac team"] ["tactics"] ["insta team"] ["instagib"] ["coop edit"]
 server.event_handler("damage", function(target, actor, damage, gun)
     if 1 == server.rugby_enabled and target ~= actor and server.player_team(actor) == server.player_team(target) then
         if(1 == server.has_flag(actor)) then
@@ -23,8 +23,8 @@ server.event_handler("damage", function(target, actor, damage, gun)
     end
 end)
 
-server.event_handler("passflag", function(actor, target)
-    server.msg(string.format("%s passed the flag to %s - some random great job message.", server.player_name(actor), server.player_name(target)))
+server.event_handler("passflag", function(actor, target, dist)
+    server.msg(string.format("%s passed the flag to %s with %s distance - some random great job message.", server.player_name(actor), server.player_name(target), dust))
 end)
 
 server.event_handler("creditflaghelpers", function(scoreclientnum, scoreteam, score, timetaken, helpers)
@@ -32,12 +32,14 @@ server.event_handler("creditflaghelpers", function(scoreclientnum, scoreteam, sc
         local didittext = "";
         local cn = value["cn"];
         if(value["stoleflagfirst"]) then
-            didittext = " and stole the flag #1"
+            didittext = " first holder"
         end
-        didittext = string.format("%s(%s) owned the flag %s ms, passed %s times%s", value["name"], value["cn"], value["owntimems"], value["passcount"], didittext)
-        if (server.rugby_mode == 2 or server.rugby_mode == 4) and scoreclientnum ~= value["cn"] then
+        didittext = string.format(blue().."%s"..white().." had the flag "..red().."%s"..white().."s, "..green().."%s"..white().." passes"..green().."%s", value["name"], string.format("%.3f",value["owntimems"]/1000), value["passcount"], didittext)
+        if string.match(server.gamemode, "ctf") or string.match(server.gamemode, "hold") then
+          if (server.rugby_mode == 2 or server.rugby_mode == 4) and scoreclientnum ~= value["cn"] then
             didittext = didittext .. " +1 Flagscore"
             server.player_add_flagcount(tonumber(value["cn"]), 1)
+          end
         end
         server.msg(didittext);
     end
@@ -59,4 +61,4 @@ local rugby_notice = function(cn)
   end
 end
 
-server.interval(354300, rugby_notice)
+server.interval(254300, rugby_notice)

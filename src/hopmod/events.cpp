@@ -49,7 +49,7 @@ lua::event< std::tuple<int,int> >                                  event_endreco
 lua::event< std::tuple<const char *,const char *> >                event_votepassed("votepassed");
 lua::event< std::tuple<int, const char *> >                        event_takeflag("takeflag");
 lua::event< std::tuple<int, const char *> >                        event_dropflag("dropflag");
-lua::event< std::tuple<int, const char *, int, int> >              event_scoreflag("scoreflag");
+lua::event< std::tuple<int, const char *, int, int, bool> >        event_scoreflag("scoreflag");
 lua::event< std::tuple<int, const char *> >                        event_returnflag("returnflag");
 lua::event< std::tuple<const char *> >                             event_resetflag("resetflag");
 lua::event< std::tuple<const char *, int> >                        event_scoreupdate("scoreupdate");
@@ -61,7 +61,7 @@ lua::event< std::tuple<const char *> >                             event_varchan
 lua::event< std::tuple<> >                                         event_sleep("sleep");
 lua::event< std::tuple<> >                                         event_interval("interval");
 lua::event< std::tuple<int, int, int, const char *> >              event_cheat("cheat");
-lua::event< std::tuple<int, int> >                                 event_passflag("passflag"); // RUGBY MOD
+lua::event< std::tuple<int, int, int> >                          event_passflag("passflag"); // RUGBY MOD
 lua::event< std::tuple<int, const char *, int, int, std::vector<rlPlayerCnType>>  >    event_creditflaghelpers("creditflaghelpers"); // RUGBY MOD
 
 void register_event_idents(lua::event_environment & env)

@@ -9,14 +9,10 @@ player_commands = {}
         permission = number,
         enabled = boolean,
         help_message = string
+        help_parameters = string
+        aliases = array
     }
 ]]
-
-local PLAYER_COMMAND_SCRIPT_DIRECTORIES = {
-    {"script/command", server.PRIV_NONE},
-    {"script/command/master", server.PRIV_MASTER},
-    {"script/command/admin", server.PRIV_ADMIN}
-}
 
 local function merge_player_command(name, command)
     
@@ -49,10 +45,10 @@ local function merge_player_command(name, command)
     end
 end
 
-local function load_player_command_script(filename, name, permission)
+local function load_player_command_script(filename, name)
     
     local command = {}
-    command.permission = permission or server.PRIV_NONE
+    command.permission = server.PRIV_NONE
     
     local chunk, error_message = loadfile(filename)
     
@@ -71,16 +67,19 @@ local function load_player_command_script(filename, name, permission)
         command.help_parameters = help_parameters
         command.help_message = help_message
         command.aliases = aliases
+        command.permission = permission
+        command.enabled = enabled
         
     elseif chunk_return_type == "table" then
     
         command.init = chunk_return.init
         command.run = chunk_return.run
         command.unload = chunk_return.unload
-        
+        command.enabled = chunk_return.enabled        
         command.help_parameters = chunk_return.help_parameters
         command.help_message = chunk_return.help_message
         command.aliases = chunk_return.aliases
+        command.permission = chunk_return.permission
         
     else
         server.log_error(string.format("Expected player command script '%s' to return a function or table value", filename))
@@ -88,29 +87,25 @@ local function load_player_command_script(filename, name, permission)
     end
     
     if command.init then
-        command.init(name, permission)
+        command.init(name)
     end
+    server.log_error(string.format("Loaded command '%s' with priv: %s", name, command.permission))
     
     merge_player_command(name, command)
 end
 
 local function load_player_command_script_directories()
+  local dir_filename = "script/commands-enabled"
 
-    for _, load_dir in pairs(PLAYER_COMMAND_SCRIPT_DIRECTORIES) do
-        
-        local dir_filename = load_dir[1]
-        local permission = load_dir[2]
-        
-        local filesystem = require "filesystem"
+  local filesystem = require "filesystem"
 
-        for file_type, filename in filesystem.dir(dir_filename) do
-            if file_type == filesystem.FILE and string.match(filename, ".lua$") then
-                local command_name = string.sub(filename, 1, #filename - 4)
-                filename = dir_filename .. "/" .. filename
-                load_player_command_script(filename, command_name, permission) 
-            end
-        end
+  for file_type, filename in filesystem.dir(dir_filename) do
+    if file_type == filesystem.FILE and string.match(filename, ".lua$") then
+      local command_name = string.sub(filename, 1, #filename - 4)
+      filename = dir_filename .. "/" .. filename
+      load_player_command_script(filename, command_name)
     end
+  end
 end
 load_player_command_script_directories()
 
@@ -122,6 +117,10 @@ end
 local function send_command_error(cn, error_message)
   
     local output_message = server.command_error_message
+    if not output_message then
+        output_message = ""
+    end
+
     if error_message then
         output_message = output_message .. ": " .. error_message .. "."
     else

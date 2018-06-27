@@ -77,29 +77,17 @@ server.big_capture_maps = {
 }
 
 server.ctf_maps = {
-"hallo", "flagstone", "tempest", "siberia", "capture_night", "reissen", "tejen", "shipwreck",
-"authentic", "urban_c", "bt_falls", "valhalla", "garden", "mbt1", "autumn", "akroseum", "face-capture",
-"dust2", "mach2", "evilness", "turbulence", "l_ctf", "twinforts", "berlin_wall", "mbt12", "europium",
-"abbey", "redemption", "damnation", "forge", "campo", "nitro", "infamy", "catch22", "subterra",
-"forgotten", "bad_moon", "snapper_rocks", "haste", "spcr", "asgard", "arbana", "hidden", "mercury",
-"kopenhagen", "tortuga", "mbt4", "core_refuge", "core_transfer", "desecration", "recovery", "wdcd",
-"suburb", "xenon", "sacrifice", "eternal_valley", "mill", "nucleus"
+    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus"
+
 }
 
 server.small_ctf_maps = {
-"flagstone", "tempest", "siberia", "capture_night", "reissen", "tejen", "shipwreck", "l_ctf",
-"face-capture", "mbt1", "mach2", "dust2", "akroseum", "europium", "redemption", "damnation", "forge",
-"campo", "recovery", "autumn", "forgotten", "bad_moon", "haste", "mbt4", "snapper_rocks", "subterra",
-"mill"
+    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus"
+
 }
 
 server.big_ctf_maps = {
-"hallo", "flagstone", "tempest", "siberia", "capture_night", "reissen", "tejen", "shipwreck",
-"authentic", "urban_c", "bt_falls", "l_ctf", "face-capture", "valhalla", "mbt1", "mach2", "dust2",
-"berlin_wall", "mercury", "akroseum", "forgotten", "europium", "redemption", "damnation", "forge",
-"campo", "nitro", "core_refuge", "wdcd", "desecration", "sacrifice", "core_transfer", "recovery",
-"infamy", "tortuga", "abbey", "xenon", "hidden", "kopenhagen", "mbt12", "snapper_rocks", "spcr",
-"catch22", "eternal_valley", "mill"
+    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus"
 }
 
 server["coop edit_maps"] = server.ffa_maps

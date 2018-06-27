@@ -1,5 +1,6 @@
 
 -- stats Module
+server.stats_serverid = 1
 server.stats_db_filename = "log/stats.sqlite"
 server.stats_query_backend = "sqlite3"
 server.stats_use_auth = 0

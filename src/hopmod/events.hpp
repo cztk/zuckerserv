@@ -53,7 +53,7 @@ extern lua::event< std::tuple<int,int> >                                  event_
 extern lua::event< std::tuple<const char *,const char *> >                event_votepassed;
 extern lua::event< std::tuple<int, const char *> >                        event_takeflag;
 extern lua::event< std::tuple<int, const char *> >                        event_dropflag;
-extern lua::event< std::tuple<int, const char *, int, int> >              event_scoreflag;
+extern lua::event< std::tuple<int, const char *, int, int, bool> >        event_scoreflag;
 extern lua::event< std::tuple<int, const char *> >                        event_returnflag;
 extern lua::event< std::tuple<const char *> >                             event_resetflag;
 extern lua::event< std::tuple<const char *, int> >                        event_scoreupdate;
@@ -65,7 +65,7 @@ extern lua::event< std::tuple<const char *> >                             event_
 extern lua::event< std::tuple<> >                                         event_sleep;
 extern lua::event< std::tuple<> >                                         event_interval;
 extern lua::event< std::tuple<int, int, int, const char *> >              event_cheat;
-extern lua::event< std::tuple<int, int> >                                 event_passflag; // RUGBY MOD
+extern lua::event< std::tuple<int, int, int> >                          event_passflag; // RUGBY MOD
 extern lua::event< std::tuple<int, const char *, int, int, std::vector<rlPlayerCnType>> >        event_creditflaghelpers; // RUGBY MOD
 
 void register_event_idents(lua::event_environment &);

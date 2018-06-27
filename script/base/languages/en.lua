@@ -44,7 +44,7 @@ mapbattle_cant_vote = "%{red}>>> %{orange}Spectators are not allowed to vote!",
 client_nameprotect = "%{red}>>> %{white}You are %{yellow}logged in %{white}as %{blue}%{user_id}%{white}.",
 nameprotect_rename = "%{red}>>> %{white}You have used a reserved name of another player. Server %{blue}renamed %{white}you to %{blue}'unnamed'%{white}.",
 
-flagrun = "%{red}>>> %{blue}%{name} %{white}scored in %{magenta}%{time} %{white}seconds. Best: %{blue}%{bestname} %{white}in %{magenta}%{besttime} %{white}seconds.",
+flagrun = "%{red}>>> %{blue}%{name} %{white}scored in %{magenta}%{time} %{white}seconds. Best: %{blue}%{bestname} %{white}in %{magenta}%{besttime} %{white}seconds - %{created}.",
 
 giveadmin = "%{red}>>> %{blue}%{name} %{white}has passed admin privilege to you.",
 claimmaster = "%{red}>>> %{blue}%{name} %{white}claimed %{green}master %{white}as %{magenta}'%{uid}'",
@@ -116,7 +116,19 @@ rugby_command_enable = "%{blue}%{name} %{green}enabled %{white}rugby mode!",
 rugby_command_enable_mig = "%{blue}%{name} %{green}enabled %{white}rugby - %{orange}migration/training/withdrawal/weaning %{white}mode!",
 rugby_command_enable_credit = "%{blue}%{name} %{green}enabled %{white}rugby mode %{orange}+1 flagscore %{white}for all flagholders!",
 rugby_command_enable_limited = "%{blue}%{name} %{green}enabled %{white}rugby with %{orange}%{weapons} %{white}passing only mode!",
-rugby_command_enable_limited_credit = "%{blue}%{name} %{green}enabled %{white}rugby with %{orange}%{weapons} %{white}passing only mode %{orange}+1 flagscore %{white}for all flagholders!"
+rugby_command_enable_limited_credit = "%{blue}%{name} %{green}enabled %{white}rugby with %{orange}%{weapons} %{white}passing only mode %{orange}+1 flagscore %{white}for all flagholders!",
 
+forgive_analysetext_message = "%{red}>>> Type %{magenta}#%{blue}forgive %{white}if you want to forgive a %{red}teamkill",
+forgive_propose_message = "%{red}>>> Type %{magenta}#%{blue}forgive if you want to forgive %{blue}%{playername}'s %{red}teamkill",
+forgive_not_teamkilled_message = "You have not been teamkilled",
+forgive_actor_forgiven_message = "%{red}>>> %{blue}%{playername} has forgiven your %{red}teamkill",
+forgive_target_forgiven_message = "%{red}>>> You have forgiven %{blue}%{playername}'s %{red}teamkill",
+
+mapvote_disabled_message = "%{red}>>> Map voting is disabled.",
+mapvote_disallowed_gamemode = "%{red}>>> Vote rejected:  %{yellow}%{mode} %{red}is a disallowed game mode",
+mapvote_rejected_unknownmap = "%{red}>>> Vote rejected: unknown map : %{yellow}%[map}",
+mapvote_outside_maprotation = "%{red}>>> Vote rejected: %{yellow}%{map} %{red}is not in the %{yellow}%{mode} %{red}map rotation",
+
+names_command_message = "%{red}>>> Names used by %{blue}%{curname}: %{yellow}%{namelist}"
 
 }

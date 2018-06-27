@@ -413,14 +413,8 @@ struct ctfclientmode : clientmode
             }
         }
 
-        if(!flags[flagIndex].used_rugby)
-        {
-          if (!ci->timetrial || timetrial < ci->timetrial) ci->timetrial = timetrial;
-        }
-        else
-        {
-            event_creditflaghelpers(event_listeners(), std::make_tuple(ci->clientnum, ci->team, scores[team-1], timetrial, flags[flagIndex].rugby_clients));
-        }
+        if (!ci->timetrial || timetrial < ci->timetrial) ci->timetrial = timetrial;
+        event_creditflaghelpers(event_listeners(), std::make_tuple(ci->clientnum, ci->team, scores[team-1], timetrial, flags[flagIndex].rugby_clients));
 
         returnflag(relay >= 0 ? relay : goal, m_protect ? lastmillis : 0);
         ci->state.flags++;
@@ -428,7 +422,7 @@ struct ctfclientmode : clientmode
         int score = addscore(team, 1);
         if(m_hold) spawnflag(goal);
         sendf(-1, 1, "rii9", N_SCOREFLAG, ci->clientnum, relay, relay >= 0 ? ++flags[relay].version : -1, goal, ++flags[goal].version, flags[goal].spawnindex, team, score, ci->state.flags);
-        event_scoreflag(event_listeners(), std::make_tuple(ci->clientnum, ci->team, score, timetrial));
+        event_scoreflag(event_listeners(), std::make_tuple(ci->clientnum, ci->team, score, timetrial, flags[flagIndex].used_rugby));
         
         if(score >= FLAGLIMIT) startintermission();
     }
@@ -441,7 +435,7 @@ struct ctfclientmode : clientmode
      * damage events when dieing before getting flag passed.
      * either hax or bug: get damage right after respawn.
      */
-    void pass_flag(int fromclientnum, int toclientnum)
+    void pass_flag(int fromclientnum, int toclientnum, int distance)
     {
         clientinfo *ci = getinfo(fromclientnum);
         clientinfo *cito = getinfo(toclientnum);

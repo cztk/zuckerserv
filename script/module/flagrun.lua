@@ -8,17 +8,36 @@ local query_backend_name = server.stats_query_backend
 
 local luasql = require("luasql_mysql")
 
-local flagruns = {}
+local personal_flagruns = {{},{},{}}
+local flagruns = {{},{}}
 local queue = {}
+local igamemode = ""
 
 local mysql_schema = [[
 CREATE TABLE IF NOT EXISTS  `flagruns` (
-  `id`              bigint(11) NOT NULL AUTO_INCREMENT,
-  `mapname`            varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `playername`            varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `time`            int(10) unsigned NOT NULL DEFAULT 0,
+  `id`              bigint(1) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `serverid`        bigint(1) UNSIGNED NOT NULL,
+  `mapname`         varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `playername`      varchar(32) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `gamemode`        varchar(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `time`            int(1) unsigned NOT NULL DEFAULT 0,
+  `created`         datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified`        datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE(mapname)
+  UNIQUE(`serverid`,`mapname`,`gamemode`)
+);
+CREATE TABLE `personal_flagruns` (
+  `id`              bigint(1) NOT NULL AUTO_INCREMENT,
+  `serverid`        bigint(1) UNSIGNED NOT NULL,
+  `mapname`         varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `gamemode`        varchar(16) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `playername`      varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `time`            int(1) UNSIGNED NOT NULL DEFAULT '0',
+  `created`         datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified`        datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `playername` (`playername`,`mapname`,`gamemode`),
+  KEY `time` (`playername`,`time`)
 );
 ]]
 
@@ -65,33 +84,65 @@ local function mysql_open(settings)
     return true
 end
 
-local function insert_flagrun(flagrun)
-
-    if not flagruns[flagrun.mapname] then
-        local insert_flagrun_sql = [[INSERT INTO flagruns (mapname, playername, time)
-            VALUES ('%s', '%s', '%i')]]
-        if not execute_statement(string.format(
+local function insert_personal_flagrun(flagrun)
+    local insert_flagrun_sql = [[INSERT INTO `personal_flagruns` (`serverid`, `mapname`, `playername`, `gamemode`, `time`)
+            VALUES (%i, '%s', '%s', '%s', %i) ON DUPLICATE KEY UPDATE
+            `time` = IF(`time` > VALUES(`time`), VALUES(`time`), `time`)
+            ]]
+    if not execute_statement(string.format(
             insert_flagrun_sql,
+            tonumber(server.stats_serverid),
             escape_string(flagrun.mapname),
             escape_string(flagrun.playername),
-            flagrun.time)) then return nil end
+            escape_string(flagrun.modename),
+            tonumber(flagrun.time))) then return nil end
 
-    else
-        local insert_flagrun_sql = [[UPDATE flagruns SET playername = '%s', time = '%i'
-            WHERE mapname = '%s']]
-        if not execute_statement(string.format(
-            insert_flagrun_sql,
-            escape_string(flagrun.playername),
-            flagrun.time,
-            escape_string(flagrun.mapname))) then return nil end
+    if not personal_flagruns[flagrun.playername] then
+        personal_flagruns[flagrun.playername] = {}
+    end
+    if not personal_flagruns[flagrun.playername][flagrun.modename] then
+      personal_flagruns[flagrun.playername][flagrun.modename] = {}
+    end
+    if not personal_flagruns[flagrun.playername][flagrun.modename][flagrun.mapname] then
+      personal_flagruns[flagrun.playername][flagrun.modename][flagrun.mapname] = {}
     end
 
-    flagruns[flagrun.mapname] =  {flagrun.playername, flagrun.time}
+    personal_flagruns[flagrun.playername][flagrun.modename][flagrun.mapname] = {flagrun.time, "today"}
 
     local cursor = execute_statement("SELECT last_insert_id()")
     if not cursor then return nil end
     return cursor:fetch()
 end
+
+local function insert_flagrun(flagrun)
+    local insert_flagrun_sql = [[INSERT INTO `flagruns` (`serverid`, `mapname`, `playername`, `gamemode`, `time`)
+            VALUES (%i, '%s', '%s', '%s', %i) ON DUPLICATE KEY UPDATE
+            `time` = IF(`time` > VALUES(`time`), VALUES(`time`), `time`),
+            `playername` = IF(`time` > VALUES(`time`), VALUES(`playername`), `playername`)
+            ]]
+    if not execute_statement(string.format(
+            insert_flagrun_sql,
+            tonumber(server.stats_serverid),
+            escape_string(flagrun.mapname),
+            escape_string(flagrun.playername),
+            escape_string(flagrun.modename),
+            tonumber(flagrun.time))) then return nil end
+
+    if not flagruns[flagrun.modename] then
+        flagruns[flagrun.modename] = {}
+    end
+    if not flagruns[flagrun.modename][flagrun.mapname] then
+      flagruns[flagrun.modename][flagrun.mapname] = {}
+    end
+
+    flagruns[flagrun.modename][flagrun.mapname] = {flagrun.playername, flagrun.time, "today"}
+
+    local cursor = execute_statement("SELECT last_insert_id()")
+    if not cursor then return nil end
+    return cursor:fetch()
+end
+
+
 
 local function mysql_commit_flagrun(flagrun)
     
@@ -99,19 +150,24 @@ local function mysql_commit_flagrun(flagrun)
        return false
     end
     
-    if not execute_statement("START TRANSACTION") then 
-        return false
-    end
+--    if not execute_statement("START TRANSACTION") then 
+--        return false
+--    end
 
     local flagrun_id = insert_flagrun(flagrun)
+    local personal_flagrun_id = insert_personal_flagrun(flagrun)
 
-    if not flagrun_id then 
+    if nil == flagrun_id or nil == personal_flagrun_id then
         return false
     end
 
-    if not execute_statement("COMMIT") then
-        return false
-    end
+--    if not execute_statement("COMMIT") then
+--        return false
+--    end
+
+-- seriously transactions for situations where one server should edit one entity at a time
+-- combined with serverid field ... it causes more issues like locked tables than it may
+-- prevent ....
     
     return true
 end
@@ -136,11 +192,51 @@ local function commit_flagrun(flagrun)
     end
 end
 
-local function load_flagruns(map)
-    local load_flagruns_query = execute_statement(string.format("SELECT playername, time FROM flagruns WHERE mapname = '%s'", map))
+local function load_flagruns(map,mode)
+
+    if not flagruns[mode] then
+      flagruns[mode] = {}
+    end
+    if not flagruns[mode][map] then
+      flagruns[mode][map] = {}
+    end
+
+    local load_flagruns_query = execute_statement(string.format("SELECT `playername`, `time`, `created`, `modified` FROM `flagruns` WHERE `serverid` = %i AND `mapname` = '%s' AND `gamemode`='%s'", tonumber(server.stats_serverid),map,mode))
     row = load_flagruns_query:fetch ({}, "a")
-    return {row.playername, tonumber(row.time)}
+    if row then
+      if row.time then
+        local date = row.modified or row.created
+        flagruns[mode][map] = {row.playername, tonumber(row.time),date}
+        server.msg(string.format("%s ran on %s in %ss ( %s ) %s", row.playername, map , string.format("%.3f",tonumber(row.time)/1000), mode, date))
+      end
+    end
 end
+
+local function load_personal_flagruns(map,mode,pname,cn,show)
+
+    if not personal_flagruns[pname] then
+      personal_flagruns[pname] = {}
+    end
+    if not personal_flagruns[pname][mode] then
+      personal_flagruns[pname][mode] = {}
+    end
+    if not personal_flagruns[pname][mode][map] then
+      personal_flagruns[pname][mode][map] = {}
+    end
+
+    local load_pflagruns_query = execute_statement(string.format("SELECT `time`,`created`, `modified` FROM `personal_flagruns` WHERE `playername` = '%s' AND `mapname` = '%s' AND `gamemode`='%s' ORDER BY `time` LIMIT 1", escape_string(pname),map,mode))
+    row = load_pflagruns_query:fetch ({}, "a")
+    if row then
+      if row.time then
+        local date = row.modified or row.created
+        personal_flagruns[pname][mode][map] = {tonumber(row.time),date}
+        if 1 == show then
+          server.player_msg(cn, string.format("You ran on %s in %ss ( %s ) %s", map , string.format("%.3f",tonumber(row.time)/1000), mode, date))
+        end
+      end 
+    end
+end
+
 
 if using_mysql then
     local ret = catch_error(mysql_open, {
@@ -154,27 +250,65 @@ if using_mysql then
     })
 end
 
-local scoreflag = server.event_handler("scoreflag", function(cn, team, score, timetrial)
+local scoreflag = server.event_handler("scoreflag", function(cn, team, score, timetrial, used_rugby)
+    local docommit = 0
+    local a,b,c = "no best time",0,"now"
+
     if gamemodeinfo.ctf and timetrial > 0 then
-        local playername = server.player_name(cn)
+        local playerauthname = server.player_name(cn)
         local mapname = server.map
-        if not flagruns[server.map] or timetrial < flagruns[server.map][2] then
-            commit_flagrun({ mapname = mapname, playername = playername, time = timetrial})
+        if(1 == server.stats_overwrite_name_with_authname and 1 == server.stats_use_auth and server.player_vars(cn).stats_auth_name) then
+            playerauthname = server.player_vars(cn).stats_auth_name
         end
-        server.msg("flagrun", {name = playername, time = string.format("%.3f", timetrial/1000), bestname = flagruns[mapname][1], besttime = string.format("%.3f", flagruns[mapname][2]/1000) })
+        
+        if playerauthname and not used_rugby then
+          load_personal_flagruns(mapname,igamemode,playerauthname,cn,1)
+
+          if not personal_flagruns[playerauthname][igamemode][mapname][1] then
+              docommit = 1
+          else
+            if timetrial < personal_flagruns[playerauthname][igamemode][mapname][1] then
+              docommit = 1
+            end
+          end
+
+          if not flagruns[igamemode][mapname][2] or  timetrial < flagruns[igamemode][mapname][2] then
+            docommit = 1
+          end
+
+          if 1 == docommit then
+            commit_flagrun({ mapname = mapname, playername = playerauthname, time = timetrial, modename = igamemode})
+            load_personal_flagruns(mapname,igamemode,playerauthname,cn,0)
+            load_flagruns(mapname, igamemode)
+          end
+        end
+        if flagruns[igamemode] and flagruns[igamemode][mapname] and flagruns[igamemode][mapname][2] then
+          if flagruns[igamemode][mapname][2] > timetrial then
+            a = playerauthname
+            b = timetrial
+            c = "just now"
+          end
+          a = flagruns[igamemode][mapname][1]
+          b = flagruns[igamemode][mapname][2]
+          c = flagruns[igamemode][mapname][3]
+        end
+
+        server.msg("flagrun", {name = playerauthname, time = string.format("%.3f",timetrial/1000), bestname = a, besttime = string.format("%.3f",b/1000), created = c .. "" })
     end
 end)
 
 local mapchange = server.event_handler("mapchange", function(map)
-    flagruns = {}
+    flagruns = {{},{}}
+    personal_flagruns = {{},{},{}}
+    igamemode = server.gamemode
     if gamemodeinfo.ctf then
-        flagruns[map] = load_flagruns(map)
+        flagruns[igamemode] = {}
+        load_flagruns(map, igamemode)
     end
 end)
 
 local started = server.event_handler("started", function()
-    flagruns = {}
-    if gamemodeinfo.ctf then
-        flagruns[server.map] = load_flagruns(server.map)
-    end
+    flagruns = {{},{}}
+    personal_flagruns = {{},{},{}}
+    igamemode = server.gamemode
 end)

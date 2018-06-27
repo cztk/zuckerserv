@@ -8,7 +8,7 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- A server name for players to identify your server.
-server.servername = "glory tbmc party"
+server.servername = "open tbmc party 1"
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Default connection information:
@@ -60,16 +60,16 @@ server.ctf_teamkill_penalty = false
 -- Authkey configuration for Name protection & Admin
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-server.admin_domains = {"tbmc:admin"}            -- Domain for admin
-server.invadmin_domains = {"tbmc:admin"}         -- Same
-server.auto_invadmin_domains = {"tbmc:admin"}    -- Same, if you want to be auto-invadmin at connection
+server.admin_domains = {"tbmc"}            -- Domain for admin
+server.invadmin_domains = {"tbmc"}         -- Same
+server.auto_invadmin_domains = {"tbmc"}    -- Same, if you want to be auto-invadmin at connection
 
 server.master_domains = {"tbmc:master", "sauerstats:trusted", "MASTER"}          -- Domain for master
 server.invmaster_domains = {"tbmc:master", "sauerstats:trusted"}       -- Same
 server.auto_invmaster_domains = {"tbmc:master", "sauerstats:trusted"}  -- Same, if you want to be auto-invadmin at connection
 
-server.name_reservation_domain = "sauerstats"          -- Domain for name protect
-server.auth_domains = {"sauerstats"}                   -- Domain for privileges with new authserver
+server.name_reservation_domain = "tbmc"          -- Domain for name protect
+server.auth_domains = {"tbmc"}                   -- Domain for privileges with new authserver
 server.server_auth_domain = "tbmc:admin"         -- Domain allowing it's users to be always able to connect (server full, private, ban…)
 
 server.module("auth/name")                             -- Module for name protect
@@ -93,18 +93,18 @@ server.module("auth/privileges")                     -- New privileges module to
 -- Stats
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-server.stats_use_sqlite = 1                    -- Use a SQLite3 Database: default option, only if you can't connect to a MySQL server, because some functions are missing
+server.stats_use_sqlite = 0                    -- Use a SQLite3 Database: default option, only if you can't connect to a MySQL server, because some functions are missing
 server.stats_use_json = 0                      -- Use a JSON Database: very incomplete, don't use
-server.stats_use_mysql = 0                     -- Use a MySQL Database: Best option if you have a MySQL server, otherwise, choose SQLite3
+server.stats_use_mysql = 1                     -- Use a MySQL Database: Best option if you have a MySQL server, otherwise, choose SQLite3
 server.stats_use_psql = 0                      -- Use a PostGreSQL database, actually not working.
-server.stats_query_backend = "sqlite3"         -- Used database : mysql, sqlite3, json, psql
+server.stats_query_backend = "mysql"         -- Used database : mysql, sqlite3, json, psql
 
-server.stats_mysql_hostname = "localhost"      -- MySQL server hostname
+server.stats_mysql_hostname = "127.0.0.1"      -- MySQL server hostname
 server.stats_mysql_port = "3306"               -- MySQL server port
-server.stats_mysql_username = "suckerserv"     -- MySQL database username
-server.stats_mysql_password = "suckerserv"     -- MySQL database password
-server.stats_mysql_database = "suckerserv"     -- MySQL database name
-server.stats_mysql_install = true              -- Switch to false after first launch
+server.stats_mysql_username = "tbmcpartyauth"     -- MySQL database username
+server.stats_mysql_password = "8XA9dG5TN66sKC3b"     -- MySQL database password
+server.stats_mysql_database = "tbmcpartyauthclan"     -- MySQL database name
+server.stats_mysql_install = false              -- Switch to false after first launch
 
 server.stats_psql_hostname = "localhost"       -- PostGreSQL server hostname
 server.stats_psql_port = "5432"                -- PostGreSQL server port
@@ -113,7 +113,7 @@ server.stats_psql_password = "suckerserv"      -- PostGreSQL database password
 server.stats_psql_database = "suckerserv"      -- PostGreSQL database name
 server.stats_psql_install = true               -- Switch to false after first launch
 
-server.stats_servername = "glory tbmc party"   -- Server name, for displaying in scoreboard
+server.stats_servername = "open tbmc party 1"   -- Server name, for displaying in scoreboard
 server.stats_use_auth = 1                      -- Use auth with stats
 server.stats_auth_domain = "tbmc"              -- Domain for auth
 server.stats_overwrite_name_with_authname = 1  -- Replace current name with authkey's name in stats
@@ -209,58 +209,6 @@ server.web_admins = {}
 -- Player Commands configuration
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-server.enable_commands({
-    "cheater",
-    "votekick",
-    "specall",
-    "unspecall",
-    "uptime",
-    "reload",
-    "changetime",
-    "players",
-    "names",
-    "givemaster",
-    "mute",
-    "unmute",
-    "ban",
-    "unban",
-    "persist",
-    "versus",
-    "warning",
-    "msg",
-    "stats",
-    "nextmap",
-    "eval",
-    "group",
-    "specmsg",
-    "slay",
-    "recorddemo",
-    "giveadmin",
-    "forcespec",
-    "unforcespec",
-    "banlist",
-    "admin",
-    "invadmin",
-    "master",
-    "invmaster",
-    "forgive",
-    "mapsucks",
-    "clanwar",
-    "rename",
-    "disconnect",
-    "info",
-    "help",
-    "delgban",
-    "gbans",
-    "spy",
-    "version",
-    "privileges",
-    "sendmap",
-    "noedit",
-    "editmute",
-    "rugby"
-})
-
 server.disable_commands({
     "noties",
     "suddendeath",
@@ -308,7 +256,7 @@ server.module("mute_spectators")                       -- Mute all spectators, r
 
 --server.module("mapbattle")                             -- Vote for map at intermission
 --server.module("mapsucks")                              -- Module for #mapsucks
---server.module("flagrun")                               -- Record and display best flagrun time
+server.module("flagrun")                               -- Record and display best flagrun time
 server.module("rugby")                                   -- Allows passing of the flag between mates in ctf modes. Not tested for ihold/protect.
 server.rugby_enabled = 1
 server.rugby_mode = 2
