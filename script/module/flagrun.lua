@@ -87,6 +87,7 @@ end
 local function insert_personal_flagrun(flagrun)
     local insert_flagrun_sql = [[INSERT INTO `personal_flagruns` (`serverid`, `mapname`, `playername`, `gamemode`, `time`)
             VALUES (%i, '%s', '%s', '%s', %i) ON DUPLICATE KEY UPDATE
+            `playername` = IF(`time` > VALUES(`time`), VALUES(`playername`), `playername`),
             `time` = IF(`time` > VALUES(`time`), VALUES(`time`), `time`)
             ]]
     if not execute_statement(string.format(
