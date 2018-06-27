@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/delgban.lua
+../commands-available/delgban.lua

@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/unforcespec.lua
+../commands-available/unforcespec.lua

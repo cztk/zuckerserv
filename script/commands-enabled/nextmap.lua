@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/nextmap.lua
+../commands-available/nextmap.lua

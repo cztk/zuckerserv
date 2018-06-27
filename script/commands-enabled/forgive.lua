@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/forgive.lua
+../commands-available/forgive.lua

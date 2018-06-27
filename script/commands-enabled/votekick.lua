@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/votekick.lua
+../commands-available/votekick.lua

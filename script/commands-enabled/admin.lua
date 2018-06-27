@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/admin.lua
+../commands-available/admin.lua

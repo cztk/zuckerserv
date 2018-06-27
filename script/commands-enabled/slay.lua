@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/slay.lua
+../commands-available/slay.lua

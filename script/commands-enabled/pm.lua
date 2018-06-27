@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/pm.lua
+../commands-available/pm.lua

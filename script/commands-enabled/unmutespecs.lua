@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/unmutespecs.lua
+../commands-available/unmutespecs.lua

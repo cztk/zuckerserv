@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/permban.lua
+../commands-available/permban.lua

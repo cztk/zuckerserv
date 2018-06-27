@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/ban.lua
+../commands-available/ban.lua

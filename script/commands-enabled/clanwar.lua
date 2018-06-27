@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/clanwar.lua
+../commands-available/clanwar.lua

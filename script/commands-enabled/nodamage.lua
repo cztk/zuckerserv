@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/nodamage.lua
+../commands-available/nodamage.lua

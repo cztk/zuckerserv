@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/gbans.lua
+../commands-available/gbans.lua

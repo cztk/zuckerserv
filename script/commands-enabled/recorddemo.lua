@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/recorddemo.lua
+../commands-available/recorddemo.lua

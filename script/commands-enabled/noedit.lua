@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/noedit.lua
+../commands-available/noedit.lua

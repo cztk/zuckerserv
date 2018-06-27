@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/disconnect.lua
+../commands-available/disconnect.lua

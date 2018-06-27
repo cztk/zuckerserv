@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/invmaster.lua
+../commands-available/invmaster.lua

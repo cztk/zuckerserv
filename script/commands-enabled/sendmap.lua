@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/sendmap.lua
+../commands-available/sendmap.lua

@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/warning.lua
+../commands-available/warning.lua

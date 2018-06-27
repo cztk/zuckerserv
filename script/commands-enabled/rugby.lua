@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/rugby.lua
+../commands-available/rugby.lua

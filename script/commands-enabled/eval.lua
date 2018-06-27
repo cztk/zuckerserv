@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/eval.lua
+../commands-available/eval.lua

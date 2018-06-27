@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/specmsg.lua
+../commands-available/specmsg.lua

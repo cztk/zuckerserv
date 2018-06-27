@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/invadmin.lua
+../commands-available/invadmin.lua

@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/unspecall.lua
+../commands-available/unspecall.lua

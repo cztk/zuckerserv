@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/spy.lua
+../commands-available/spy.lua

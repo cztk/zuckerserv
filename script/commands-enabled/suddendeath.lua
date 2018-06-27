@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/suddendeath.lua
+../commands-available/suddendeath.lua

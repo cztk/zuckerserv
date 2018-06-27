@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/persist.lua
+../commands-available/persist.lua

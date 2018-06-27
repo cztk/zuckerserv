@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/versus.lua
+../commands-available/versus.lua

@@ -1,1 +1,1 @@
-/home/suckerserv/orig/zuckerserv/script/commands-available/forcespec.lua
+../commands-available/forcespec.lua
