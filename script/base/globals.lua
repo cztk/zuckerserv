@@ -1,14 +1,14 @@
 weapons_types = {
-    [0] = "GUN_FIST",
-    [1] = "GUN_SG",
-    [2] = "GUN_CG",
-    [3] = "GUN_RL",
-    [4] = "GUN_RIFLE",
-    [5] = "GUN_GL",
-    [6] = "GUN_PISTOL",
-    [7] = "GUN_FIREBALL",
-    [8] = "GUN_ICEBALL",
-    [9] = "GUN_SLIMEBALL"
+    [0] = "CHAINSAW",
+    [1] = "SHOTGUN",
+    [2] = "CHAINGUN",
+    [3] = "ROCKETS",
+    [4] = "RIFLE",
+    [5] = "NADES",
+    [6] = "PISTOL",
+    [7] = "FIREBALL",
+    [8] = "ICEBALL",
+    [9] = "SLIMEBALL"
 }
 
 -- GUN_FIST = 0, GUN_SG = 1, GUN_CG, GUN_RL, GUN_RIFLE, GUN_GL, GUN_PISTOL, GUN_FIREBALL, GUN_ICEBALL, GUN_SLIMEBALL, GUN_BITE, GUN_BARREL

@@ -7,5 +7,6 @@ struct rlPlayerCnType {
     int lastowntime;
     int passcount;
     bool stoleflagfirst;
+    int distance;
 };
 

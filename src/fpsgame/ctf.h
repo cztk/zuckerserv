@@ -165,6 +165,7 @@ struct ctfclientmode : clientmode
             rugbyinfo.lastowntime = totalmillis;
             rugbyinfo.passcount = 0;
             rugbyinfo.stoleflagfirst = stoleflagfirst;
+            rugbyinfo.distance = 0;
             f.rugby_clients.push_back(rugbyinfo);
         }
         //RUGBY MOD END
@@ -448,6 +449,7 @@ struct ctfclientmode : clientmode
             {
                 if(fromclientnum == flags[i].rugby_clients[j].cn)
                 {
+                   flags[i].rugby_clients[j].distance = ( distance > flags[i].rugby_clients[j].distance ) ? distance : flags[i].rugby_clients[j].distance;
                    if(flags[i].rugby_clients[j].passcount < INT_MAX)
                    {
                        ++flags[i].rugby_clients[j].passcount;

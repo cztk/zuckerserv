@@ -1,14 +1,25 @@
 local help ="enabled rugby mode. -1=off, 0=no pass and no damage, 1 = rugby with all weapons, 2 = same as 1 +1 flagscore. mode 3 and 4 are same as 1 and 2 but allow a list of allowed weapons: #rugby 4 04 allows chainsaw=0 and rifle=4 passing"
 local usage = "<mode> [<weaponlist>]"
 local enabled = true
-local permission = 1
+local permission = 0
+local real_permission = 1
 
 local run = function(cn, status, wlist)
 
-  if not status then
-    server.player_msg(cn, "rugby_enabled is " .. server.rugby_enabled .. ", rugby_mode is " .. server.rugby_mode .. " " .. usage)
+  if not status or real_permission > server.player_priv_code(cn) then
+      local guns = ""
+      for index,value in pairs(rugby_weapons) do
+        if 1 == value then
+          guns = guns .. " " .. weapons_types[index]
+        end
+      end
+
+      if rugby_cmd_msgs[server.rugby_mode] then
+        server.player_msg(cn, rugby_cmd_msgs[server.rugby_mode], { name = "Server", weapons = guns } )
+      end
     return
   end
+
   local guns = ""
 
   if wlist then
