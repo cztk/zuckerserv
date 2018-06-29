@@ -24,7 +24,7 @@ server.event_handler("damage", function(target, actor, damage, gun)
 end)
 
 server.event_handler("passflag", function(actor, target, dist)
-    server.msg(string.format(red().."%s "..white().."passed the flag to %s with a distance of "..blue().."%s"..white().."ogro feet - "..green().."some random great job message.", server.player_name(actor), server.player_name(target), string.format("%.2f",dist/1000)))
+    server.msg(string.format(red().."%s "..white().."passed the flag to %s with a distance of "..blue().."%s"..white().."ogro feet - "..green().."some random great job message.", server.player_name(actor), server.player_name(target), string.format("%.2f",(dist/1000)/12.5)))
 end)
 
 server.event_handler("creditflaghelpers", function(scoreclientnum, scoreteam, score, timetaken, helpers)
@@ -34,7 +34,7 @@ server.event_handler("creditflaghelpers", function(scoreclientnum, scoreteam, sc
         if(value["stoleflagfirst"]) then
             didittext = " first holder"
         end
-        didittext = string.format(blue().."%s"..white().." hold IT "..red().."%s"..white().."s, "..green().."%s"..white().." passes"..green().."%s"..orange().." Dist.: "..blue().."%s"..white().."of"..green(), value["name"], string.format("%.3f",value["owntimems"]/1000), value["passcount"], didittext, string.format("%.2f", value["distance"]/1000))
+        didittext = string.format(blue().."%s"..white().." hold IT "..red().."%s"..white().."s, "..green().."%s"..white().." passes"..green().."%s"..orange().." Dist.: "..blue().."%s"..white().."of"..green(), value["name"], string.format("%.3f",value["owntimems"]/1000), value["passcount"], didittext, string.format("%.2f", (value["distance"]/1000)/12.5))
         if string.match(server.gamemode, "ctf") or string.match(server.gamemode, "hold") then
           if (server.rugby_mode == 2 or server.rugby_mode == 4) and scoreclientnum ~= value["cn"] then
             didittext = didittext .. " +1 Flagscore"
