@@ -1,4 +1,4 @@
-local permission = 1
+local permission = 0
 local enabled = true
 local message = ""
 local usage = ""

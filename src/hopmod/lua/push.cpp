@@ -73,7 +73,7 @@ void push(lua_State* L, std::vector<rlPlayerCnType> const& vec)
         lua_pushboolean(L, vec[j].stoleflagfirst);
         lua_setfield(L, -2, "stoleflagfirst");
 
-        lua_pushnumber(L, vec[j].passcount);
+        lua_pushnumber(L, vec[j].distance);
         lua_setfield(L, -2, "distance");
 
         lua_settable(L, -3);

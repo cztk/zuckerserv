@@ -49,14 +49,12 @@ end
 getmetatable("").__mod = interp
 
 function server.player_lang(cn)
-   if not server.is_bot(cn) then
 	if not server.player_vars(cn).language then
 		server.player_vars(cn).language = messages.languages[server.mmdatabase:lookup_ip(server.player_ip(cn), "country", "iso_code")] or messages.languages["default"]
 	end
 
 	return server.player_vars(cn).language
-   end
-   return messages.languages["default"]
+--        return messages.languages["default"]
 end
 
 function server.parse_message(cn, text, vars)

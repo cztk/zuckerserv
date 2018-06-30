@@ -50,7 +50,7 @@ end
 
 local function is_enabled()
 
-    return _if((gamemodeinfo.teams and (server.mastermode == 0) and not is_intermission), true, nil)
+    return _if((gamemodeinfo.teams and (server.mastermode == 0 or server.mastermode == -1) and not is_intermission), true, nil)
 end
 
 local function move_player(cn, team)

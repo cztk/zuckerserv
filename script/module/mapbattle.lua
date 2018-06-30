@@ -6,7 +6,7 @@
 mapbattle = {}
 mapbattle.delay = 1000 -- Time to wait before starting mapbattle
 mapbattle.timeout = server.intermission_time - 2500 -- Time to wait for votes
-mapbattle.range = 2 -- Distance between nextmap and second map in maprotation
+mapbattle.range = 2 -- Distance between nextmap and second map in maprotation TODO: define range as "keep last maps played num to avoid repeat over and over again"
 
 function mapbattle.clean()
     mapbattle.votes = { {}, {} }
@@ -15,16 +15,29 @@ function mapbattle.clean()
     mapbattle.running = false
 end
 
-function mapbattle.get_next_map(num, mode)
-    local maps = map_rotation.get_map_rotation(mode)[mode]
-	local playing = 1
-    for k,v in ipairs(maps) do
-        if v == server.map then 
-            playing = k
+function mapbattle.get_random_map(num, mode)
+
+    local maps= {}
+    local hay = map_rotation.get_map_rotation(mode)[mode]
+    for k,v in pairs(hay) do
+        if v ~= server.map then        
+          table.insert(maps, k)
         end
     end
-    if playing > (table_size(maps)-num) then playing = 1 end
-    return maps[playing+num]
+    -- now you can reliably return a random key
+    local result = hay[maps[math.random(#maps)]]
+        
+    return result
+
+--    local maps = map_rotation.get_map_rotation(mode)[mode]
+--	local playing = 1
+--    for k,v in ipairs(maps) do
+--        if v == server.map then 
+--            playing = k
+--        end
+--    end
+--    if playing > (table_size(maps)-num) then playing = 1 end
+--    return maps[playing+num]
 end
 
 function mapbattle.winner()
@@ -75,7 +88,7 @@ end)
 
 server.event_handler("intermission", function() 
     server.sleep(mapbattle.delay, function()
-        mapbattle.start(map_rotation.get_map_name(server.gamemode), mapbattle.get_next_map(mapbattle.range, server.gamemode), server.gamemode)
+        mapbattle.start(map_rotation.get_map_name(server.gamemode), mapbattle.get_random_map(mapbattle.range, server.gamemode), server.gamemode)
     end)
 end)
 

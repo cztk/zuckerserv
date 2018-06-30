@@ -192,7 +192,7 @@ local function commit_flagrun(flagrun)
     end
 end
 
-local function load_flagruns(map,mode)
+local function load_flagruns(map,mode,show)
 
     if not flagruns[mode] then
       flagruns[mode] = {}
@@ -207,7 +207,9 @@ local function load_flagruns(map,mode)
       if row.time then
         local date = row.modified or row.created
         flagruns[mode][map] = {row.playername, tonumber(row.time),date}
-        server.msg(string.format("%s ran on %s in %ss ( %s ) %s", row.playername, map , string.format("%.3f",tonumber(row.time)/1000), mode, date))
+        if 1 == show then
+          server.msg(string.format("%s ran on %s in %ss ( %s ) %s", row.playername, map , string.format("%.3f",tonumber(row.time)/1000), mode, date))
+        end
       end
     end
 end
@@ -256,7 +258,7 @@ local scoreflag = server.event_handler("scoreflag", function(cn, team, score, ti
 
     if gamemodeinfo.ctf and timetrial > 0 then
         if not flagruns[igamemode] then
-            load_flagruns(map, igamemode)
+            load_flagruns(map, igamemode,0)
         end
         local playerauthname = server.player_name(cn)
         local mapname = server.map
@@ -282,7 +284,7 @@ local scoreflag = server.event_handler("scoreflag", function(cn, team, score, ti
           if 1 == docommit then
             commit_flagrun({ mapname = mapname, playername = playerauthname, time = timetrial, modename = igamemode})
             load_personal_flagruns(mapname,igamemode,playerauthname,cn,0)
-            load_flagruns(mapname, igamemode)
+            load_flagruns(mapname, igamemode,0)
           end
         end
         if flagruns[igamemode] and flagruns[igamemode][mapname] and flagruns[igamemode][mapname][2] then
@@ -306,7 +308,7 @@ local mapchange = server.event_handler("mapchange", function(map)
     igamemode = server.gamemode
     if gamemodeinfo.ctf then
         flagruns[igamemode] = {}
-        load_flagruns(map, igamemode)
+        load_flagruns(map, igamemode,1)
     end
 end)
 
