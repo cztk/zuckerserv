@@ -948,7 +948,11 @@ void anti_cheat_parsepacket(int type, clientinfo *ci, clientinfo *cq, packetbuf 
 
         case N_EDITENT:
         {
-          if(12 != gamemode) ac->edit_packet(getint(p));
+          int i = getint(p);
+          loopk(3) getint(p);
+          int type = getint(p);
+          loopk(5) getint(p);
+          if(12 != gamemode) ac->edit_packet(type);
           break;
         }
         case N_EDITVAR:
