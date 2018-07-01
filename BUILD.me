@@ -1,0 +1,39 @@
+as root
+apt-get install git build-essential luajit cmake libssl1.0-dev libmariadbclient-dev-compat libmaxminddb-dev libasio-dev libenet-dev libluajit-5.1-dev mysql-server geoipupdate
+useradd zuckerserv
+mkdir /home/zuckerserv
+chown zuckerserv:zuckerserv /home/zuckerserv
+su zuckerserv
+mkdir server
+cd server
+wget https://to.tbmc.party/gitlist/zuckerserv/tarball/master -O zuckerserv.tar.gz
+tar xf zuckerserv.tar.gz
+sh compile.sh
+exit
+mysql_secure_installation
+Enter current password for root (enter for none):  << just enter
+Set root password? [Y/n] << Y/Enter
+Remove anonymous users? [Y/n] << Y/Enter
+Disallow root login remotely? [Y/n] << Y/Enter
+Remove test database and access to it? [Y/n] << Y/Enter
+Reload privilege tables now? [Y/n] << Y/Enter
+
+mysql
+create database zuckerserv;
+CREATE USER 'zuckerserv'@'127.0.0.1' IDENTIFIED BY 'somesecret';
+GRANT ALL PRIVILEGES ON zuckerserv.* TO 'zuckerserv'@'127.0.0.1';
+flush privileges;
+quit
+
+for mysql in conf/server.conf.lua
+set server.stats_use_sqlite to 0
+set server.stats_use_mysql to 1
+an set the connection details
+
+leave server.stats_mysql_install = true for first start ( if stats module
+and flagrun module are activated ).
+./bin/server start
+
+After that, set it to false.
+
+Should work now - except for all the bugs. things may change so no too detailed howto yet *hug*
