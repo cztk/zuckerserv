@@ -947,6 +947,10 @@ void anti_cheat_parsepacket(int type, clientinfo *ci, clientinfo *cq, packetbuf 
             break;
 
         case N_EDITENT:
+        {
+          if(12 != gamemode) ac->edit_packet(getint(p));
+          break;
+        }
         case N_EDITVAR:
         case N_EDITMODE:
         case N_COPY:
