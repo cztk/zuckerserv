@@ -16,7 +16,7 @@ messages.languages = {
 }
 
 for country, language in pairs(messages.languages) do
-	messages[language] = require("script/base/languages/" .. language)
+	messages[language] = require("script/modules-available/messages/languages/" .. language)
 --	require("languages/" .. language)
 end
 
@@ -59,7 +59,16 @@ end
 
 function server.parse_message(cn, text, vars)
 	if type(text) == "table" then
-		text = messages[server.player_lang(cn)][text[1]][text[2]] or messages[messages.languages["default"]][text[1]][text[2]] or text[1]
+                if messages[server.player_lang(cn)][text[1]][text[2]] or messages[messages.languages["default"]][text[1]][text[2]] then
+		  text = messages[server.player_lang(cn)][text[1]][text[2]] or messages[messages.languages["default"]][text[1]][text[2]]
+                else
+                  local rettext = ""
+                  for k,j in pairs(text) do
+                    local jtext = messages[server.player_lang(cn)][j] or messages[messages.languages["default"]][j] or j
+                    rettext = rettext .. jtext
+                  end
+                  text = rettext
+                end
 	else
 		text = messages[server.player_lang(cn)][text] or messages[messages.languages["default"]][text] or text
 	end

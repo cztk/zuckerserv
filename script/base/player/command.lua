@@ -89,7 +89,7 @@ local function load_player_command_script(filename, name)
     if command.init then
         command.init(name)
     end
-    server.log_error(string.format("Loaded command '%s' with priv: %s", name, command.permission))
+    server.log(string.format("Loaded command '%s' with priv: %s", name, command.permission))
     
     merge_player_command(name, command)
 end
@@ -100,14 +100,16 @@ local function load_player_command_script_directories()
   local filesystem = require "filesystem"
 
   for file_type, filename in filesystem.dir(dir_filename) do
+   if filename ~= "." and filename ~= ".." then
     if file_type == filesystem.FILE and string.match(filename, ".lua$") then
       local command_name = string.sub(filename, 1, #filename - 4)
       filename = dir_filename .. "/" .. filename
       load_player_command_script(filename, command_name)
     end
+   end
   end
 end
-load_player_command_script_directories()
+--load_player_command_script_directories()
 
 local function is_command_prefix(text)
     local first_char = string.sub(text, 1, 1)
@@ -117,17 +119,9 @@ end
 local function send_command_error(cn, error_message)
   
     local output_message = server.command_error_message
-    if not output_message then
-        output_message = ""
-    end
-
-    if error_message then
-        output_message = output_message .. ": " .. error_message .. "."
-    else
-        output_message = output_message .. "!"
-    end
+    local err = error_message or " unknown error"
     
-    server.player_msg(cn, output_message)
+    server.player_msg(cn, {"command_error_message", err})
 end
 
 local function exec_command(cn, text, force)
@@ -163,7 +157,7 @@ local function exec_command(cn, text, force)
     local command = player_commands[command_name]
     
     if not command then
-        server.player_msg(cn, server.command_not_found_message)
+        server.player_msg(cn, "command_not_found_message")
         return -1
     end
     
@@ -236,6 +230,10 @@ function is_player_command_enabled(command_name)
     local command = player_commands[command_name]
     return command and command.enabled and command.run
 end
+
+server.event_handler("all-module-loaded", function()
+  load_player_command_script_directories()
+end)
 
 server.event_handler("started", function()
     

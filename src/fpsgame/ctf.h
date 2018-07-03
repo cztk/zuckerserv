@@ -450,14 +450,16 @@ struct ctfclientmode : clientmode
                 if(fromclientnum == flags[i].rugby_clients[j].cn)
                 {
                    flags[i].rugby_clients[j].distance = ( distance > flags[i].rugby_clients[j].distance ) ? distance : flags[i].rugby_clients[j].distance;
+                   flags[i].rugby_clients[j].owntimems = flags[i].rugby_clients[j].owntimems + ( totalmillis - flags[i].rugby_clients[j].lastowntime );
+                   flags[i].rugby_clients[j].lastowntime = totalmillis;
+
                    if(flags[i].rugby_clients[j].passcount < INT_MAX)
                    {
                        ++flags[i].rugby_clients[j].passcount;
                    }
                 }
             }
-
-            dropflag(ci);
+//            dropflag(ci);
 
             ownflag(i, cito->clientnum, lastmillis);
 

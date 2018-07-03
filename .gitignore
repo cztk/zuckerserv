@@ -1,5 +1,5 @@
 core
-conf/server.conf
+conf/server.conf.lua
 bin/monitor
 bin/sauer_server
 bin/utils/keygen

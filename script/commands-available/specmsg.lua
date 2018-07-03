@@ -16,7 +16,7 @@ local run = function(cn, ...)
     end
 
     for client in server.gspectators() do
-        client:msg(string.format(server.specmsg_command_message, server.player_name(cn), cn, text))
+        client:msg("specmsg_command_message", {name = server.player_name(cn), cn = cn, msg = text})
     end
 end
 

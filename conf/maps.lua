@@ -77,17 +77,24 @@ server.big_capture_maps = {
 }
 
 server.ctf_maps = {
-    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus"
+    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus", "akroseum", "authentic",
+    "capture_night", "face-capture", "recovery", "desecration", "tempest", "valhalla", "urban_c", "garden", "arbana", "berlin_wall", "mach2",
+    "flagstone", "l_ctf", "mercury", "mill", "twinforts", "autumn",
+    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus", "akroseum", "authentic",
+    "capture_night", "face-capture", "recovery", "desecration", "tempest", "valhalla", "urban_c", "garden", "arbana", "berlin_wall", "mach2",
+    "flagstone", "l_ctf", "mercury", "mill", "twinforts"
 
 }
 
 server.small_ctf_maps = {
-    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus"
+    "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus", "arbana", "capture_night", "face-capture",
+    "recovery"
 
 }
 
 server.big_ctf_maps = {
-    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus"
+    "reissen", "forge", "dust2", "haste", "forgotten", "redemption", "alloy", "mercury", "bad_moon", "nucleus", "akroseum", "catch22", "core_refuge",
+    "desecration", "tempest", "valhalla", "urban_c"
 }
 
 server["coop edit_maps"] = server.ffa_maps

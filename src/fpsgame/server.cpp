@@ -756,6 +756,7 @@ namespace server
         int dist = distance(clients[b]->state.o, clients[a]->state.o)*1000;
         std::cerr<<"passflag distance"
                      <<d<<" , "
+                     <<dist<<" "
                      <<std::endl;
         ctfmode.pass_flag(a,b,dist);
         event_passflag(event_listeners(), std::make_tuple(a,b,dist));

@@ -1,7 +1,13 @@
 local MODULE_VARFILES_DIR = "./script/module/config"
+local modules_avail_dir = "./script/modules-available"
+local modules_enabled_dir = "./script/modules-enabled"
 
 local signal_loaded = server.create_event_signal("module-loaded")
 local signal_unloaded = server.create_event_signal("module-unloaded")
+
+local all_signal_loaded = server.create_event_signal("all-module-loaded")
+local all_signal_unloaded = server.create_event_signal("all-module-unloaded")
+
 
 local started = false
 local modules = {}
@@ -13,6 +19,7 @@ local function execute_module_script(filename, environment)
     
     local chunk, error_message = loadfile(filename)
     if not chunk then
+        server.log_error(string.format("Error while executing '%s': %s", filename, error_message))
         return false, error_message
     end
     
@@ -53,6 +60,7 @@ local function unload_all_modules()
             server.log_error(string.format("Error while unloading module '%s': %s", name, error_message))
         end
     end
+    all_signal_unloaded()
 end
 
 local function create_module_environment()
@@ -131,15 +139,16 @@ local function load_module(name)
     local timers = {}
     local event_unload_handlers = {}
     
-    local filename = find_script(name .. ".lua")
+    local filename = find_script(modules_avail_dir .. "/" .. name .. "/init.lua")
     if not filename then
         filename = find_script(name)
         if not filename then
-            error(string.format("module '%s' not found", name))
+            error(string.format("module '%s' not found. tried %s", name, filename))
         end
     end
     
     if loaded_scripts[filename] then
+        server.log_status(name .. " module is already a loaded script")
         return
     end
     
@@ -148,6 +157,7 @@ local function load_module(name)
     local success, control = execute_module_script(filename, environment)
     
     if not success then
+        server.log_status("error while loading module " .. name)
         cleanup_environment()
         server.log_error(control)
         return
@@ -164,19 +174,30 @@ local function load_module(name)
     
     signal_loaded(name, filename)
     
-    if server.uptime > 0 then
-        server.log_status("Loaded module " .. name)
+--    if server.uptime > 0 then
+        server.log("Loaded module " .. name)
+--    end
+end
+
+local function load_modules_enabled_dir()
+  local filesystem = require "filesystem"
+  for file_type, filename in filesystem.dir(modules_enabled_dir) do
+    if filename ~= "." and filename ~= ".." then
+      server.log_status("found modules-enabled/ " .. filename)
+      server.module(filename)
     end
+  end
 end
 
 local function load_modules_now()
-    
+    load_modules_enabled_dir()
+
     for _, name in ipairs(modules) do
         load_module(name)
     end
-    
+    all_signal_loaded()
+
     modules = {}
-    
     started = true
 end
 

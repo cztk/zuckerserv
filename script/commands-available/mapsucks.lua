@@ -15,7 +15,7 @@ local enabled = true
 local init = function()
     if(true == enabled and not server.mapsucks_vote) then
         server.log(string.format("WARN: command #mapsucks is enabled but mapsucks_vote module not loaded!"))
-        enabled = false
+--        enabled = false
     end
 end
 
@@ -25,7 +25,7 @@ local run = function(cn)
   elseif server.player_status_code(cn) ~= server.SPECTATOR then
     server.mapsucks_vote(cn)
   else
-    return false, server.mapbattle_cant_vote_message
+    server.player_msg(cn, "mapbattle_cant_vote")
   end
 end
 
