@@ -34,7 +34,7 @@
         * server.stats_overwrite_name_with_authname feature by Zombie
 ]]
 
-dofile("./script/module/stats/test_backend.lua")
+dofile("./script/modules-enabled/stats/test_backend.lua")
 
 local game = nil
 local players = nil

@@ -2,13 +2,13 @@ if server.use_server_map_rotation == 0 then
     return
 end
 
-dofile("script/modules-available/maprotation/supported_maps.lua")
-dofile("script/modules-available/maprotation/core.lua")
+dofile("script/modules-enabled/maprotation/supported_maps.lua")
+dofile("script/modules-enabled/maprotation/core.lua")
 
 local implementations = {
-    standard = "script/modules-available/maprotation/implementation/standard.lua",
-    random   = "script/modules-available/maprotation/implementation/random.lua",
-    size     = "script/modules-available/maprotation/implementation/size.lua"
+    standard = "script/modules-enabled/maprotation/implementation/standard.lua",
+    random   = "script/modules-enabled/maprotation/implementation/random.lua",
+    size     = "script/modules-enabled/maprotation/implementation/size.lua"
 }
 
 local implementation_script = implementations[server.map_rotation_type]

@@ -1,2 +1,2 @@
---dofile("./script/modules-available/auth/name.lua")
-dofile("./script/modules-available/auth/privileges.lua")
+--dofile("./script/modules-enabled/auth/name.lua")
+dofile("./script/modules-enabled/auth/privileges.lua")

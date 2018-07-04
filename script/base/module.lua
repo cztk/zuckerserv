@@ -139,6 +139,13 @@ local function load_module(name)
     local timers = {}
     local event_unload_handlers = {}
     
+
+    local globfname = find_script(modules_avail_dir .. "/" .. name .. "/globals.lua")
+    if globfname then
+      exec(modules_avail_dir .. "/" .. name .. "/globals.lua")
+    end
+
+
     local filename = find_script(modules_avail_dir .. "/" .. name .. "/init.lua")
     if not filename then
         filename = find_script(name)
@@ -232,20 +239,4 @@ server.event_handler("started", load_modules_now)
 server.event_handler("shutdown", unload_all_modules)
 
 -- Load module configuration variables
-local function load_module_vars(path)
-    
-    local filesystem = require "filesystem"
-    
-    for filetype, filename in filesystem.dir(path) do
-        
-        local fullfilename = path .. "/" .. filename
-        
-        if (filetype == filesystem.DIRECTORY) and (filename ~= "." and filename ~= "..") then
-            load_module_vars(fullfilename)
-        elseif (filetype == filesystem.FILE or filetype == filesystem.UNKNOWN) and filename:match("_vars.lua$") then
-            exec(fullfilename)
-        end
-    end
-end
-
-load_module_vars(MODULE_VARFILES_DIR)
+exec("./script/base/to_be_split_globals.lua")

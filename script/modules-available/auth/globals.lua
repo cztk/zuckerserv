@@ -1,0 +1,4 @@
+--master_domains []
+--global invmaster_domains= []
+--global admin_domains= []
+--global invadmin_domains= []

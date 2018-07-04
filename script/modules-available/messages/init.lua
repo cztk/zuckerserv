@@ -16,7 +16,7 @@ messages.languages = {
 }
 
 for country, language in pairs(messages.languages) do
-	messages[language] = require("script/modules-available/messages/languages/" .. language)
+	messages[language] = require("script/modules-enabled/messages/languages/" .. language)
 --	require("languages/" .. language)
 end
 

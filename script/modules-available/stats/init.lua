@@ -9,11 +9,11 @@ local query_backend = nil
 
 if using_sqlite then    
        
-    commit_backends.sqlite3 = dofile("./script/modules-available/stats/sqlite3.lua")
+    commit_backends.sqlite3 = dofile("./script/modules-enabled/stats/sqlite3.lua")
         
     local ret = catch_error(commit_backends.sqlite3.open, {
         filename = server.stats_db_filename, 
-        schemafile = "./script/modules-available/stats/schema.sql",
+        schemafile = "./script/modules-enabled/stats/schema.sql",
         exclusive_locking = server.stats_sqlite_exclusive_locking,
         synchronous = server.stats_sqlite_synchronous
     })
@@ -22,12 +22,12 @@ if using_sqlite then
 end
 
 if using_json then
-    commit_backends.json = catch_error(loadfile("./script/modules-available/stats/json.lua"))
+    commit_backends.json = catch_error(loadfile("./script/modules-enabled/stats/json.lua"))
 end
 
 if using_mysql then
     
-    commit_backends.mysql = dofile("./script/modules-available/stats/mysql.lua")
+    commit_backends.mysql = dofile("./script/modules-enabled/stats/mysql.lua")
     
     local ret = catch_error(commit_backends.mysql.open, {
         hostname    = server.stats_mysql_hostname,
@@ -35,8 +35,8 @@ if using_mysql then
         username    = server.stats_mysql_username,
         password    = server.stats_mysql_password,
         database    = server.stats_mysql_database,
-        schema      = "./script/modules-available/stats/mysql_schema.sql",
-        triggers    = "./script/modules-available/stats/mysql_triggers.sql",
+        schema      = "./script/modules-enabled/stats/mysql_schema.sql",
+        triggers    = "./script/modules-enabled/stats/mysql_triggers.sql",
         install     = server.stats_mysql_install == "true",
         servername  = server.stats_servername
     })
@@ -46,7 +46,7 @@ end
 
 if using_psql then
 
-    commit_backends.psql = dofile("./script/modules-available/stats/psql.lua")
+    commit_backends.psql = dofile("./script/modules-enabled/stats/psql.lua")
 
     if not catch_error(commit_backends.psql.open, {
         hostname    = server.stats_psql_hostname,
@@ -54,8 +54,8 @@ if using_psql then
         username    = server.stats_psql_username,
         password    = server.stats_psql_password,
         database    = server.stats_psql_database,
-        schema      = "./script/modules-available/stats/postgres_schema.sql",
-        triggers    = "./script/modules-available/stats/postgres_triggers.sql",
+        schema      = "./script/modules-enabled/stats/postgres_schema.sql",
+        triggers    = "./script/modules-enabled/stats/postgres_triggers.sql",
         install     = server.stats_psql_install == "true",
         servername  = server.stats_servername
     })
@@ -86,13 +86,13 @@ else
     end
 end
 
-dofile("./script/modules-available/stats/core.lua").initialize(commit_backends, query_backend, {
+dofile("./script/modules-enabled/stats/core.lua").initialize(commit_backends, query_backend, {
     using_auth = server.stats_use_auth,
     auth_domain = server.stats_auth_domain,
     gamemodes = list_to_set(server.stats_enabled_gamemodes)
 })
 
 -- Load and register the #stats player command
-local stats_command = dofile("./script/modules-available/stats/playercmd.lua")
+local stats_command = dofile("./script/modules-enabled/stats/playercmd.lua")
 stats_command.initialize(query_backend)
 
