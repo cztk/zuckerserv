@@ -101,9 +101,10 @@ local function load_player_command_script_directories()
 
   for file_type, filename in filesystem.dir(dir_filename) do
    if filename ~= "." and filename ~= ".." then
-    if file_type == filesystem.FILE and string.match(filename, ".lua$") then
-      local command_name = string.sub(filename, 1, #filename - 4)
-      filename = dir_filename .. "/" .. filename
+    local cmdfname = find_script(dir_filename .. "/" ..filename .. "/command.lua")
+    if cmdfname then
+      local command_name = filename
+      filename = dir_filename .. "/" .. filename .. "/command.lua"
       load_player_command_script(filename, command_name)
     end
    end

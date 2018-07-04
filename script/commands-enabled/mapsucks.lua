@@ -1,1 +1,0 @@
-../commands-available/mapsucks.lua

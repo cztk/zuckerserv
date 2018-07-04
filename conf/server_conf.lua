@@ -64,7 +64,7 @@ server.admin_domains = {}            -- Domain for admin
 server.invadmin_domains = {"tbmc"}         -- Same
 server.auto_invadmin_domains = {"tbmc"}    -- Same, if you want to be auto-invadmin at connection
 
-server.master_domains = {"tbmc:master", "sauerstats:trusted", "MASTER"}          -- Domain for master
+server.master_domains = {"MASTER"}          -- Domain for master
 server.invmaster_domains = {"tbmc:master", "sauerstats:trusted"}       -- Same
 server.auto_invmaster_domains = {"tbmc:master", "sauerstats:trusted"}  -- Same, if you want to be auto-invadmin at connection
 
