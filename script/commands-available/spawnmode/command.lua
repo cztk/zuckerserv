@@ -5,8 +5,8 @@
 
 local permission = 1
 local enabled = true
-local help ="<option> can be health,armour,armourtype,quadmillis,gunselect,hboostval,load,save,enable,disable,clear. <gunnum> number 0-9"
-local usage = "<option> <value> | gun <gunnum> <numammo>"
+local help ="<option> can be health <number>,armour <number>,armourtype <number[0..2]>,quadmillis <number>,gunselect <number[0..9]>,hboostval <number>,load <templatename>,save <templatename>,enable,disable,clear."
+local usage = "<option> [<value>] | gun <gunnum[0..9]> <ammo>"
 
 local spawn_mode_state,spawn_mode_guns
 
