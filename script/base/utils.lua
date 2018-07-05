@@ -1,14 +1,24 @@
 local _ = require "underscore"
 local crypto = require "crypto"
 
+--! @brief the mins function calculates <value> in minutes to milliseconds
+--! @param value integer
+--! @return return integer
 function server.mins(value)
     return value * 1000 * 60
 end
 
+--! @brief the secs function calculates <value> in seconds to milliseconds
+--! @param value integer
+--! @return return integer
 function server.secs(value)
     return value * 1000
 end
 
+--! @brief the coloured_text function returns a color formatted text snippet or starting code block if no text given. valid codes are 0-7,green,blue,yellow,red,grey,magenta,orange,white
+--! @param colour_code integer
+--! @param text string optional
+--! @return return string
 function coloured_text(colour_code, text)
     if text then
         return "\fs\f" .. colour_code .. text .. "\fr"
