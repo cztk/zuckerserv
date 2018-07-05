@@ -373,7 +373,7 @@ namespace server {
 // inherited by fpsent and server clients
 struct fpsstate
 {
-    int health, maxhealth;
+    int health, maxhealth, boosts=0;
     int armour, armourtype;
     int quadmillis;
     int gunselect, gunwait;
@@ -424,6 +424,7 @@ struct fpsstate
         {
             case I_BOOST:
                 maxhealth = min(maxhealth+is.add, is.max);
+                boosts++;
             case I_HEALTH: // boost also adds to health
                 health = min(health+is.add, maxhealth);
                 break;
@@ -455,7 +456,7 @@ struct fpsstate
 
     void spawn_mode_hack(int gamemode)
     {
-        health      = server::spawn_mode_val.health;
+        health      = server::spawn_mode_val.health + ( boosts * server::spawn_mode_val.hboostval );
         armour      = server::spawn_mode_val.armour;
         armourtype  = server::spawn_mode_val.armourtype;
         quadmillis  = server::spawn_mode_val.quadmillis;

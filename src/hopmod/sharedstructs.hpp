@@ -20,6 +20,7 @@ struct spawn_mode_struct {
  int armourtype;
  int quadmillis;
  int gunselect;
+ int hboostval;
  std::array<int, 12> guns{ {0,0,0,0,0,0,0,0,0,0,0,0} };
 };
 #endif 
