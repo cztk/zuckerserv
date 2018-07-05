@@ -56,8 +56,11 @@ extern bool isthirdperson();
 extern bool settexture(const char *name, int clamp = 0);
 
 // octaedit
-
+#if PROTOCOL_VERSION < 260
 enum { EDIT_FACE = 0, EDIT_TEX, EDIT_MAT, EDIT_FLIP, EDIT_COPY, EDIT_PASTE, EDIT_ROTATE, EDIT_REPLACE, EDIT_DELCUBE, EDIT_REMIP };
+#else
+enum { EDIT_FACE = 0, EDIT_TEX, EDIT_MAT, EDIT_FLIP, EDIT_COPY, EDIT_PASTE, EDIT_ROTATE, EDIT_REPLACE, EDIT_DELCUBE, EDIT_REMIP, EDIT_VSLOT, EDIT_UNDO, EDIT_REDO };
+#endif
 
 struct selinfo
 {
@@ -88,6 +91,19 @@ struct editinfo;
 extern editinfo *localedit;
 
 extern bool editmode;
+
+#if PROTOCOL_VERSION > 260
+extern int shouldpacktex(int index);
+extern bool packundo(int op, int &inlen, uchar *&outbuf, int &outlen);
+extern bool unpackundo(const uchar *inbuf, int inlen, int outlen);
+extern bool mpedittex(int tex, int allfaces, selinfo &sel, ucharbuf &buf);
+extern bool mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, ucharbuf &buf);
+extern bool mpeditvslot(int delta, int allfaces, selinfo &sel, ucharbuf &buf);
+// texture
+struct VSlot;
+extern void packvslot(vector<uchar> &buf, int index);
+extern void packvslot(vector<uchar> &buf, const VSlot *vs);
+#endif
 
 extern bool packeditinfo(editinfo *e, int &inlen, uchar *&outbuf, int &outlen);
 extern bool unpackeditinfo(editinfo *&e, const uchar *inbuf, int inlen, int outlen);
@@ -341,6 +357,7 @@ extern void adddecal(int type, const vec &center, const vec &surface, float radi
 // worldio
 extern bool load_world(const char *mname, const char *cname = NULL);
 extern bool save_world(const char *mname, bool nolms = false);
+extern void fixmapname(char *name);
 extern void getmapfilenames(const char *fname, const char *cname, char *pakname, char *mapname, char *cfgname);
 extern uint getmapcrc();
 extern void clearmapcrc();

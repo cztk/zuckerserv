@@ -948,7 +948,7 @@ void anti_cheat_parsepacket(int type, clientinfo *ci, clientinfo *cq, packetbuf 
 
         case N_EDITENT:
         {
-          int i = getint(p);
+          getint(p);
           loopk(3) getint(p);
           int type = getint(p);
           loopk(5) getint(p);

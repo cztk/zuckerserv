@@ -3,7 +3,6 @@
 
 // the interface the engine uses to run the gameplay module
 
-#if 0
 namespace entities
 {
     extern void editent(int i, bool local);
@@ -25,11 +24,11 @@ namespace entities
     extern const char *entmodel(const entity &e);
     extern void animatemapmodel(const extentity &e, int &anim, int &basetime);
 }
-#endif
 
 namespace game
 {
     extern void parseoptions(vector<const char *> &args);
+    extern const char *gameident();
 
 #if 0
     extern void gamedisconnect(bool cleanup);
@@ -47,7 +46,6 @@ namespace game
     extern int scaletime(int t);
     extern bool allowmouselook();
 
-    extern const char *gameident();
     extern const char *savedconfig();
     extern const char *restoreconfig();
     extern const char *defaultconfig();
@@ -59,7 +57,11 @@ namespace game
     extern void initclient();
     extern void physicstrigger(physent *d, bool local, int floorlevel, int waterlevel, int material = 0);
     extern void bounced(physent *d, const vec &surface);
+    #if PROTOCOL_VERSION < 260
     extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0);
+    #else
+    extern void edittrigger(const selinfo &sel, int op, int arg1 = 0, int arg2 = 0, int arg3 = 0, const VSlot *vs = NULL);
+    #endif
     extern void vartrigger(ident *id);
     extern void dynentcollide(physent *d, physent *o, const vec &dir);
     extern const char *getclientmap();
