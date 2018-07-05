@@ -565,6 +565,8 @@ namespace server
     int hide_and_seek = 0; //MOD
     int rugby_enabled = 0; //RUGBY MOD
     int rugby_mode    = 0; //RUGBY MOD
+    int spawn_mode    = 0; //spawnmode hack
+    spawn_mode_struct spawn_mode_val;
     
     vector<uint> allowedips;
     

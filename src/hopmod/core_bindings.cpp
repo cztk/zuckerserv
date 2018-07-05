@@ -52,6 +52,9 @@ void bind_core_functions(lua_State * L, int T)
     bind_function(L, T, "passflag", server::passflag); // RUGBY MOD
     bind_function(L, T, "has_flag", server::hasFlag); // RUGBY MOD but useful anyway
     bind_function(L, T, "player_add_flagcount", server::player_add_flagcount); // RUGBY MOD
+    bind_function(L, T, "set_spawn_state", server::set_spawn_state);
+    bind_function(L, T, "set_spawn_gun", server::set_spawn_gun);
+    bind_function(L, T, "player_add_flagcount", server::player_add_flagcount); // RUGBY MOD
     bind_function(L, T, "player_msg", server::player_msg);
     bind_function(L, T, "player_name", server::player_name);
     bind_function(L, T, "player_rename", server::player_rename);
@@ -445,6 +448,7 @@ void bind_core_variables(lua_State * L, int T)
    // RUGBY MOD
     bind_var(L, T, "rugby_enabled", server::rugby_enabled);
     bind_var(L, T, "rugby_mode", server::rugby_mode);
+    bind_var(L, T, "spawn_mode", server::spawn_mode);
  
     bind_ro_var(L, T, "tx_bytes", tx_bytes);
     bind_ro_var(L, T, "rx_bytes", rx_bytes);

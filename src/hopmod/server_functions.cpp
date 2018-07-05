@@ -49,6 +49,20 @@ void player_add_flagcount(int cn, int i)
 
 // RUGBY MOD END
 
+void set_spawn_state(int health, int armour,int armourtype,int quadmillis,int gunselect)
+{
+  spawn_mode_val.health=health;
+  spawn_mode_val.armour=armour;
+  spawn_mode_val.armourtype=armourtype;
+  spawn_mode_val.quadmillis=quadmillis;
+  spawn_mode_val.gunselect=gunselect;
+}
+
+void set_spawn_gun(int gun, int ammo)
+{
+  spawn_mode_val.guns[gun]=ammo;
+}
+
 
 string ext_admin_pass = "";
 

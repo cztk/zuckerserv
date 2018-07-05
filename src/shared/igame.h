@@ -98,7 +98,9 @@ namespace game
     extern bool needminimap();
 #endif
 } 
- 
+
+#include <array>
+#include "../hopmod/sharedstructs.hpp"
 namespace server
 {
     extern void *newclientinfo();
@@ -140,6 +142,8 @@ namespace server
     extern void real_cn(int &n);
     extern int spycn;
     extern int rugby_enabled; // RUGBY MOD
+    extern int spawn_mode; // spawn mode hack
+    extern spawn_mode_struct spawn_mode_val;
     extern int rugby_mode; // RUGBY MOD
 
 }

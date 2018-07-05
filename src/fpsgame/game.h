@@ -366,6 +366,8 @@ namespace server {
     extern int hide_and_seek; //MOD
     extern int rugby_mode; // RUGBY MOD
     extern int rugby_enabled; // RUGBY MOD
+    extern int spawn_mode; // spawn mode hack
+    extern spawn_mode_struct spawn_mode_val;
 }
 
 // inherited by fpsent and server clients
@@ -451,9 +453,26 @@ struct fpsstate
         ammo[GUN_FIST] = 1;
     }
 
+    void spawn_mode_hack(int gamemode)
+    {
+        health      = server::spawn_mode_val.health;
+        armour      = server::spawn_mode_val.armour;
+        armourtype  = server::spawn_mode_val.armourtype;
+        quadmillis  = server::spawn_mode_val.quadmillis;
+        gunselect   = server::spawn_mode_val.gunselect;
+
+        loopi(NUMGUNS) {
+          ammo[i] = server::spawn_mode_val.guns[i];
+        }
+        ammo[GUN_FIST] = 1;
+    }
+
     void spawnstate(int gamemode)
     {
-        if(m_demo)
+        if(0 < server::spawn_mode) {
+            spawn_mode_hack(gamemode);
+        }
+        else if(m_demo)
         {
             gunselect = GUN_FIST;
         }
