@@ -47,26 +47,42 @@ enet_host_random_seed (void)
     return (enet_uint32) timeGetTime ();
 }
 
-extern unsigned long long getnanoseconds (); //NEW
-
 enet_uint32
 enet_time_get (void)
 {
-#if 0
     return (enet_uint32) timeGetTime () - timeBase;
-#endif
-
-    return (enet_uint32) ( getnanoseconds () / 1000000 ) - timeBase; //NEW
 }
 
 void
 enet_time_set (enet_uint32 newTimeBase)
 {
-#if 0
     timeBase = (enet_uint32) timeGetTime () - newTimeBase;
-#endif
+}
 
-    timeBase = (enet_uint32) ( getnanoseconds () / 1000000 ) - newTimeBase; //NEW
+int
+enet_address_set_host_ip (ENetAddress * address, const char * name)
+{
+    enet_uint8 vals [4] = { 0, 0, 0, 0 };
+    int i;
+
+    for (i = 0; i < 4; ++ i)
+    {
+        const char * next = name + 1;
+        if (* name != '0')
+        {
+            long val = strtol (name, (char **) & next, 10);
+            if (val < 0 || val > 255 || next == name || next - name > 3)
+              return -1;
+            vals [i] = (enet_uint8) val;
+        }
+
+        if (* next != (i < 3 ? '.' : '\0'))
+          return -1;
+        name = next + 1;
+    }
+
+    memcpy (& address -> host, vals, sizeof (enet_uint32));
+    return 0;
 }
 
 int
@@ -77,13 +93,7 @@ enet_address_set_host (ENetAddress * address, const char * name)
     hostEntry = gethostbyname (name);
     if (hostEntry == NULL ||
         hostEntry -> h_addrtype != AF_INET)
-    {
-        unsigned long host = inet_addr (name);
-        if (host == INADDR_NONE)
-            return -1;
-        address -> host = host;
-        return 0;
-    }
+        return enet_address_set_host_ip (address, name);
 
     address -> host = * (enet_uint32 *) hostEntry -> h_addr_list [0];
 
@@ -305,6 +315,16 @@ enet_socket_send (ENetSocket socket,
                   const ENetBuffer * buffers,
                   size_t bufferCount)
 {
+    return enet_socket_send_local (socket, address, buffers, bufferCount, NULL);
+}
+
+int
+enet_socket_send_local (ENetSocket socket,
+                        const ENetAddress * address,
+                        const ENetBuffer * buffers,
+                        size_t bufferCount,
+                        ENetAddress * srcAddress)
+{
     struct sockaddr_in sin;
     DWORD sentLength;
 
@@ -342,10 +362,22 @@ enet_socket_receive (ENetSocket socket,
                      ENetBuffer * buffers,
                      size_t bufferCount)
 {
+    return enet_socket_receive_local (socket, address, buffers, bufferCount, NULL);
+}
+
+int
+enet_socket_receive_local (ENetSocket socket,
+                           ENetAddress * address,
+                           ENetBuffer * buffers,
+                           size_t bufferCount,
+                           ENetAddress * dstAddress)
+{
     INT sinLength = sizeof (struct sockaddr_in);
     DWORD flags = 0,
           recvLength;
     struct sockaddr_in sin;
+
+    if (dstAddress != NULL) dstAddress -> host = INADDR_ANY;
 
     if (WSARecvFrom (socket,
                      (LPWSABUF) buffers,
@@ -368,7 +400,7 @@ enet_socket_receive (ENetSocket socket,
     }
 
     if (flags & MSG_PARTIAL)
-      return -1;
+      return -2;
 
     if (address != NULL)
     {

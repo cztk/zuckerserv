@@ -81,34 +81,37 @@ enet_host_random_seed (void)
     return (enet_uint32) time (NULL);
 }
 
-extern unsigned long long getnanoseconds (); //NEW
-
 enet_uint32
 enet_time_get (void)
 {
-#if 0
     struct timeval timeVal;
 
     gettimeofday (& timeVal, NULL);
 
     return timeVal.tv_sec * 1000 + timeVal.tv_usec / 1000 - timeBase;
-#endif
-
-    return (enet_uint32) ( getnanoseconds () / 1000000 ) - timeBase; //NEW
 }
 
 void
 enet_time_set (enet_uint32 newTimeBase)
 {
-#if 0
     struct timeval timeVal;
 
     gettimeofday (& timeVal, NULL);
     
     timeBase = timeVal.tv_sec * 1000 + timeVal.tv_usec / 1000 - newTimeBase;
-#endif
+}
 
-    timeBase = (enet_uint32) ( getnanoseconds () / 1000000 ) - newTimeBase; //NEW
+int
+enet_address_set_host_ip (ENetAddress * address, const char * name)
+{
+#ifdef HAS_INET_PTON
+    if (! inet_pton (AF_INET, name, & address -> host))
+#else
+    if (! inet_aton (name, (struct in_addr *) & address -> host))
+#endif
+        return -1;
+
+    return 0;
 }
 
 int
@@ -163,14 +166,7 @@ enet_address_set_host (ENetAddress * address, const char * name)
     }
 #endif
 
-#ifdef HAS_INET_PTON
-    if (! inet_pton (AF_INET, name, & address -> host))
-#else
-    if (! inet_aton (name, (struct in_addr *) & address -> host))
-#endif
-        return -1;
-
-    return 0;
+    return enet_address_set_host_ip (address, name);
 }
 
 int
@@ -214,7 +210,7 @@ enet_address_get_host (const ENetAddress * address, char * name, size_t nameLeng
         return 0;
     }
     if (err != EAI_NONAME)
-      return 0;
+      return -1;
 #else
     struct in_addr in;
     struct hostent * hostEntry = NULL;
@@ -298,7 +294,7 @@ enet_socket_listen (ENetSocket socket, int backlog)
 ENetSocket
 enet_socket_create (ENetSocketType type)
 {
-    return socket (PF_INET, type == ENET_SOCKET_TYPE_DATAGRAM ? SOCK_DGRAM : SOCK_STREAM, 0);
+    return socket (PF_INET, (type == ENET_SOCKET_TYPE_DATAGRAM ? SOCK_DGRAM : SOCK_STREAM) | SOCK_CLOEXEC, 0);
 }
 
 int
@@ -351,6 +347,10 @@ enet_socket_set_option (ENetSocket socket, ENetSocketOption option, int value)
 
         case ENET_SOCKOPT_NODELAY:
             result = setsockopt (socket, IPPROTO_TCP, TCP_NODELAY, (char *) & value, sizeof (int));
+            break;
+
+        case ENET_SOCKOPT_PKTINFO:
+            result = setsockopt (socket, IPPROTO_IP, IP_PKTINFO, (char *) & value, sizeof (int));
             break;
 
         default:
@@ -438,9 +438,20 @@ enet_socket_send (ENetSocket socket,
                   const ENetBuffer * buffers,
                   size_t bufferCount)
 {
+    return enet_socket_send_local (socket, address, buffers, bufferCount, NULL);
+}
+
+int
+enet_socket_send_local (ENetSocket socket,
+                        const ENetAddress * address,
+                        const ENetBuffer * buffers,
+                        size_t bufferCount,
+                        ENetAddress * srcAddress)
+{
     struct msghdr msgHdr;
     struct sockaddr_in sin;
     int sentLength;
+    ENetCmsgPktinfo control;
 
     memset (& msgHdr, 0, sizeof (struct msghdr));
 
@@ -458,6 +469,9 @@ enet_socket_send (ENetSocket socket,
 
     msgHdr.msg_iov = (struct iovec *) buffers;
     msgHdr.msg_iovlen = bufferCount;
+
+    if (srcAddress != NULL)
+        enet_pktinfo_prepare_send (& msgHdr, & control, srcAddress -> host);
 
     sentLength = sendmsg (socket, & msgHdr, MSG_NOSIGNAL);
     
@@ -478,9 +492,20 @@ enet_socket_receive (ENetSocket socket,
                      ENetBuffer * buffers,
                      size_t bufferCount)
 {
+    return enet_socket_receive_local (socket, address, buffers, bufferCount, NULL);
+}
+
+int
+enet_socket_receive_local (ENetSocket socket,
+                           ENetAddress * address,
+                           ENetBuffer * buffers,
+                           size_t bufferCount,
+                           ENetAddress * dstAddress)
+{
     struct msghdr msgHdr;
     struct sockaddr_in sin;
     int recvLength;
+    ENetCmsgPktinfo control;
 
     memset (& msgHdr, 0, sizeof (struct msghdr));
 
@@ -492,6 +517,9 @@ enet_socket_receive (ENetSocket socket,
 
     msgHdr.msg_iov = (struct iovec *) buffers;
     msgHdr.msg_iovlen = bufferCount;
+
+    if (dstAddress != NULL)
+        enet_pktinfo_prepare_receive (& msgHdr, & control);
 
     recvLength = recvmsg (socket, & msgHdr, MSG_NOSIGNAL);
 
@@ -505,7 +533,7 @@ enet_socket_receive (ENetSocket socket,
 
 #ifdef HAS_MSGHDR_FLAGS
     if (msgHdr.msg_flags & MSG_TRUNC)
-      return -1;
+      return -2;
 #endif
 
     if (address != NULL)
@@ -513,6 +541,9 @@ enet_socket_receive (ENetSocket socket,
         address -> host = (enet_uint32) sin.sin_addr.s_addr;
         address -> port = ENET_NET_TO_HOST_16 (sin.sin_port);
     }
+
+    if (dstAddress != NULL)
+        dstAddress -> host = enet_pktinfo_receive (& msgHdr, & control);
 
     return recvLength;
 }

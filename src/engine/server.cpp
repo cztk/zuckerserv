@@ -1,6 +1,6 @@
 // server.cpp: little more than enhanced multicaster
 // runs dedicated or as client coroutine
-
+#include <random>
 #include "cube.h"
 #include <signal.h>
 #include <asio.hpp>
@@ -611,6 +611,19 @@ bool servererror(bool dedicated, const char *desc)
     return false;
 }
 
+int easyEnet_host_connect_cookies(ENetHost* host, int connectingPeerTimeout, unsigned char windowRatio)
+{
+    static ENetRandom random{
+      0, [](void*)
+      {
+        static std::mt19937 generator((std::random_device())());
+        return (enet_uint32)generator();
+      },
+      0
+    };
+    return connectingPeerTimeout >= 0 ? enet_host_connect_cookies(host, &random, connectingPeerTimeout, windowRatio) : enet_host_connect_cookies(host, 0, 0, 0);
+}
+
 bool setuplistenserver(bool dedicated)
 {
     ENetAddress address = { ENET_HOST_ANY, serverport <= 0 ? static_cast<enet_uint16>(server::serverport()) : static_cast<enet_uint16>(serverport) };
@@ -626,9 +639,30 @@ bool setuplistenserver(bool dedicated)
     }
     else copystring(serverip,"0.0.0.0");
 
-    serverhost = enet_host_create(&address, MAXCLIENTS, server::numchannels(), 0, uprate);
-    if(!serverhost) return servererror(dedicated, "could not create server host");
+
+
+    serverhost = enet_host_create(&address, ENET_PROTOCOL_MAXIMUM_PEER_ID, server::numchannels(), 0, uprate);
+    if(!serverhost)
+    {
+        return servererror(dedicated, "could not create server host");
+    }
     serverhost->duplicatePeers = 10;
+
+    if (0 != easyEnet_host_connect_cookies(serverhost, 500, 0))
+    {
+        return servererror(dedicated, "could not enable cookies");
+    }
+
+    if (enet_socket_set_option(serverhost->socket, ENET_SOCKOPT_RCVBUF, 5000000) == -1)
+    {
+        std::cout<<"Cannot set receive buffer size"<<std::endl;
+    }
+
+    if (enet_socket_set_option(serverhost->socket, ENET_SOCKOPT_SNDBUF, 5000000) == -1)
+    {
+        std::cout<<"Cannot set send buffer size"<<std::endl;
+    }
+
     serverhost->intercept = check_net_bans;
     const char * _serverip = serverip[0] == '\0' ? "0.0.0.0" : serverip;
     std::cout<<"Game server socket listening on UDP "<<_serverip<<":"<<serverport<<std::endl;
