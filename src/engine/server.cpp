@@ -227,7 +227,7 @@ ENetPacket *sendf(int cn, int chan, const char *format, ...)
     ENetPacket *packet = p.finalize();
     sendpacket(cn, chan, packet, exclude);
     demooverride = 0;
-    return packet->referenceCount > 0 ? packet : NULL;
+    return packet->referenceCount > 1 ? packet : NULL;
 }
 
 ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
@@ -267,7 +267,7 @@ ENetPacket *sendfile(int cn, int chan, stream *file, const char *format, ...)
 #ifndef STANDALONE
     else sendclientpacket(packet, chan);
 #endif
-    return packet->referenceCount > 0 ? packet : NULL;
+    return packet->referenceCount > 1 ? packet : NULL;
 }
 
 void delclient(client *c);
