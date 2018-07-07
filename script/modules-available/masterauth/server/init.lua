@@ -27,6 +27,5 @@ exec("script/base/logging_base.lua")
 exec("script/base/utils.lua")
 exec("script/base/auth/server/core.lua")
 exec("script/base/auth/server/db/init.lua")
-exec("base/auth/server/web/init.lua")
 
 exec_if_found("conf/authserver_conf.lua")

@@ -91,7 +91,6 @@ install(FILES
     DESTINATION ${PROJECT_SOURCE_DIR}/script/package/luatz)
 
 
-add_subdirectory(fungu)
 add_subdirectory(lsqlite3)
 add_subdirectory(hopmod/standalone/luapp)
 add_subdirectory(luasql)
@@ -124,7 +123,6 @@ include_directories(
     ${ENET_INCLUDE_DIRS}
     ${LUA_INCLUDE_DIRS}
     ${ASIO_INCLUDE_DIRS}
-    ${FUNGU_INCLUDE_DIRS}
     ${OPENSSL_INCLUDE_DIR}
     ${MMDB_INCLUDE_DIRS})
 
@@ -183,8 +181,7 @@ set(LUA_MODULES_SOURCES
     hopmod/lua/modules/net/tcp_acceptor.cpp
     hopmod/lua/modules/net/resolver.cpp
     ${LUA_NET_SSL_SOURCES}
-    hopmod/httpserver/filesystem_resource.cpp
-    hopmod/httpserver/lua_module.cpp )
+    )
 
 add_library(lua_modules STATIC ${LUA_MODULES_SOURCES})
 
@@ -196,8 +193,6 @@ target_link_libraries(lua_modules
     sauertools
     ${LUA_LIBRARY}
     ${MMDB_LIBRARY}
-    ${FUNGU_STRING_LIBRARY}
-    ${FUNGU_HTTP_LIBRARY}
     ${OPENSSL_LIBRARIES})
 
 
