@@ -2579,7 +2579,7 @@ namespace server
         {
             disc_reason_msg = (ci->disconnect_reason.length() ? ci->disconnect_reason.c_str() : disconnect_reason(reason));
             convert2cube disc_reason_msg_cubeenc(disc_reason_msg);
-            defformatstring(discmsg, "client (%s) disconnected because: %s", ci->hostname(), disc_reason_msg_cubeenc.str());
+            defformatstring(discmsg, "client (%s) disconnected because: %s", ci->name(), disc_reason_msg_cubeenc.str());
             printf("%s\n", discmsg);
             if (!ci->spy)
             {
@@ -2595,7 +2595,7 @@ namespace server
         }
         else
         {
-            defformatstring(discmsg, "disconnected client (%s)", ci->hostname());
+            defformatstring(discmsg, "disconnected client (%s)", ci->name());
             puts(discmsg);
         }
         
