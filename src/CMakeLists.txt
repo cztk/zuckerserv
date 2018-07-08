@@ -126,7 +126,7 @@ include_directories(
     ${OPENSSL_INCLUDE_DIR}
     ${MMDB_INCLUDE_DIRS})
 
-add_definitions(-fsigned-char -DSTANDALONE -DREVISION=$ENV{REVISION} -DASIO_STANDALONE)
+add_definitions( -fsigned-char -DSTANDALONE -DREVISION=$ENV{REVISION} -DASIO_STANDALONE)
 
 
 if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")

@@ -152,6 +152,7 @@ void *getclientinfo(int i) { return !clients.inrange(i) || clients[i]->type==ST_
 ENetPeer *getclientpeer(int i) { return clients.inrange(i) && clients[i]->type==ST_TCPIP ? clients[i]->peer : NULL; }
 int getnumclients()        { return clients.length(); }
 uint getclientip(int n)    { return clients.inrange(n) && clients[n]->type==ST_TCPIP ? clients[n]->peer->address.host : 0; }
+const char *getclienthostname(int i) { return !clients.inrange(i) || clients[i]->type==ST_EMPTY ? NULL : clients[i]->hostname; }
 
 static int demooverride = 0;
 
@@ -698,6 +699,11 @@ bool setuplistenserver(bool dedicated)
     return true;
 }
 
+static void hupuser_action_hdl(int sig, siginfo_t *siginfo, void *context)
+{
+	//printf ("Sending PID: %ld, UID: %ld\n",	(long)siginfo->si_pid, (long)siginfo->si_uid);
+}
+
 void initserver(bool listen, bool dedicated)
 {
     startup = getnanoseconds();
@@ -707,6 +713,16 @@ void initserver(bool listen, bool dedicated)
     terminate_action.sa_flags = 0;
     sigaction(SIGINT, &terminate_action, NULL);
     sigaction(SIGTERM, &terminate_action, NULL);
+
+    struct sigaction hupuser_action;
+    sigemptyset(&hupuser_action.sa_mask);
+    
+    hupuser_action.sa_sigaction = &hupuser_action_hdl;
+    hupuser_action.sa_flags = SA_SIGINFO;
+    sigaction(SIGHUP, &hupuser_action, NULL);
+    sigaction(SIGUSR1, &hupuser_action, NULL);
+    sigaction(SIGUSR2, &hupuser_action, NULL);    
+
 
     server::serverinit();
 
