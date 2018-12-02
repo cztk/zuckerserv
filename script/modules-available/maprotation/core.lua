@@ -108,9 +108,10 @@ server.event_handler("setnextgame", function()
     if not (gamemode and map) then
         return
     end
-    
-    server.next_mode = gamemode
-    server.next_map = map
+    if not mapbattle then
+        server.next_mode = gamemode
+        server.next_map = map
+    end
      
     selection_index = selection_index + 1
 end)
