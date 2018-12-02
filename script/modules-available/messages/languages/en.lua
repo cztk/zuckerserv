@@ -118,8 +118,8 @@ help_command = "#%{command_name} %{help_parameters}: %{help_message}",
 
 rugby_command_disable = "%{blue}%{name} %{red}disabled %{white}rugby mode!",
 rugby_command_enable = "%{blue}%{name} %{green}enabled %{white}rugby mode!",
-rugby_command_enable_mig = "%{blue}%{name} %{green}enabled %{white}rugby - %{orange}migration/training/withdrawal/weaning %{white}mode!",
-rugby_command_enable_credit = "%{blue}%{name} %{green}enabled %{white}rugby mode %{orange}+1 flagscore %{white}for all flagholders!",
+rugby_command_enable_mig = "%{blue}%{name} %{green}enabled %{white}rugby - %{orange}migration/training/withdrawal/weaning %{white}mode! Use %{orange}%{weapons} %{white} to pass!",
+rugby_command_enable_credit = "%{blue}%{name} %{green}enabled %{white}rugby mode %{orange}+1 flagscore %{white}for all flagholders! Use %{orange}%{weapons} %{white} to pass!",
 rugby_command_enable_limited = "%{blue}%{name} %{green}enabled %{white}rugby with %{orange}%{weapons} %{white}passing only mode! Use #rugby to display info again",
 rugby_command_enable_limited_credit = "%{blue}%{name} %{green}enabled %{white}rugby with %{orange}%{weapons} %{white}passing only mode %{orange}+1 flagscore %{white}for all flagholders! Use %{green}#rugby to display info again",
 

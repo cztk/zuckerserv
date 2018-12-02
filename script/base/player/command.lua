@@ -85,6 +85,8 @@ local function load_player_command_script(filename, name)
         server.log_error(string.format("Expected player command script '%s' to return a function or table value", filename))
         return
     end
+
+    command.permission = cmd_perm_overwrites[name] or command.permission
     
     if command.init then
         command.init(name)

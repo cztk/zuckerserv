@@ -8,6 +8,9 @@ mapbattle.delay = 1000 -- Time to wait before starting mapbattle
 mapbattle.timeout = server.intermission_time - 3500 -- Time to wait for votes
 mapbattle.first = true
 
+math.randomseed(os.time())
+math.random(); math.random(); math.random()
+
 function mapbattle.clean()
     mapbattle.votes = { {}, {}, {} }
     mapbattle.maps = {}
