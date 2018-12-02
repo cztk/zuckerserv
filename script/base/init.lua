@@ -34,6 +34,8 @@ exec(script_base_dir.."/player/vars.lua")
 exec(script_base_dir.."/player/object.lua")
 exec(script_base_dir.."/player/iterators.lua")
 exec(script_base_dir.."/player/private_vars.lua")
+exec_if_found("conf/commands.lua")
+
 exec(script_base_dir.."/player/command.lua")
 exec(script_base_dir.."/team/utils.lua")
 exec(script_base_dir.."/setmaster.lua")
