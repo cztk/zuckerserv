@@ -77,6 +77,7 @@ struct client                   // server side version of "dynent" type
     int num;
     ENetPeer *peer;
     string hostname;
+    uint address;
     void *info;
 };
 
@@ -151,7 +152,8 @@ int getservermtu() { return serverhost ? serverhost->mtu : -1; }
 void *getclientinfo(int i) { return !clients.inrange(i) || clients[i]->type==ST_EMPTY ? NULL : clients[i]->info; }
 ENetPeer *getclientpeer(int i) { return clients.inrange(i) && clients[i]->type==ST_TCPIP ? clients[i]->peer : NULL; }
 int getnumclients()        { return clients.length(); }
-uint getclientip(int n)    { return clients.inrange(n) && clients[n]->type==ST_TCPIP ? clients[n]->peer->address.host : 0; }
+//uint getclientip(int n)    { return clients.inrange(n) && clients[n]->type==ST_TCPIP ? clients[n]->peer->address.host : 0; }
+unsigned int getclientip(int n)    { return clients.inrange(n) && clients[n]->type==ST_TCPIP ? clients[n]->address : 0; }
 const char *getclienthostname(int i) { return !clients.inrange(i) || clients[i]->type==ST_EMPTY ? NULL : clients[i]->hostname; }
 
 static int demooverride = 0;
@@ -445,6 +447,8 @@ void serverhost_process_event(ENetEvent & event)
             c.peer = event.peer;
             c.peer->data = &c;
             string hn;
+            c.address = c.peer->address.host;
+
             copystring(c.hostname, (enet_address_get_host_ip(&c.peer->address, hn, sizeof(hn))==0) ? hn : "unknown");
 
             printf("client connected (%s)\n", c.hostname);

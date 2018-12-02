@@ -275,12 +275,12 @@ std::string player_team(int cn)
 
 const char * player_ip(int cn)
 {
-    return get_ci(cn)->hostname();
+    return getclienthostname(cn);
 }
 
 unsigned long player_iplong(int cn)
 {
-    return ntohl(getclientip(get_ci(cn)->clientnum));
+    return ntohl(getclientip(cn));
 }
 
 int player_status_code(int cn)
