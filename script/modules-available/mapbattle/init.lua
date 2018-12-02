@@ -5,17 +5,28 @@
 
 mapbattle = {}
 mapbattle.delay = 1000 -- Time to wait before starting mapbattle
-mapbattle.timeout = server.intermission_time - 2500 -- Time to wait for votes
-mapbattle.range = 2 -- Distance between nextmap and second map in maprotation TODO: define range as "keep last maps played num to avoid repeat over and over again"
+mapbattle.timeout = server.intermission_time - 3500 -- Time to wait for votes
+mapbattle.first = true
 
 function mapbattle.clean()
-    mapbattle.votes = { {}, {} }
+    mapbattle.votes = { {}, {}, {} }
     mapbattle.maps = {}
     mapbattle.map_changed = false
     mapbattle.running = false
 end
 
-function mapbattle.get_random_map(num, mode)
+function mapbattle.max(t, fn)
+    if #t == 0 then return nil, nil end
+    local key, value = 1, t[1]
+    for i = 2, #t do
+        if fn(value, t[i]) then
+            key, value = i, t[i]
+        end
+    end
+    return key, value
+end
+
+function mapbattle.get_random_map(mode)
 
     local maps= {}
     local hay = map_rotation.get_map_rotation(mode)[mode]
@@ -41,22 +52,26 @@ function mapbattle.get_random_map(num, mode)
 end
 
 function mapbattle.winner()
+    local winindex, winvalue = mapbattle.max({table_size(mapbattle.votes[1]), table_size(mapbattle.votes[2]), table_size(mapbattle.votes[3])}, function(a,b) return a < b end)
+    return mapbattle.maps[winindex]
+    --[[
     if table_size(mapbattle.votes[1]) >= table_size(mapbattle.votes[2]) then
         return mapbattle.maps[1]
     else
         return mapbattle.maps[2]
     end
+    ]]--
 end
 
 function mapbattle.process_vote(cn, vote)
-    if vote ~= "1" and vote ~= "2" then return end
+    if vote ~= "1" and vote ~= "2" and vote ~= "3" then return end
     vote = tonumber(vote)
 
     if table_count(server.players(), cn) ~= 1 then
         server.player_msg(cn, "mapbattle_cant_vote")
         return false
     else
-        if mapbattle.votes[1][cn] == true or mapbattle.votes[2][cn] == true then
+        if mapbattle.votes[1][cn] == true or mapbattle.votes[2][cn] == true or mapbattle.votes[3][cn] then
             server.player_msg(cn, "mapbattle_vote_already")
             return false
         end
@@ -66,29 +81,36 @@ function mapbattle.process_vote(cn, vote)
     end
 end
 
-function mapbattle.start(map1, map2, mode)
+function mapbattle.start(map1, map2, map3, mode)
     mapbattle.clean()
-    mapbattle.maps = { map1, map2 }
-	server.msg("mapbattle_vote", {map1 = mapbattle.maps[1], map2 = mapbattle.maps[2]})
+    mapbattle.first = false
+    mapbattle.maps = { map1, map2, map3 }
+	server.msg("mapbattle_vote", {map1 = mapbattle.maps[1], map2 = mapbattle.maps[2], map3 = mapbattle.maps[3]})
 	mapbattle.running = true
 	server.sleep(mapbattle.timeout, function()
         mapbattle.running = false
 		if not mapbattle.map_changed then
-            server.msg("mapbattle_winner", { mapbattle_winner = mapbattle.winner()})
-			mapbattle.map_changed = true
+                    server.msg("mapbattle_winner", { mapbattle_winner = mapbattle.winner()})
+                    server.next_map = mapbattle.winner()
+                    mapbattle.map_changed = true
 		end
 	end)
 end
 
 server.event_handler("setnextgame", function()
-    server.next_mode = server.gamemode
-    server.next_map = mapbattle.winner()
+    if true == mapbattle.first then
+        server.next_map = "reissen"
+        mapbattle.start(map_rotation.get_map_name(server.gamemode), mapbattle.get_random_map(server.gamemode), mapbattle.get_random_map(server.gamemode), server.gamemode)
+    else
+        server.next_mode = server.gamemode
+        server.next_map = mapbattle.winner()
+    end
     return -1
 end)
 
 server.event_handler("intermission", function() 
     server.sleep(mapbattle.delay, function()
-        mapbattle.start(map_rotation.get_map_name(server.gamemode), mapbattle.get_random_map(mapbattle.range, server.gamemode), server.gamemode)
+        mapbattle.start(map_rotation.get_map_name(server.gamemode), mapbattle.get_random_map(server.gamemode), mapbattle.get_random_map(server.gamemode), server.gamemode)
     end)
 end)
 

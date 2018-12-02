@@ -36,7 +36,7 @@ help = "Description d'une commande : #help <command>\n%{blue}Liste %{white}des %
 stats_logged_in = "%{red}>>> %{white}Vous êtes connecté en tant que %{blue}%{user_id}",
 
 mapbattle_winner = "%{red}>>> %{green}Carte %{white}gagnante : %{blue}%{mapbattle_winner}",
-mapbattle_vote = "%{red}>>> %{yellow}Votez %{white}pour la carte %{blue}%{map1} %{white}ou %{blue}%{map2} %{white}en écrivant %{green}1 %{white}ou %{green}2",
+mapbattle_vote = "%{red}>>> %{yellow}Votez %{white}pour la carte %{blue}%{map1}%{white}, %{blue}%{map2} %{white}ou %{blue}%{map3} %{white}en écrivant %{green}1%{white},%{green}2 %{white}ou %{green}3",
 
 client_nameprotect = "%{red}>>> %{white}Vous êtes %{yellow}enregistré %{white}en temps que %{blue}%{user_id}%{white}.",
 nameprotect_rename = "%{red}>>> %{white}Vous avez utilisé un nom reservé par un autre joueur. Le serveur vous a %{blue}renommé %{white}en %{blue}'unnamed'%{white}.",
