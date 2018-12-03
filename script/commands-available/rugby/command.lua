@@ -1,4 +1,4 @@
-local help ="enabled rugby mode. -1=off, 0=no pass and no damage, 1 = rugby with all weapons, 2 = same as 1 +1 flagscore. mode 3 and 4 are same as 1 and 2 but allow a list of allowed weapons: #rugby 4 04 allows chainsaw=0 and rifle=4 passing"
+local help = "enabled rugby mode.\n modes:\n -1=off\n 0=no pass and no damage\n 1 = rugby with all weapons\n 2 = same as mode 1 but +1 flagscore.\n mode 3 and 4 are same as 1 and 2, but allow a list of allowed weapons\n#rugby 4 04 => allows chainsaw=0 and rifle=4 passing"
 local usage = "<mode> [<weaponlist>]"
 local enabled = true
 local permission = 0
