@@ -106,10 +106,10 @@ function mapbattle.start(map1, map2, map3, mode)
     mapbattle.first = false
     mapbattle.maps = { map1, map2, map3 }
         if map1 == map2 then
-            map2 = mapbattle.get_next(server.gamemode)
+            map2 = mapbattle.get_next(mode)
         end
         while map3 == map1 or map3 == map2 do
-            map3 = mapbattle.get_random_map(server.gamemode)
+            map3 = mapbattle.get_random_map(mode)
         end
 	server.msg("mapbattle_vote", {map1 = mapbattle.maps[1], map2 = mapbattle.maps[2], map3 = mapbattle.maps[3]})
 	mapbattle.running = true
