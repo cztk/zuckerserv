@@ -94,6 +94,7 @@ namespace server
     
     void started();
     int hasFlag(int); // RUGBY MOD but useful anyway
+    const char * votedbestmap();
     void passflag(int a,int b, int d); // RUGBY MOD
     void player_add_flagcount(int cn, int i); // RUGBY MOD
     void set_spawn_state(int health, int armour,int armourtype,int quadmillis,int gunselect);

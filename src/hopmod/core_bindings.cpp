@@ -196,6 +196,8 @@ void bind_core_functions(lua_State * L, int T)
     bind_function(L, T, "net_ban_del", hopmod::netbans::del_ban);
     bind_function(L, T, "net_ban_clear", hopmod::netbans::clear_bans);
     bind_function(L, T, "net_ban_list", hopmod::netbans::ban_list);
+
+    bind_function(L, T, "votedbestmap", server::votedbestmap);
 }
 
 template<int Constant>

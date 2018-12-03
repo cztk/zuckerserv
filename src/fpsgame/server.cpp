@@ -2062,6 +2062,31 @@ namespace server
         votecount(char *s, int n) : map(s), mode(n), count(0) {}
     };
 
+    const char *votedbestmap()
+    {
+        vector<votecount> votes;
+        int maxvotes = 0;
+        loopv(clients)
+        {
+            clientinfo *oi = clients[i];
+            if(oi->state.state==CS_SPECTATOR && !oi->privilege && !oi->local) continue;
+            if(oi->state.aitype!=AI_NONE) continue;
+            maxvotes++;
+            if(!m_valid(oi->modevote)) continue;
+            votecount *vc = NULL;
+            loopvj(votes) if(!strcmp(oi->mapvote, votes[j].map) && oi->modevote==votes[j].mode)
+            {
+                vc = &votes[j];
+                break;
+            }
+            if(!vc) vc = &votes.add(votecount(oi->mapvote, oi->modevote));
+            vc->count++;
+        }
+        votecount *best = NULL;
+        loopv(votes) if(!best || votes[i].count > best->count || (votes[i].count == best->count && rnd(2))) best = &votes[i];
+        return (!best) ? "" : best->map;
+    }
+
     void checkvotes(bool force = false)
     {
         vector<votecount> votes;
@@ -2084,6 +2109,7 @@ namespace server
         }
         votecount *best = NULL;
         loopv(votes) if(!best || votes[i].count > best->count || (votes[i].count == best->count && rnd(2))) best = &votes[i];
+
         if(force || (best && best->count > maxvotes/2))
         {
             if(demorecord) enddemorecord();

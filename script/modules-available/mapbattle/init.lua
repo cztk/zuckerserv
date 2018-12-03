@@ -5,8 +5,9 @@
 
 mapbattle = {}
 mapbattle.delay = 1000 -- Time to wait before starting mapbattle
-mapbattle.timeout = server.intermission_time - 3500 -- Time to wait for votes
+mapbattle.timeout = server.intermission_time -- Time to wait for votes
 mapbattle.first = true
+mapbattle.lastindex = 1
 
 math.randomseed(os.time())
 math.random(); math.random(); math.random()
@@ -41,6 +42,22 @@ function mapbattle.get_random_map(mode)
     -- now you can reliably return a random key
     local result = hay[maps[math.random(#maps)]]
         
+    return result
+end
+
+function mapbattle.get_next(mode)
+    local maps= {}
+    local hay = map_rotation.get_map_rotation(mode)[mode]
+    for k,v in pairs(hay) do
+        if v ~= server.map then
+          table.insert(maps, k)
+        end
+    end
+    mapbattle.lastindex = mapbattle.lastindex + 1
+    if mapbattle.lastindex > #maps then
+        mapbattle.lastindex = 1
+    end
+    local result = hay[maps[mapbattle.lastindex]]
     return result
 
 --    local maps = map_rotation.get_map_rotation(mode)[mode]
@@ -88,6 +105,12 @@ function mapbattle.start(map1, map2, map3, mode)
     mapbattle.clean()
     mapbattle.first = false
     mapbattle.maps = { map1, map2, map3 }
+        if map1 == map2 then
+            map2 = mapbattle.get_next(server.gamemode)
+        end
+        while map3 == map1 or map3 == map2 do
+            map3 = mapbattle.get_random_map(server.gamemode)
+        end
 	server.msg("mapbattle_vote", {map1 = mapbattle.maps[1], map2 = mapbattle.maps[2], map3 = mapbattle.maps[3]})
 	mapbattle.running = true
 	server.sleep(mapbattle.timeout, function()
@@ -103,7 +126,7 @@ end
 server.event_handler("setnextgame", function()
     if true == mapbattle.first then
         server.next_map = "reissen"
-        mapbattle.start(map_rotation.get_map_name(server.gamemode), mapbattle.get_random_map(server.gamemode), mapbattle.get_random_map(server.gamemode), server.gamemode)
+        mapbattle.start(map_rotation.get_map_name(server.gamemode), mapbattle.get_next(server.gamemode), mapbattle.get_random_map(server.gamemode), server.gamemode)
     else
         server.next_mode = server.gamemode
         server.next_map = mapbattle.winner()
@@ -113,7 +136,11 @@ end)
 
 server.event_handler("intermission", function() 
     server.sleep(mapbattle.delay, function()
-        mapbattle.start(map_rotation.get_map_name(server.gamemode), mapbattle.get_random_map(server.gamemode), mapbattle.get_random_map(server.gamemode), server.gamemode)
+        local s = server.votedbestmap()
+        if s == nil or s == '' then
+            s = map_rotation.get_map_name(server.gamemode)
+        end
+        mapbattle.start(s, mapbattle.get_next(server.gamemode), mapbattle.get_random_map(server.gamemode), server.gamemode)
     end)
 end)
 
