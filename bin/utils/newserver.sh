@@ -35,16 +35,13 @@ cp $d_main/bin/server $DEST/bin/
 ln -s $d_main/lib $DEST/lib
 
 mkdir $DEST/{script,conf,log}
+mkdir $DEST/script/{commands-enabled,modules-enabled}
 
 ln -s $d_main/script/base $DEST/script/
-ln -s $d_main/script/module $DEST/script/
 ln -s $d_main/script/package $DEST/script/
-mkdir $DEST/script/commands-enabled
-mkdir $DEST/script/modules-enabled
-ln -s $d_main/script/modules-available/* $DEST/script/modules-available/
 ### todo .... clean mess up :)
-ln -s $d_main/script/commands-available/* $DEST/script/commands-enabled/
-ln -s $d_main/script/modules-available/* $DEST/script/modules-enabled/
+ln -s $d_main/script/commands-available $DEST/script/
+ln -s $d_main/script/modules-available $DEST/script/
 ln -s $d_main/share $DEST/share
 ln -s $d_main/mapinfo $DEST/mapinfo
 

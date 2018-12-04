@@ -35,7 +35,8 @@ server.event_handler("creditflaghelpers", function(scoreclientnum, scoreteam, sc
             didittext = " first holder"
         end
         didittext = string.format(blue().."%s"..white().." hold IT "..red().."%s"..white().."s, "..green().."%s"..white().." passes"..green().."%s"..orange().." "..blue().."%s"..white().."of"..green(), value["name"], string.format("%.3f",value["owntimems"]/1000), value["passcount"], didittext, string.format("%.2f", (value["distance"]/1000)/12.5))
-        if string.match(server.gamemode, "ctf") or string.match(server.gamemode, "hold") then
+--        if string.match(server.gamemode, "ctf") or string.match(server.gamemode, "hold") then
+        if string.match(server.gamemode, "ctf") then
           if (server.rugby_mode == 2 or server.rugby_mode == 4) and scoreclientnum ~= value["cn"] then
             didittext = didittext .. " +1 Flagscore"
             server.player_add_flagcount(tonumber(value["cn"]), 1)

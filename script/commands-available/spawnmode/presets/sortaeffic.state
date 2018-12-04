@@ -1,0 +1,12 @@
+return {
+-- Table: {1}
+{
+   ["quadmillis"]=0,
+   ["1"]="10",
+   ["gunselect"]="4",
+   ["health"]="100",
+   ["armourtype"]="2",
+   ["armoutype"]="2",
+   ["armour"]="250",
+},
+}

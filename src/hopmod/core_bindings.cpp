@@ -451,6 +451,7 @@ void bind_core_variables(lua_State * L, int T)
     bind_var(L, T, "rugby_enabled", server::rugby_enabled);
     bind_var(L, T, "rugby_mode", server::rugby_mode);
     bind_var(L, T, "spawn_mode", server::spawn_mode);
+    bind_var(L, T, "m_hold_HOLDSECS", server::ctf_m_hold_HOLDSECS);
  
     bind_ro_var(L, T, "tx_bytes", tx_bytes);
     bind_ro_var(L, T, "rx_bytes", rx_bytes);

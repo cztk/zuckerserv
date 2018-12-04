@@ -1,0 +1,1 @@
+/usr/bin/c++    -std=c++11   CMakeFiles/keygen.dir/hopmod/standalone/keygen.cpp.o  -o keygen -rdynamic libsauertools.a -lrt -lz enet/libenet.a 

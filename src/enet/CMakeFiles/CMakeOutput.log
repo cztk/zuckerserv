@@ -1,0 +1,367 @@
+The system is: Linux - 4.9.0-6-amd64 - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags: 
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is GNU, found in "/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/3.7.2/CompilerIdC/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_db572/fast"
+/usr/bin/make -f CMakeFiles/cmTC_db572.dir/build.make CMakeFiles/cmTC_db572.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_db572.dir/testCCompiler.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_db572.dir/testCCompiler.c.o   -c /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_db572
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_db572.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_db572.dir/testCCompiler.c.o  -o cmTC_db572 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_91e1f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_91e1f.dir/build.make CMakeFiles/cmTC_91e1f.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.7/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_91e1f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_91e1f.dir/link.txt --verbose=1
+/usr/bin/cc      -v CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o  -o cmTC_91e1f -rdynamic  
+Using built-in specs.
+COLLECT_GCC=/usr/bin/cc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/6/lto-wrapper
+Target: x86_64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Debian 6.3.0-18+deb9u1' --with-bugurl=file:///usr/share/doc/gcc-6/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-6 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --enable-default-pie --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-6-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-6-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-6-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --with-target-system-zlib --enable-objc-gc=auto --enable-multiarch --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Thread model: posix
+gcc version 6.3.0 20170516 (Debian 6.3.0-18+deb9u1) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/6/:/usr/lib/gcc/x86_64-linux-gnu/6/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/6/:/usr/lib/gcc/x86_64-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/6/:/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/6/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/6/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_91e1f' '-rdynamic' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/6/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/6/lto-wrapper -plugin-opt=-fresolution=/tmp/ccpBL20Z.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_91e1f /usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/6/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/6 -L/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/6/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/6/../../.. CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/6/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_91e1f' '-rdynamic' '-mtune=generic' '-march=x86-64'
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_91e1f/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_91e1f.dir/build.make CMakeFiles/cmTC_91e1f.dir/build]
+  ignore line: [make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc     -o CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.7/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_91e1f]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_91e1f.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc      -v CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o  -o cmTC_91e1f -rdynamic  ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/cc]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/6/lto-wrapper]
+  ignore line: [Target: x86_64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Debian 6.3.0-18+deb9u1' --with-bugurl=file:///usr/share/doc/gcc-6/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-6 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --enable-default-pie --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-6-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-6-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-6-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --with-target-system-zlib --enable-objc-gc=auto --enable-multiarch --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 6.3.0 20170516 (Debian 6.3.0-18+deb9u1) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/6/:/usr/lib/gcc/x86_64-linux-gnu/6/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/6/:/usr/lib/gcc/x86_64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/6/:/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/6/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/6/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_91e1f' '-rdynamic' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/6/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/6/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/6/lto-wrapper -plugin-opt=-fresolution=/tmp/ccpBL20Z.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_91e1f /usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/6/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/6 -L/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/6/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/6/../../.. CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/6/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/crtn.o]
+    arg [/usr/lib/gcc/x86_64-linux-gnu/6/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/6/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/6/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccpBL20Z.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [--sysroot=/] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_91e1f] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/Scrt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/6/crtbeginS.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/6] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/6]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/6/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/6/../../../../lib]
+    arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/6/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/6/../../..]
+    arg [CMakeFiles/cmTC_91e1f.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/6/crtendS.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu/crtn.o] ==> ignore
+  remove lib [gcc]
+  remove lib [gcc_s]
+  remove lib [gcc]
+  remove lib [gcc_s]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/6] ==> [/usr/lib/gcc/x86_64-linux-gnu/6]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/6/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/6/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/6/../../..] ==> [/usr/lib]
+  implicit libs: [c]
+  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/6;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+  implicit fwks: []
+
+
+
+
+Detecting C [-std=c11] compiler features compiled with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_45a57/fast"
+/usr/bin/make -f CMakeFiles/cmTC_45a57.dir/build.make CMakeFiles/cmTC_45a57.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_45a57.dir/feature_tests.c.o
+/usr/bin/cc    -std=c11 -o CMakeFiles/cmTC_45a57.dir/feature_tests.c.o   -c /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/feature_tests.c
+Linking C executable cmTC_45a57
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_45a57.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_45a57.dir/feature_tests.c.o  -o cmTC_45a57 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:1c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c99] compiler features compiled with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_270f2/fast"
+/usr/bin/make -f CMakeFiles/cmTC_270f2.dir/build.make CMakeFiles/cmTC_270f2.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_270f2.dir/feature_tests.c.o
+/usr/bin/cc    -std=c99 -o CMakeFiles/cmTC_270f2.dir/feature_tests.c.o   -c /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/feature_tests.c
+Linking C executable cmTC_270f2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_270f2.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_270f2.dir/feature_tests.c.o  -o cmTC_270f2 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c90] compiler features compiled with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f8849/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f8849.dir/build.make CMakeFiles/cmTC_f8849.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f8849.dir/feature_tests.c.o
+/usr/bin/cc    -std=c90 -o CMakeFiles/cmTC_f8849.dir/feature_tests.c.o   -c /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/feature_tests.c
+Linking C executable cmTC_f8849
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f8849.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_f8849.dir/feature_tests.c.o  -o cmTC_f8849 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:0c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:0c_variadic_macros
+Determining if the function getaddrinfo exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c7055/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c7055.dir/build.make CMakeFiles/cmTC_c7055.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c7055.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=getaddrinfo   -o CMakeFiles/cmTC_c7055.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_c7055
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c7055.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=getaddrinfo    CMakeFiles/cmTC_c7055.dir/CheckFunctionExists.c.o  -o cmTC_c7055 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the function getnameinfo exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_fa194/fast"
+/usr/bin/make -f CMakeFiles/cmTC_fa194.dir/build.make CMakeFiles/cmTC_fa194.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_fa194.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=getnameinfo   -o CMakeFiles/cmTC_fa194.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_fa194
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fa194.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=getnameinfo    CMakeFiles/cmTC_fa194.dir/CheckFunctionExists.c.o  -o cmTC_fa194 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the function gethostbyaddr_r exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_da90a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_da90a.dir/build.make CMakeFiles/cmTC_da90a.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_da90a.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=gethostbyaddr_r   -o CMakeFiles/cmTC_da90a.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_da90a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_da90a.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=gethostbyaddr_r    CMakeFiles/cmTC_da90a.dir/CheckFunctionExists.c.o  -o cmTC_da90a -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the function gethostbyname_r exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_84f5d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_84f5d.dir/build.make CMakeFiles/cmTC_84f5d.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_84f5d.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=gethostbyname_r   -o CMakeFiles/cmTC_84f5d.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_84f5d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_84f5d.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=gethostbyname_r    CMakeFiles/cmTC_84f5d.dir/CheckFunctionExists.c.o  -o cmTC_84f5d -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the function poll exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_eac50/fast"
+/usr/bin/make -f CMakeFiles/cmTC_eac50.dir/build.make CMakeFiles/cmTC_eac50.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_eac50.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=poll   -o CMakeFiles/cmTC_eac50.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_eac50
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eac50.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=poll    CMakeFiles/cmTC_eac50.dir/CheckFunctionExists.c.o  -o cmTC_eac50 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the function fcntl exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_ef621/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ef621.dir/build.make CMakeFiles/cmTC_ef621.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ef621.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=fcntl   -o CMakeFiles/cmTC_ef621.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_ef621
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ef621.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=fcntl    CMakeFiles/cmTC_ef621.dir/CheckFunctionExists.c.o  -o cmTC_ef621 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the function inet_pton exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_37b3e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_37b3e.dir/build.make CMakeFiles/cmTC_37b3e.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_37b3e.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=inet_pton   -o CMakeFiles/cmTC_37b3e.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_37b3e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_37b3e.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=inet_pton    CMakeFiles/cmTC_37b3e.dir/CheckFunctionExists.c.o  -o cmTC_37b3e -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the function inet_ntop exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_88492/fast"
+/usr/bin/make -f CMakeFiles/cmTC_88492.dir/build.make CMakeFiles/cmTC_88492.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_88492.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=inet_ntop   -o CMakeFiles/cmTC_88492.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.7/Modules/CheckFunctionExists.c
+Linking C executable cmTC_88492
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_88492.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=inet_ntop    CMakeFiles/cmTC_88492.dir/CheckFunctionExists.c.o  -o cmTC_88492 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/types.h exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_73982/fast"
+/usr/bin/make -f CMakeFiles/cmTC_73982.dir/build.make CMakeFiles/cmTC_73982.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_73982.dir/CheckIncludeFile.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_73982.dir/CheckIncludeFile.c.o   -c /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_73982
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_73982.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_73982.dir/CheckIncludeFile.c.o  -o cmTC_73982 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file stdint.h exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_69389/fast"
+/usr/bin/make -f CMakeFiles/cmTC_69389.dir/build.make CMakeFiles/cmTC_69389.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_69389.dir/CheckIncludeFile.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_69389.dir/CheckIncludeFile.c.o   -c /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_69389
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_69389.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_69389.dir/CheckIncludeFile.c.o  -o cmTC_69389 -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file stddef.h exists passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_4ab4e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4ab4e.dir/build.make CMakeFiles/cmTC_4ab4e.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4ab4e.dir/CheckIncludeFile.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_4ab4e.dir/CheckIncludeFile.c.o   -c /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_4ab4e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4ab4e.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_4ab4e.dir/CheckIncludeFile.c.o  -o cmTC_4ab4e -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+
+Determining size of socklen_t passed with the following output:
+Change Dir: /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6bb5b/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6bb5b.dir/build.make CMakeFiles/cmTC_6bb5b.dir/build
+make[1]: Entering directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6bb5b.dir/HAS_SOCKLEN_T.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_6bb5b.dir/HAS_SOCKLEN_T.c.o   -c /home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CheckTypeSize/HAS_SOCKLEN_T.c
+Linking C executable cmTC_6bb5b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6bb5b.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_6bb5b.dir/HAS_SOCKLEN_T.c.o  -o cmTC_6bb5b -rdynamic 
+make[1]: Leaving directory '/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/CMakeTmp'
+
+

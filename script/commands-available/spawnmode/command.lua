@@ -5,7 +5,7 @@
 
 local permission = 1
 local enabled = true
-local help = red("enable first with: ") .. blue("#spawnmode") .. green("enable\n") .. blue("#spawnmode ") .. white("also takes:\n") .. green("health <number>\narmour <number>\narmourtype <number[0..2]>\nquadmillis <number>\ngun <gunnumber[0..9]> <numberAmmo>") .. white(" ( see #guns )\n") .. green("clear\nload <templatename>\nsave <templatename>\nenable,disable")
+local help = red("enable first with: ") .. blue("#spawnmode ") .. green("enable\n") .. blue("#spawnmode ") .. white("also takes: \n") .. green("health <number> ") .. green("\narmour <number>\narmourtype <number[0..2]>\nquadmillis <number>\ngunselect <gunNumber[0..9]>") .. blue(" -- first selected gun") .. green("\ngun <gunnumber[0..9]> <numberAmmo>") .. white(" ( see #guns )\n") .. green("clear\nload <templatename>\nsave <templatename>\nenable,disable")
 local usage = "<option> [<value>] | gun <gunnum[0..9]> <ammo>\n"
 
 local spawn_mode_state,spawn_mode_guns
@@ -39,15 +39,20 @@ local load_preset = function(name)
       server.set_spawn_gun(k, v)
     end
     server.msg("loaded " .. name .. " spawnmode preset")
+  else
+    server.player_msg(cn, red("preset not found"))
   end
 end
 
-local save_preset = function(name)
+local save_preset = function(cn, name)
   state = find_script("script/commands-enabled/spawnmode/presets/" .. name .. ".state")
   guns = find_script("script/commands-enabled/spawnmode/presets/" .. name .. ".guns")
   if not state and not guns then
     table.save( spawn_mode_state, "script/commands-enabled/spawnmode/presets/" .. name .. ".state" )
     table.save( spawn_mode_guns, "script/commands-enabled/spawnmode/presets/" .. name .. ".guns" )
+    server.player_msg(cn, green("preset saved"))
+  else
+    server.player_msg(cn, red("you can't overwrite existing presets"))
   end
 end
 
@@ -69,7 +74,7 @@ local run = function(cn,cmd,val,gun)
     return
   end
   if cmd == "save" then
-    save_preset(val)
+    save_preset(cn,val)
     return
   end
   if cmd =="clear" then

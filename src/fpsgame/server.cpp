@@ -567,6 +567,8 @@ namespace server
     int rugby_enabled = 0; //RUGBY MOD
     int rugby_mode    = 0; //RUGBY MOD
     int spawn_mode    = 0; //spawnmode hack
+    int ctf_m_hold_HOLDSECS = 20000;
+
     spawn_mode_struct spawn_mode_val;
     
     vector<uint> allowedips;

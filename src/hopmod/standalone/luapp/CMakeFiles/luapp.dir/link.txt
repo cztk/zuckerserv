@@ -1,0 +1,1 @@
+/usr/bin/c++    -std=c++11   CMakeFiles/luapp.dir/luapp.cpp.o CMakeFiles/luapp.dir/__/__/lua.cpp.o  -o luapp -rdynamic -lluajit-5.1 ../../../liblua_modules.a -lrt -lluajit-5.1 -pthread ../../../libsauertools.a -lrt -lz ../../../enet/libenet.a -lmaxminddb -lssl -lcrypto 

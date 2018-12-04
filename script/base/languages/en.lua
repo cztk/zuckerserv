@@ -36,7 +36,7 @@ help = "Command descriptions: #help <command>\n%{blue}List %{white}of %{green}co
 stats_logged_in = "%{red}>>> %{white}You are logged in as %{blue}%{user_id}",
 
 mapbattle_winner = "%{red}>>> %{white}Winner: %{blue}%{mapbattle_winner}",
-mapbattle_vote = "%{red}>>> %{white}Vote for map %{blue}%{map1} %{white}or %{blue}%{map2} %{white}with %{green}1 %{white}or %{green}2",
+mapbattle_vote = "%{red}>>> %{white}Vote for map %{blue}%{map1} %{white}, %{blue}%{map2} %{white}or %{blue}%{map3} %{white}with %{green}1,2 %{white}or %{green}3",
 mapbattle_vote_ok = "%{red}>>> %{blue}%{name} %{white}voted for %{blue}%{mapname}",
 mapbattle_vote_already = "%{red}>>> You have already voted",
 mapbattle_cant_vote = "%{red}>>> %{orange}Spectators are not allowed to vote!",

@@ -2,7 +2,7 @@ return {
 server_start_message = "--> Successfully loaded Suckerserv.",
 
 nextmap = "%{red}>>> The next map is: %{blue} %{mapa} %{white}or %{blue}%{mapb}",
-player_privileges_list = "%{red}>>> %{blue}%{name}(%{cn} has %{priv}",
+player_privileges_list = "%{red}>>> %{blue}%{name} (%{cn}) has %{priv}",
 player_renamed = "%{red}>>> You have been renamed to %{blue}%{newname} by %{orange}%{dispname}",
 
 

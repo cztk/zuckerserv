@@ -378,6 +378,7 @@ namespace server {
     extern int rugby_mode; // RUGBY MOD
     extern int rugby_enabled; // RUGBY MOD
     extern int spawn_mode; // spawn mode hack
+    extern int ctf_m_hold_HOLDSECS;
     extern spawn_mode_struct spawn_mode_val;
 }
 

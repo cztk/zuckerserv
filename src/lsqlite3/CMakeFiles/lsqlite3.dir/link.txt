@@ -1,0 +1,1 @@
+/usr/bin/cc  -fPIC   -shared -Wl,-soname,liblsqlite3.so -o liblsqlite3.so CMakeFiles/lsqlite3.dir/lsqlite3.c.o -lluajit-5.1 -lsqlite3 
