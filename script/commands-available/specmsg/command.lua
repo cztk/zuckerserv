@@ -2,17 +2,23 @@
         A player command to send a message to all spectators
 ]]
 
-local help = "send a message to all spectators"
-local usage = "<text>"
 local enabled = true
 local permission = 0
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "send a message to all spectators")
+    server.player_msg(cn, "#" .. command .. " <text>")
+
+end
 
 local run = function(cn, ...)
 
     local text = table.concat({...}, " ")
     
     if not text then
-        return false, usage
+        help()
+        return false
     end
 
     for client in server.gspectators() do
@@ -24,6 +30,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

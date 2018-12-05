@@ -2,15 +2,21 @@
 	A player command to disable the leave-spectator-block
 ]]
 
-local usage = "<cn>|\"<name>\""
-local help = "disable the leave-spectator-block"
 local permission = 1
 local enabled = true
 local aliases = {"unfspec"}
 
+local help = function(cn, command)
+
+    server.player_msg(cn, "disable the leave-spectator-block")
+    server.player_msg(cn, "#" .. command .. " <cn>|\"<name>\"")
+
+end
+
 local run = function(cn, tcn)
     if not tcn then
-        return false, usage
+        help()
+        return false
     end
 
     if not server.valid_cn(tcn) then
@@ -35,7 +41,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

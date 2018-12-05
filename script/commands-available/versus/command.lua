@@ -3,10 +3,15 @@
 -- (c) 2009 Thomas
 -- #versus cn1 cn2 mode map
 
-local help  = "1on1 (versus) script"
-local usage = "<cn1> <cn2> <mode> <map>"
 local permission = 1
 local enabled = true
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "1on1 (versus) script")
+    server.player_msg(cn, "#" .. command .. " <cn1> <cn2> <mode> <map>")
+
+end
 
 
 local player1_cn, player2_cn = nil, nil
@@ -160,6 +165,5 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

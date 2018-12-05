@@ -4,12 +4,16 @@
 
 local permission = 3
 local enabled = true
-local help = "An admin command for hiding edit from a player to others #editmute 0|1 [<cn>]"
-local usage = "0|1 [<cn>]"
-
 local editmute = false
 
 local editpacket_evt,mapchange_evt
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "An admin command for hiding edit from a player to others")
+    server.player_msg(cn, "#" .. command .. " 0|1 [<cn>]")
+
+end
 
 local mapchange=function()
         editmute = nil
@@ -40,14 +44,16 @@ local run=function(cn, option, target)
 	if option and (option == 0 or option == 1) then
 		option = (option == 1)
 	else
-		return false, usage
+                help()
+		return false
 	end
 
 	if target then
 		if server.valid_cn(target) then
 			server.player_vars(target).editmute = option
 		else
-			return false, usage
+                        help()
+			return false
 		end
 		local cn = target
 	else
@@ -67,6 +73,5 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

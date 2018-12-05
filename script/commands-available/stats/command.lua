@@ -1,7 +1,12 @@
 local permission = 0
 local enabled = true
-local help = "Get your current or permanent player stats"
-local usage = "[total]"
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Get your current or permanent player stats")
+    server.player_msg(cn, "#" .. command .. " [total]")
+
+end
 
 local function get_usage_string()
   
@@ -82,6 +87,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

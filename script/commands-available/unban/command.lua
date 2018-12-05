@@ -2,14 +2,20 @@
 	A player command to unban a banned player
 ]]
 
-local usage = "\"<ip>\""
-local help = "unban a banned player"
 local enabled = true
 local permission = 1
 
+local help = function(cn, command)
+
+    server.player_msg(cn, "unban a banned player")
+    server.player_msg(cn, "#" .. command .. " <ip>")
+
+end
+
 local run = function(cn, ip)
     if not ip then
-        return false, usage
+        help()
+        return false
     end
     local res = check_ip(ip)
     if #res == 1 then
@@ -28,7 +34,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }
 

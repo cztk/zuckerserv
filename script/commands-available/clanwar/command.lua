@@ -4,8 +4,6 @@
 	By piernov <piernov@piernov.org>
 ]]
 
-local help = "Based on fairgame command + pause when someone leave and resume with delay if all players are present"
-local usage = "<map> [<mode>] [lockteams]"
 local permission = 1
 local enabled = true
 local aliases = {"cw"}
@@ -15,6 +13,13 @@ local gamecount, countdown = 0, 6
 local players = {}
 local firsttime = 0
 local allmapsloaded = false
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "pause when someone leave and resume with delay if all players are present")
+    server.player_msg(cn, "#" .. command .. " <map> [<mode>] [lockteams]")
+
+end
 
 -- events
 local disconnect_evt, mapchange_evt, maploaded_evt, intermission_evt, teamchange_evt
@@ -148,7 +153,8 @@ end
 
 local run = function(cn, map, mode, lockteams)
   if not map or not mode then
-    return false,usage
+    help()
+    return false
   end
 	if running then
 		server.player_msg(cn, server.fairgame_already_running_message)
@@ -158,7 +164,8 @@ local run = function(cn, map, mode, lockteams)
 	if lockteams == "lockteams" then teams_locked = true end
 
 	if not map then
-		return false, usage
+                help()
+		return false
 	end
 
 	mode = mode or server.gamemode
@@ -188,7 +195,6 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

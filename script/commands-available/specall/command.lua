@@ -4,11 +4,14 @@
 
 ]]
 
-local usage =""
-local help ="spec all players"
 local enabled=true
 local permission=1
 
+local help = function(cn, command)
+
+    server.player_msg(cn, "spec all players")
+
+end
 
 local run = function()
     server.specall(true)
@@ -19,6 +22,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

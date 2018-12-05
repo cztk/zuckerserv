@@ -2,11 +2,17 @@
 	A player command to change the current map time
 ]]
 
-local usage = "<minutes> [<seconds>]"
-local help = "A player command to change the current map time"
 local permission = 1
 local enabled = true
 local aliases = {"time"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "A player command to change the current map time")
+    server.player_msg(cn, "#" .. command .. " <minutes> [<seconds>]")
+
+end
+
 
 local run = function(cn, minutes, seconds)
 
@@ -32,7 +38,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
-        aliases = aliases
+        aliases = aliases,
+        help_function = help
 }

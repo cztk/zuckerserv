@@ -8,8 +8,7 @@ player_commands = {}
         unload = function,
         permission = number,
         enabled = boolean,
-        help_message = string
-        help_parameters = string
+        help_function = functiong
         aliases = array
     }
 ]]
@@ -57,15 +56,14 @@ local function load_player_command_script(filename, name)
         return
     end
     
-    local chunk_return, help_parameters, help_message, aliases = chunk()
+    local chunk_return, help_function, aliases = chunk()
     local chunk_return_type = type(chunk_return)
     
     if chunk_return_type == "function" then
     
         command.run = chunk_return
         
-        command.help_parameters = help_parameters
-        command.help_message = help_message
+        command.help_function = help_function
         command.aliases = aliases
         command.permission = permission
         command.enabled = enabled
@@ -76,8 +74,7 @@ local function load_player_command_script(filename, name)
         command.run = chunk_return.run
         command.unload = chunk_return.unload
         command.enabled = chunk_return.enabled        
-        command.help_parameters = chunk_return.help_parameters
-        command.help_message = chunk_return.help_message
+        command.help_function = chunk_return.help_function
         command.aliases = chunk_return.aliases
         command.permission = chunk_return.permission
         

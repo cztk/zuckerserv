@@ -1,9 +1,14 @@
 
-local help = "starts/stops recoding demo"
-local usage = "1|0"
 local enabled = true
 local permission = 3
 local aliases = {"demo"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "starts/stops recoding demo")
+    server.player_msg(cn, "#" .. command .. " 1|0")
+
+end
 
 local run = function(cn,option)
 
@@ -20,7 +25,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

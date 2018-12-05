@@ -1,13 +1,19 @@
 --[[
 	An admin command for spectating player for a defined time when entering edit mode
+        TODO: does not check if player "should" stay in spec
 ]]
 
 local permission = 1
 local enabled = true
-local usage = "0|1 [spec_time]"
-local help = " spectating player for a defined time when entering edit mode"
 local noedit = false
 local SPEC_TIME = 5000
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "specs player for a defined time when entering edit mode")
+    server.player_msg(cn, "#" .. command .. " 0|1 [spec_time]")
+
+end
 
 local editmode_evt, mapchange_evt
 
@@ -39,7 +45,8 @@ local run = function(cn, option)
 	if option and (option == 0 or option == 1) then
 		noedit = (option == 1)
 	else
-		return false, usage
+                help()
+		return false
 	end
 
 	if noedit then
@@ -55,6 +62,5 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

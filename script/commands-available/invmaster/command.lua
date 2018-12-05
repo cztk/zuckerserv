@@ -7,8 +7,12 @@ local id_event
 
 local enabled = true
 local permission = 0
-local help = "raise privilege to (invisble) master"
-local usage =""
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "raise privilege to (invisble) master")
+
+end
 
 local init= function()
     trigger_event, id_event = server.create_event_signal("invmaster-command")
@@ -61,6 +65,5 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

@@ -1,7 +1,15 @@
-local help = "HOLDSECS,"
-local usage = "<key> [<value>]"
 local enabled = true
 local permission = 0
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "define some aspects for hold mode")
+    server.player_msg(cn, "#" .. command .. " <key> [<value>]")
+    server.player_msg(cn, "HOLDSECS - timer for hold and invisible time on protect mode")
+
+
+end
+
 
 local run = function(cn, key, value)
 
@@ -16,6 +24,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

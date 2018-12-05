@@ -5,9 +5,12 @@
 local permission = 0
 --server.priv_NONE
 local enabled = true
-local help = server.help_description
-local usage = server.help_parameters
 
+local help = function(cn, command_name)
+
+    server.player_msg(cn, server.help_description .. " " .. server.help_parameters);
+
+end
 
 local run = function(cn, command_name)
   local privilege = server.player_priv_code(cn)
@@ -21,11 +24,15 @@ local run = function(cn, command_name)
       return false, server.help_command_disabled_message
     elseif privilege < command.permission then
       return false, server.help_access_denied_message
-    elseif not command.help_message then
+    elseif not command.help_function then
       return false, server.help_no_description_message % { command_name = command_name }
     end
     
-    server.player_msg(cn, "help_command", { command_name = command_name, help_parameters = command.help_parameters or "", help_message = command.help_message })
+    server.player_msg(cn, "help_command", { command_name = command_name })
+    if command.help_function and type(command.help_function) == "function" then
+        command.help_function(cn, command_name)
+    end
+
     return
   end
 
@@ -64,6 +71,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help,
 }

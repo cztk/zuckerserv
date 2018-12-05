@@ -6,9 +6,12 @@
 
 local permission = 1
 local enabled = true
-local help ="unspec all players"
-local usage =""
 
+local help = function(cn, command)
+
+    server.player_msg(cn, "unspec all players")
+
+end
 
 local run = function()
     server.unspecall(true)
@@ -19,6 +22,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

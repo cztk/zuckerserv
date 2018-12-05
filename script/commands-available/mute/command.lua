@@ -6,8 +6,13 @@
 
 local permission = 1
 local enabled = true
-local help ="mute a player"
-local usage = "<cn>|\"<name>\" [reason] [time]"
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "mute a player")
+    server.player_msg(cn, "#" .. command .. " <cn>|\"<name>\" [reason] [time]")
+
+end
 
 local init = function()
     if(true == enabled and not server.mute) then
@@ -20,7 +25,8 @@ local run = function(cn,tcn,reason,time)
   if false == enabled then
     return false, "mute module not loaded"
   elseif not tcn then
-    return false, usage
+    help()
+    return false
   elseif not server.valid_cn(tcn) then
     tcn = server.name_to_cn_list_matches(cn,tcn)
     if not tcn then return end
@@ -38,6 +44,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

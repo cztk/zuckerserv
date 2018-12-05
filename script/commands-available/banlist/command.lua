@@ -1,8 +1,12 @@
 
 local permission = 3
-local help = "Lists all bans."
-local usage = ""
 local enabled = true
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Lists all bans")
+
+end
 
 local run = function(cn) 
     for ipmask, vars in pairs(server.ip_vars()) do
@@ -21,4 +25,8 @@ local run = function(cn)
     end
 end
 
-return {run = run, permission=permission, help_message=help, enabled=enabled,help_parameters=usage}
+return {
+    run = run,
+    permission=permission,
+    help_function = help
+}

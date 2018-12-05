@@ -5,11 +5,18 @@
 
 local permission = 0
 local enabled = true
-local help ="allow all players to vote to kick other players"
-local usage = "<cn>|\"<name>\""
 local votes = {"vk"}
 
 local disconnect_evt,mapchange_evt
+
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "allow all players to vote to kick other players")
+    server.player_msg(cn, "#" .. command .. "<cn>|\"<name>\"")
+
+end
+
 
 local function check_kick(cn)
   local required_votes = round((server.playercount / 2), 0)
@@ -54,7 +61,8 @@ local function run(cn,victim)
   elseif victim and not server.valid_cn(victim) then
     victim = server.name_to_cn_list_matches(cn,victim)
   elseif not victim then
-    return false, usage
+    help()
+    return false
   end
   
   local actor_id = tostring(cn)
@@ -101,6 +109,5 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

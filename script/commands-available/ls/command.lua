@@ -1,9 +1,13 @@
 
-local help = "Lists current players."
-local usage = ""
 local aliases = {}
 local enabled = true
 local permission = 3
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Lists current players.")
+
+end
 
 local init = function()
 end
@@ -23,7 +27,6 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
-        aliases = aliases
+        aliases = aliases,
+        help_function = help
 }

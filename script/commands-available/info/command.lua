@@ -1,7 +1,11 @@
 local permission = 0
 local enabled = true
-local help = "Displays version of the server software."
-local usage = ""
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Displays version of the server software.")
+
+end
 
 local run = function(cn)
     local version = server.version()
@@ -20,6 +24,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

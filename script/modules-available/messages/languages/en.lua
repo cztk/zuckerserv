@@ -114,7 +114,7 @@ stats_current = "Current game stats for %{name}:",
 stats_player = "%{red}>>> %{blue}Score %{white}%{score} %{blue}Frags %{white}%{frags} %{blue}Deaths %{white}%{deaths} %{blue}Accuracy %{white}%{acc}%%",
 stats_teamkills = "%{red}>>> %{blue}Teamkills%{white}: %{tk}",
 
-help_command = "#%{command_name} %{help_parameters}: %{help_message}",
+help_command = "%{red}>>> %{blue}help for %{green}#%{command_name}",
 
 rugby_command_disable = "%{blue}%{name} %{red}disabled %{white}rugby mode!",
 rugby_command_enable = "%{blue}%{name} %{green}enabled %{white}rugby mode!",

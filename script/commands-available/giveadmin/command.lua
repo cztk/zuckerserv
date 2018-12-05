@@ -10,8 +10,13 @@ local id_event
 local permission = 3
 local enabled = true
 local aliases = {"setadmin"}
-local help = "A player command to raise player's privilege to admin"
-local usage ="<cn>"
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "A player command to raise player's privilege to admin")
+    server.player_msg(cn, "#" .. command .. " <cn>")
+
+end
 
 local init = function()
     trigger_event, id_event = server.create_event_signal("giveadmin-command")
@@ -23,7 +28,8 @@ end
 
 local run = function(cn, target)
     if not target then
-        return false, usage
+        help()
+        return false
     end
 
     if not server.valid_cn(target) then
@@ -44,7 +50,6 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

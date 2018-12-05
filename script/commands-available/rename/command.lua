@@ -6,13 +6,19 @@
 ]]
 
 local permission = 3
-local help ="rename a player"
-local usage = "<cn> <newname>"
 local enabled = true
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "rename a player, he will get notified")
+    server.player_msg(cn, "#" .. command .. "<cn> <newName>")
+
+end
 
 local run = function(cn,player_cn,new_name)
     if not player_cn or not new_name then
-        return false, usage
+        help()
+        return false
     elseif not server.valid_cn(player_cn) then
         return false, "Invalid CN"
     end
@@ -26,6 +32,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

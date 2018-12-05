@@ -2,11 +2,16 @@
 -- #sd
 -- #nosd
 
-local help ="Enables or disables suddendeath on ties"
-local usage = "[0|off|1|on]"
 local permission = 1
 local enabled = true
 local aliases = {"sd"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Enables or disables suddendeath on ties")
+    server.player_msg(cn, "#" .. command .. " [0|off|1|on]")
+
+end
 
 local init = function()
     if(true == enabled and not server.suddendeath) then
@@ -22,7 +27,8 @@ local function run(cn, option)
   end
   
   if not option  then
-    return false, usage
+    help()
+    return false
   end
   
   if option == "0" or option == "off" then
@@ -32,7 +38,8 @@ local function run(cn, option)
     server.suddendeath(true)
     server.player_msg(cn, "Suddendeath mode enabled. There will be no ties.")
   else
-    return false, usage
+    help()
+    return false
   end
 end
 
@@ -41,7 +48,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

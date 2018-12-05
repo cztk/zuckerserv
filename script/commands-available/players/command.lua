@@ -2,10 +2,15 @@
 	A player command to list players and their country, frags, deaths and accuracy
 ]]
 
-local help ="list players and their country, frags, deaths and accuracy"
-local usage =""
 local permission = 0
 local enabled = true
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "list players and their country, frags, deaths and accuracy")
+    server.player_msg(cn, "#" .. command .. " <cn>|\"<name>\"")
+
+end
 
 local run = function(cn)
     for p in server.gplayers() do
@@ -21,6 +26,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

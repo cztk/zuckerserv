@@ -2,15 +2,22 @@
   A player command to send a name of a found cheater to the log
 ]]
 
-local help = " A player command to send a name of a found cheater to the log"
-local usage = "<cn>|\"<name>\""
 local permission = 0
 local enabled = true
 local aliases = {}
 
+local help = function(cn, command)
+
+    server.player_msg(cn, "A player command to send a name of a found cheater to the log")
+    server.player_msg(cn, "#" .. command .. " <cn>|\"<name>\"")
+
+end
+
+
 local run = function(cn,cheat)
   if not cheat then
-    return false, usage
+    help()
+    return false
   elseif not server.valid_cn(cheat) then
     cheat = server.name_to_cn_list_matches(cn,cheat)
     if not cheat then return end
@@ -46,7 +53,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
-        aliases = aliases
+        aliases = aliases,
+        help_function = help
 }

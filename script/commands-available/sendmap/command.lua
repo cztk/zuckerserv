@@ -2,10 +2,15 @@
 	An admin command for sending the map to a player
 ]]
 
-local help = "sending the map to a player"
-local usage = "<cn>|all"
 local permission = 1
 local enabled = true
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "sending the map to a player")
+    server.player_msg(cn, "#" .. command .. " <cn>|all")
+
+end
 
 local run =function(actor, target)
 	if target == "all" then
@@ -17,7 +22,8 @@ local run =function(actor, target)
 	elseif target and server.valid_cn(target) then
 		server.sendmap(actor, target)
 	else
-		return false, usage
+                help()
+		return false
 	end
 end
 
@@ -25,6 +31,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

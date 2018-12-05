@@ -9,8 +9,12 @@ local id_event
 
 local permission = 0
 local enabled = true
-local help = "raise privilege to master"
-local usage =""
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "raise privilege to master")
+
+end
 
 local init = function()
     trigger_event, id_event = server.create_event_signal("master-command")
@@ -51,6 +55,5 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

@@ -9,8 +9,12 @@ local teamkills = {}
 local event_handlers = {}
 local permission = 0
 local enabled = true
-local help_message = "Forgive a teamkill, decreases teamkill count."
-local usage = ""
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Forgive a teamkill, decreases teamkill count.")
+
+end
 
 local function teamkill_callback(actor, target)
   server.player_msg(target, "forgive_propose_message", { playername = server.player_displayname(actor) })
@@ -81,4 +85,11 @@ local function run(cn)
   return false, server.forgive_not_teamkilled_message
 end
 
-return {init = init,run = run,unload = unload,permission=permission,help_message=help_message,enabled=enabled,help_parameters = usage}
+return {
+    init = init,
+    run = run,
+    unload = unload,
+    permission=permission,
+    enabled=enabled,
+    help_function = help
+}

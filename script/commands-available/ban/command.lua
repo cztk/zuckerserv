@@ -5,10 +5,15 @@
 ]]
 
 local permission = 3
-local usage = "<cn> [<time> [m|h]] [\"reason\"]"
-local help = "A player command to ban a player"
 local enabled = true
 local aliases = {"kick"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "A player command to ban a player")
+    server.player_msg(cn, "#" .. command .. " <cn> [<time> [m|h]] [\"reason\"]")
+
+end
 
 local run = function(cn,arg1,arg2,arg3,arg4,arg5)
 
@@ -145,7 +150,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
-        aliases = aliases
+        aliases = aliases,
+        help_function = help
 }

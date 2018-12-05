@@ -5,9 +5,14 @@
 ]]
 local permission = 3
 local enabled = false
-local help = "An admin command for running some lua code"
-local usage = "<code>"
 local aliases = {"lua"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "command for running some lua code")
+    server.player_msg(cn, "#" .. command .. "<code>")
+
+end
 
 local run = function(cn, ...)
 
@@ -36,7 +41,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

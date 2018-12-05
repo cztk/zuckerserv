@@ -1,15 +1,21 @@
 -- #slay <cn>|\"<name>\"|all
 
-local help = "kill a player by force"
-local usage = "<cn>|\"<name>\"|all"
 local permission = 3
 local enabled = true
 local aliases = {"kill"}
 
+local help = function(cn, command)
+
+    server.player_msg(cn, "kill a player by force")
+    server.player_msg(cn, "#" .. command .. " <cn>|\"<name>\"|all")
+
+end
+
 local run = function(cn, target)
 
 	if not target then
-		return false, usage
+                help()
+		return false
 	end
 
 	if target == "all" then
@@ -23,7 +29,8 @@ local run = function(cn, target)
 			return
 		end
 	else
-		return false, usage
+                help()
+		return false
 	end
 
 	server.player_slay(target)
@@ -33,7 +40,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

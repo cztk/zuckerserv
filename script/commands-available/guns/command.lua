@@ -1,7 +1,11 @@
 local permission = 0
 local enabled = true
-local help = "Displays weapon types with their associated number."
-local usage = ""
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Displays weapon types with their associated number.")
+
+end
 
 local run = function(cn)
     -- weapons_types
@@ -14,6 +18,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

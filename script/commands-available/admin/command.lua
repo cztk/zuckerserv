@@ -9,11 +9,16 @@
 local trigger_event
 local id_event
 
-local help = "A player command to raise privilege to admin."
-local usage = ""
 local aliases = {}
 local enabled = true
 local permission = 0
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "raise privilege to admin.")
+    server.player_msg(cn, "#" .. command)
+
+end
 
 local init = function()
     trigger_event, id_event = server.create_event_signal("admin-command")
@@ -53,7 +58,6 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

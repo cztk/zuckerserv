@@ -5,13 +5,19 @@
 ]]
 local permission = 1
 local enabled = true
-local help = "A player command to set a player as spectator"
-local usage = "<cn>|\"<name>\""
 local aliases = {"fspec"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "A player command to set a player as spectator")
+    server.player_msg(cn, "#" .. command .. " <cn>|\"<name>\"")
+
+end
 
 local run = function(cn, tcn, time)
     if not tcn then
-        return false, usage
+        help()
+        return false
     end
 
     if not server.valid_cn(tcn) then
@@ -34,7 +40,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
-        aliases = aliases
+        aliases = aliases,
+        help_function = help
 }

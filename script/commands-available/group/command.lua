@@ -4,8 +4,13 @@
 
 local permission = 1
 local enabled = true
-local usage = "[all] <tag> [<team>]"
-local help = "A player command to group all players matching pattern <tag>"
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "A player command to group all players matching pattern <tag>")
+    server.player_msg(cn, "#" .. command .. " [all] <tag> [<team>]")
+
+end
 
 local group_players = function(...)
 
@@ -58,7 +63,8 @@ local run = function(cn, ...)
     end
     
     if #{...} == 0 then
-        return false, usage
+        help()
+        return false
     end
     
     group_players(unpack({...}))
@@ -68,6 +74,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

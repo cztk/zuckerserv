@@ -4,9 +4,13 @@
 
 local permission = 0
 local enabled = true
-local help ="list players privileges"
-local usage =""
 local aliases = {"privs"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "list players privileges")
+
+end
 
 local run = function(cn)
     for p in server.gplayers() do
@@ -20,7 +24,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

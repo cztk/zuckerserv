@@ -2,8 +2,13 @@
 
 local permission = 3
 local enabled = true
-local help = "Enter or leave spy mode"
-local usage ="[1|0]"
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Enter or leave spy mode")
+    server.player_msg(cn, "#" .. command .. " [1|0]")
+
+end
 
 local run = function(cn, enter)
     
@@ -19,6 +24,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

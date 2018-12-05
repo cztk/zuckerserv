@@ -1,8 +1,13 @@
 local permission = 0
 local enabled = true
 local message = ""
-local usage = ""
-local help = ""
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "#" .. command .. " <cn>")
+
+end
+
 local run = function(cn, tcn, ...)
     server.msg(string.format("%s %s  %s %s  %s %s"
       , white(server.player_displayname(tcn)), green("IS A puC")
@@ -27,7 +32,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }
 

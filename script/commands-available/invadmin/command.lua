@@ -7,8 +7,12 @@ local id_event
 
 local permission = 0
 local enabled = true
-local help = "raise privilege to (invisble) admin"
-local usage =""
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "raise privilege to (invisble) admin")
+
+end
 
 local init= function()
     trigger_event, id_event = server.create_event_signal("invadmin-command")
@@ -58,6 +62,5 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

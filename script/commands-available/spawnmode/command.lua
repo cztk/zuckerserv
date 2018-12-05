@@ -5,10 +5,24 @@
 
 local permission = 1
 local enabled = true
-local help = red("enable first with: ") .. blue("#spawnmode ") .. green("enable\n") .. blue("#spawnmode ") .. white("also takes: \n") .. green("health <number> ") .. green("\narmour <number>\narmourtype <number[0..2]>\nquadmillis <number>\ngunselect <gunNumber[0..9]>") .. blue(" -- first selected gun") .. green("\ngun <gunnumber[0..9]> <numberAmmo>") .. white(" ( see #guns )\n") .. green("clear\nload <templatename>\nsave <templatename>\nenable,disable")
-local usage = "<option> [<value>] | gun <gunnum[0..9]> <ammo>\n"
-
 local spawn_mode_state,spawn_mode_guns
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "define spawn state")
+    server.player_msg(cn, red("enable first with: ") .. green("#spawnmode enable"))
+    server.player_msg(cn, green("#spawnmode health <number>"))
+    server.player_msg(cn, green("#spawnmode armour <number>"))
+    server.player_msg(cn, green("#spawnmode armourtype <number[0..2]>"))
+    server.player_msg(cn, green("#spawnmode quadmillis <number>"))
+    server.player_msg(cn, green("#spawnmode gunselect <gunNumber[0..9]>"))
+    server.player_msg(cn, green("#spawnmode gun <gunnumber[0..9]> <amountAmmo>"))
+    server.player_msg(cn, green("#spawnmode load <preset>") .. " " .. blue("load a previously saved configuration"))
+    server.player_msg(cn, green("#spawnmode save <preset>") .. " " .. blue("save a configuration for later reuse"))
+    server.player_msg(cn, green("#spawnmode list") .. " " .. red("N/A yet, shall list existing presets"))
+    server.player_msg(cn, green("#spawnmode disable"))
+
+end
 
 local init = function()
   spawn_mode_state = {["health"] = 0, ["armour"] = 0, ["armourtype"] = 0, ["quadmillis"] = 0, ["gunselect"] = 0 }
@@ -94,6 +108,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

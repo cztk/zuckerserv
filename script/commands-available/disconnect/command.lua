@@ -5,9 +5,14 @@ By LoveForever (C) 2011
 
 local permission = 1
 local enabled = true
-local help = "Force disconnecting someone from the server (without kicking or banning him)"
-local usage = "<cn>"
 local aliases = {"disc"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Force disconnecting someone from the server (without kicking or banning him)")
+    server.player_msg(cn, "#" .. command .. "<cn>")
+
+end
 
 local run = function(cn, tcn, ...)
   if not tcn then
@@ -18,14 +23,13 @@ local run = function(cn, tcn, ...)
     tcn = server.name_to_cn_list_matches(cn,tcn)
     if not tcn then return end
   end
-  server.disconnect(tcn, 10, "disconnected by an admin")
+  server.disconnect(tcn, 10, "disconnected")
 end
 
 return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }

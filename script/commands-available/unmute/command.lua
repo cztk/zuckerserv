@@ -5,8 +5,13 @@
 ]]
 local permission = 1
 local enabled = true
-local help = "unmute a player"
-local usage ="<cn>"
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "unmute a player")
+    server.player_msg(cn, "#" .. command .. " <cn>")
+
+end
 
 local init = function()
     if(true == enabled and not server.mute) then
@@ -36,6 +41,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

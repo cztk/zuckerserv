@@ -5,13 +5,19 @@
 
 ]]
 
-local limit, usage = server.warning_limit, "(<cn>|\"<name>\") <text>"
+local limit = server.warning_limit
 local bantime = round(server.warning_bantime or 1800000 / 1000,0)
 
 local permission = 1
 local enabled = true
-local help = "send a warning message, player get banned when limit is reached"
 local aliases = {"warn"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "send a warning message, player get banned when limit is reached")
+    server.player_msg(cn, "#" .. command .. " <cn>|\"<name>\" <text>")
+
+end
 
 local init = function()
   limit = (server.warning_limit or 3)
@@ -20,12 +26,14 @@ end
 
 local run = function(cn, tcn, ...)
   if not tcn then
-    return false, usage
+    help()
+    return false
   end
 
   local text = table.concat({...}, " ")
   if not text then
-    return false, usage
+    help()
+    return false
   elseif text == "tk" then
     text = "Stop teamkilling. ONLY RED players are the enemies!"
   elseif not server.valid_cn(tcn) then
@@ -51,7 +59,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
-        aliases = aliases
+        aliases = aliases,
+        help_function = help
 }

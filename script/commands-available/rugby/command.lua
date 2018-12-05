@@ -1,8 +1,19 @@
-local help = "enabled rugby mode.\n modes:\n -1=off\n 0=no pass and no damage\n 1 = rugby with all weapons\n 2 = same as mode 1 but +1 flagscore.\n mode 3 and 4 are same as 1 and 2, but allow a list of allowed weapons\n#rugby 4 04 => allows chainsaw=0 and rifle=4 passing"
-local usage = "<mode> [<weaponlist>]"
 local enabled = true
 local permission = 0
 local real_permission = 1
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "<mode> [<weaponlist>]")
+    server.player_msg(cn, green("#" .. command .. " -1 ") .. red("disable rugby"))
+    server.player_msg(cn, green("#" .. command .. " 0 ") .. blue("no pass but no damage aswell, aka training mode"))
+    server.player_msg(cn, green("#" .. command .. " 1 ") .. blue("enables rugby"))
+    server.player_msg(cn, green("#" .. command .. " 1 ") .. blue("enables rugby and credits +1 flagscore to carriers"))
+    server.player_msg(cn, green("#" .. command .. " 3 ") .. blue("enables rugby with extended list of weapons, see #guns for a cheat sheet"))
+    server.player_msg(cn, green("#" .. command .. " 4 ") .. blue("same as 3 and credits +1 flagscore to carriers"))
+    server.player_msg(cn, green("#" .. command .. " 4 04 ") .. blue("allows chainsaw(0) and rifle(4) passing"))
+
+end
 
 local run = function(cn, status, wlist)
 
@@ -64,6 +75,5 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage
+        help_function = help
 }

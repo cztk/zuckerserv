@@ -5,9 +5,14 @@
 
 local permission = 3
 local enabled = true
-local help = "list all known names to player"
-local usage ="<cn>|\"<name>\""
 local aliases = {"alias"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "list all known names to player")
+    server.player_msg(cn, "#" .. command .. " <cn>|\"<name>\"")
+
+end
 
 local init = function()
     if(true == enabled and not server.find_names_by_ip) then
@@ -20,7 +25,8 @@ local run = function(cn, target_cn)
   if not server.find_names_by_ip then
     return false, "Not available with this database"
   elseif not target_cn then
-    return false, usage
+    help()
+    return false
   elseif not server.valid_cn(target_cn) then
     target_cn = server.name_to_cn_list_matches(cn,target_cn)
     if not target_cn then return end
@@ -41,7 +47,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
-        aliases = aliases
+        aliases = aliases,
+        help_function = help
 }

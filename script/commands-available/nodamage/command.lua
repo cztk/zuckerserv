@@ -2,15 +2,20 @@
 	An admin command to disable damages
 ]]
 
-local usage = "0|1"
 local nodamage = false
-local help = "disable damages"
 
 local permission = 1
 local enabled = true
 local aliases = {"nodmg"}
 
 local damage_evt,mapchange_evt
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "disable damages")
+    server.player_msg(cn, "#" .. command .. " 0|1")
+
+end
 
 local init= function()
 	nodamage = false
@@ -30,7 +35,8 @@ end
 
 local run = function(cn, option)
 	if not option then
-		return false, usage
+                help()
+		return false
 	elseif tonumber(option) == 1 then
 		nodamage = true
 		server.player_msg(cn, server.nodamage_enabled_message)
@@ -38,7 +44,8 @@ local run = function(cn, option)
 		nodamage = false
 		server.player_msg(cn, server.nodamage_disabled_message)
 	else
-		return false, usage
+                help()
+		return false
 	end
 end
 
@@ -48,7 +55,6 @@ return {
         unload = unload,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
-        aliases = aliases
+        aliases = aliases,
+        help_function = help
 }

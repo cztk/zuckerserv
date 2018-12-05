@@ -5,13 +5,19 @@
 ]]
 local permission = 0
 local enabled = true
-local help = "Send a private message to another player"
-local usage ="<cn|name> <message>"
 local aliases = {"pc", "pn", "pm", "pchat", "msg"}
+
+local help = function(cn, command)
+
+    server.player_msg(cn, "Send a private message to another player")
+    server.player_msg(cn, "#" .. command .. " <cn|name> <message>")
+
+end
 
 local run = function(cn, tcn, ...)
   if not tcn then
-    return false, usage
+    help()
+    return false
   end
 
   local text = table.concat({...}, " ")
@@ -30,7 +36,6 @@ return {
         run = run,
         permission = permission,
         enabled = enabled,
-        help_message = help,
-        help_parameters = usage,
+        help_function = help,
         aliases = aliases
 }
