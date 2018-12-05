@@ -8,7 +8,7 @@ player_commands = {}
         unload = function,
         permission = number,
         enabled = boolean,
-        help_function = function
+        help_function = function,
         aliases = array
     }
 ]]
