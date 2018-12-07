@@ -64,6 +64,27 @@ lua::event< std::tuple<int, int, int, const char *> >              event_cheat("
 lua::event< std::tuple<int, int, int> >                          event_passflag("passflag"); // RUGBY MOD
 lua::event< std::tuple<int, const char *, int, int, std::vector<rlPlayerCnType>>  >    event_creditflaghelpers("creditflaghelpers"); // RUGBY MOD
 
+// NoobMOD ...
+//lua::event< boost::tuple<int,const char *> >                         event_limbotext("limbotext");
+//lua::event< boost::tuple<int,int> >                                  event_extinfo("extinfo");
+//lua::event< boost::tuple<int,int,int,long,long,long> >               event_teleport("teleport");
+//lua::event< boost::tuple<int,int,long,long,long> >                   event_jumppad("jumppad");
+//lua::event< boost::tuple<int,int> >                                  event_gunselect("gunselect");
+//lua::event< boost::tuple<int,int,int> >                              event_pickup("pickup");
+
+//lua::event< boost::tuple<int, int, int, int, int, int> >             event_editentpos("editentpos");
+//lua::event< boost::tuple<int, int, int, int, int, int, int> >        event_editentattr("editentattr");
+lua::event< std::tuple<int, int, int, int, int, int, int, int, int, int> > event_loadent("load_entitity");
+//lua::event< boost::tuple<int, const char *, int> >                   event_editvari("editvari");
+//lua::event< boost::tuple<int, const char *, lua_Number> >            event_editvarf("editvarf");
+//lua::event< boost::tuple<int, const char *, const char *> >          event_editvars("editvars");
+//lua::event< boost::tuple<int, int, int> >                            event_request_spectator("request_spectator");
+lua::event< std::tuple<int, int, int, int, int, int, int, int, int> > event_try_frag("try_frag");
+//lua::event< boost::tuple<int> >                                      event_takeflag_request("takeflag_request");
+//lua::event< boost::tuple<int> >                                      event_scoreflag_request("scoreflag_request");
+//lua::event< boost::tuple<int> >                                      event_try_spawn("try_spawn");
+// ... NoobMOD
+
 void register_event_idents(lua::event_environment & env)
 {
     lua::event_base * events[] = {
@@ -130,6 +151,26 @@ void register_event_idents(lua::event_environment & env)
         & event_cheat,
         & event_passflag,
         & event_creditflaghelpers,
+        // NoobMOD ...
+//        & event_limbotext,
+//        & event_extinfo,
+//        & event_teleport,
+//        & event_jumppad,
+//        & event_gunselect,
+//        & event_pickup,
+//        & event_editentpos,
+//        & event_editentattr,
+//        & event_editvari,
+//        & event_editvarf,
+//        & event_editvars,
+//        & event_request_spectator,
+        & event_loadent,
+        & event_try_frag,
+//        & event_takeflag_request,
+//        & event_scoreflag_request,
+//        & event_try_spawn,
+        // ... NoobMOD
+
         NULL
     }; // RUGBY MOD event_passflag,event_creditflaghelpers,
     

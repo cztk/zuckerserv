@@ -42,7 +42,7 @@ end)
 server.event_handler("rename", function(cn, old, new)
     if is_banned_name(new) then
         server.player_rename(cn, "unnamed", true)
-        server.player_msg(cn, red(string.format("'%s' is a banned name", new))
+        server.player_msg(cn, red(string.format("'%s' is a banned name", new)))
     end
 end)
 

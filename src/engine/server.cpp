@@ -2,6 +2,7 @@
 // runs dedicated or as client coroutine
 #include <random>
 #include "cube.h"
+#include "world.h"
 #include <signal.h>
 #include <asio.hpp>
 #include <asio/high_resolution_timer.hpp>
@@ -355,6 +356,25 @@ void delclient(client *c)
         server::deleteclientinfo(c->info);
         c->info = NULL;
     }
+}
+
+void setclienttype(int cn, int type)
+{
+        client *c = NULL;
+    loopv(clients) if(clients[i]->num==cn)
+    {
+        c = clients[i];
+        break;
+    }
+    if(!c)
+    {
+        c = new client;
+        c->num = clients.length();
+        clients.add(c);
+    }
+    c->type = type;
+    c->info = NULL;
+    c->peer = NULL;
 }
 
 void delclients()

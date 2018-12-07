@@ -581,7 +581,37 @@ namespace server
     bool broadcast_mapmodified = true;
     
     bool enable_extinfo = true;
-    
+   
+    // NoobMOD ...
+    int ent_id;
+    int ent_x;
+    int ent_y;
+    int ent_z;
+    int ent_type;
+    int ent_attr1;
+    int ent_attr2;
+    int ent_attr3;
+    int ent_attr4;
+    int ent_attr5;
+    int shotfx_from_x;
+    int shotfx_from_y;
+    int shotfx_from_z;
+    int shotfx_to_x;
+    int shotfx_to_y;
+    int shotfx_to_z;
+    int npos_pos_x;
+    int npos_pos_y;
+    int npos_pos_z;
+    int npos_vel_x;
+    int npos_vel_y;
+    int npos_vel_z;
+    int npos_yaw;
+    int npos_pitch;
+    int npos_roll;
+    int npos_move;
+    int npos_strafe;
+    // ... NoobMOD
+ 
     struct demofile
     {
         string info;
@@ -671,7 +701,7 @@ namespace server
                 sendf(-1, 1, "ri2", N_CDIS, cn);
                 ci->sendprivtext(RED "You've entered the spy-mode.");
             }
-            defformatstring(admin_info, RED "ADMIN-INFO: %s joined the spy-mode.", ci->name);
+            defformatstring(admin_info)(RED "ADMIN-INFO: %s joined the spy-mode.", ci->name);
             loopv(clients) if(clients[i] != ci && clients[i]->privilege >= PRIV_ADMIN) clients[i]->sendprivtext(admin_info);
             ci->spy = true;
             ci->privilege = PRIV_ADMIN;
@@ -696,7 +726,7 @@ namespace server
             if(mastermode <= 1) setspectator(ci, 0);
             else sendf(-1, 1, "ri3", N_SPECTATOR, ci->clientnum, 1);
             sendf(-1, 1, "riisi", N_SETTEAM, cn, ci->team, -1);
-            defformatstring(admin_info, RED "ADMIN-INFO: %s left the spy-mode.", ci->name);
+            defformatstring(admin_info)(RED "ADMIN-INFO: %s left the spy-mode.", ci->name);
             loopv(clients) if(clients[i] != ci && clients[i]->privilege >= PRIV_ADMIN) clients[i]->sendprivtext(admin_info);
         }
     }
@@ -777,7 +807,7 @@ namespace server
     }
 
     
-    bool canspawnitem(int type) { return !m_noitems && (type>=I_SHELLS && type<=I_QUAD && (!m_noammo || type<I_SHELLS || type>I_CARTRIDGES)); }
+    bool canspawnitem(int type){ return !m_noitems && (type>=I_SHELLS && type<=I_QUAD && (!m_noammo || type<I_SHELLS || type>I_CARTRIDGES)); }
 
     int numclients(int exclude, bool nospec, bool noai, bool priv);
 
@@ -934,7 +964,7 @@ namespace server
         static string cname[3];
         static int cidx = 0;
         cidx = (cidx+1)%3;
-        formatstring(cname[cidx], ci->state.aitype == AI_NONE ? "%s \fs\f5(%d)\fr" : "%s \fs\f5[%d]\fr", name, ci->clientnum);
+        formatstring(cname[cidx])(ci->state.aitype == AI_NONE ? "%s \fs\f5(%d)\fr" : "%s \fs\f5[%d]\fr", name, ci->clientnum);
         return cname[cidx];
     }
 
@@ -1121,7 +1151,7 @@ namespace server
         time_t t = time(NULL);
         char *timestr = ctime(&t), *trim = timestr + strlen(timestr);
         while(trim>timestr && isspace(*--trim)) *trim = '\0';
-        formatstring(d.info, "%s: %s, %s, %.2f%s", timestr, modename(gamemode), smapname, len > 1024*1024 ? len/(1024*1024.f) : len/1024.0f, len > 1024*1024 ? "MB" : "kB");
+        formatstring(d.info)("%s: %s, %s, %.2f%s", timestr, modename(gamemode), smapname, len > 1024*1024 ? len/(1024*1024.f) : len/1024.0f, len > 1024*1024 ? "MB" : "kB");
         sendservmsgf("demo \"%s\" recorded", d.info);
         d.data = new uchar[len];
         d.len = len;
@@ -1147,7 +1177,7 @@ namespace server
             ftime[0]='\0';
             time_t now = time(NULL);
             strftime(ftime,sizeof(ftime),"%0e%b%Y_%H:%M",localtime(&now));
-            formatstring(defaultfilename, "log/demo/%s_%s.dmo",ftime,smapname);
+            formatstring(defaultfilename)("log/demo/%s_%s.dmo",ftime,smapname);
             filename = defaultfilename;
         }
         
@@ -1248,16 +1278,16 @@ namespace server
         demoheader hdr;
         string msg;
         msg[0] = '\0';
-        defformatstring(file, "%s.dmo", smapname);
+        defformatstring(file)("%s.dmo", smapname);
         demoplayback = opengzfile(file, "rb");
-        if(!demoplayback) formatstring(msg, "could not read demo \"%s\"", file);
+        if(!demoplayback) formatstring(msg)("could not read demo \"%s\"", file);
         else if(demoplayback->read(&hdr, sizeof(demoheader))!=sizeof(demoheader) || memcmp(hdr.magic, DEMO_MAGIC, sizeof(hdr.magic)))
-            formatstring(msg, "\"%s\" is not a demo file", file);
+            formatstring(msg)("\"%s\" is not a demo file", file);
         else 
         { 
             lilswap(&hdr.version, 2);
-            if(hdr.version!=DEMO_VERSION) formatstring(msg, "demo \"%s\" requires an %s version of Cube 2: Sauerbraten", file, hdr.version<DEMO_VERSION ? "older" : "newer");
-            else if(hdr.protocol!=PROTOCOL_VERSION) formatstring(msg, "demo \"%s\" requires an %s version of Cube 2: Sauerbraten", file, hdr.protocol<PROTOCOL_VERSION ? "older" : "newer");
+            if(hdr.version!=DEMO_VERSION) formatstring(msg)("demo \"%s\" requires an %s version of Cube 2: Sauerbraten", file, hdr.version<DEMO_VERSION ? "older" : "newer");
+            else if(hdr.protocol!=PROTOCOL_VERSION) formatstring(msg)("demo \"%s\" requires an %s version of Cube 2: Sauerbraten", file, hdr.protocol<PROTOCOL_VERSION ? "older" : "newer");
         }
         if(msg[0])
         {
@@ -1375,7 +1405,7 @@ namespace server
     void hashpassword(int cn, int sessionid, const char *pwd, char *result, int maxlen)
     {
         char buf[2*sizeof(string)];
-        formatstring(buf, "%d %d ", cn, sessionid);
+        formatstring(buf)("%d %d ", cn, sessionid);
         concatstring(buf, pwd, sizeof(buf));
         if(!hashstring(buf, result, maxlen)) *result = '\0';
     }
@@ -1418,8 +1448,8 @@ namespace server
             string kicker;
             if(authname)
             {
-                if(authdesc && authdesc[0]) formatstring(kicker, "%s as '\fs\f5%s\fr' [\fs\f0%s\fr]", colorname(ci), authname, authdesc);
-                else formatstring(kicker, "%s as '\fs\f5%s\fr'", colorname(ci), authname);
+                if(authdesc && authdesc[0]) formatstring(kicker)("%s as '\fs\f5%s\fr' [\fs\f0%s\fr]", colorname(ci), authname, authdesc);
+                else formatstring(kicker)("%s as '\fs\f5%s\fr'", colorname(ci), authname);
             }
             else copystring(kicker, colorname(ci));
             if(reason && reason[0]) sendservmsgf("%s kicked %s because: %s", kicker, colorname(vinfo), reason);
@@ -1939,21 +1969,36 @@ namespace server
     {
         resetitems();
         notgotitems = true;
-        if(m_edit || !e::loadents(smapname, ments, mcrc))
+        //if(m_edit || !e::loadents(smapname, ments, mcrc))
+        //noob compat
+        if(m_edit || !loadents(smapname, ments, &mcrc))
         {
             convert2utf8 utf8mapname(smapname);
             std::cerr << "failed to load mapents for map " << utf8mapname.str() << std::endl;
             mcrc = 0;
             return;
+        } else {
+            convert2utf8 utf8mapname(smapname);
+            std::cerr << "successfully loaded mapents for map " << utf8mapname.str() << std::endl;
         }
-        loopv(ments) if(canspawnitem(ments[i].type))
+
+        loopv(ments)
         {
-            server_entity se = { NOTUSED, 0, false, -1 };
-            while(sents.length()<=i) sents.add(se);
-            sents[i].type = ments[i].type;
-            if(m_mp(gamemode) && delayspawn(sents[i].type)) sents[i].spawntime = spawntime(sents[i].type);
-            else sents[i].spawned = true;
+//            if(canspawnitem(ments[i].type))
+//            {
+                server_entity se = { NOTUSED, 0, false, -1 };
+                while(sents.length()<=i)
+                    sents.add(se);
+                sents[i].type = ments[i].type;
+                if(m_mp(gamemode) && delayspawn(sents[i].type))
+                    sents[i].spawntime = spawntime(sents[i].type);
+                else
+                    sents[i].spawned = true;
+
+                event_loadent(event_listeners(), std::make_tuple(i, ments[i].type, ments[i].o.x, ments[i].o.y, ments[i].o.z, ments[i].attr1, ments[i].attr2, ments[i].attr3, ments[i].attr4, ments[i].attr5));
+//            }
         }
+
         notgotitems = false;
     }
 
@@ -2194,7 +2239,7 @@ namespace server
             float st_dist = distance(actor->state.o, target->state.o);
             if ((int)st_dist > (guns[gun].range + 50/*tolerance*/))
             {
-                defformatstring(cheatinfo, "GUN: %s GUN-RANGE: %i DISTANCE: %.2f", "%s", guns[gun].range, st_dist);
+                defformatstring(cheatinfo)("GUN: %s GUN-RANGE: %i DISTANCE: %.2f", "%s", guns[gun].range, st_dist);
                 actor->ac.out_of_gun_distance_range(gun, cheatinfo);
                 return;
             }
@@ -2339,7 +2384,10 @@ namespace server
                 {
                     hitinfo &h = hits[i];
                     clientinfo *target = getinfo(h.target);
-                    if(!target || target->state.state!=CS_ALIVE || h.lifesequence!=target->state.lifesequence || h.rays<1 || h.dist > guns[gun].range + 1) continue;
+                    if(!target || target->state.state!=CS_ALIVE || h.lifesequence!=target->state.lifesequence || h.rays<1 || h.dist > guns[gun].range + 1) {
+                        event_try_frag(event_listeners(), std::make_tuple(h.target, ci->clientnum, gun, from.x, from.y, from.z, to.x, to.y, to.z));
+                        continue;
+                    }
 
                     totalrays += h.rays;
                     if(totalrays>maxrays) continue;
@@ -2608,7 +2656,7 @@ namespace server
         {
             disc_reason_msg = (ci->disconnect_reason.length() ? ci->disconnect_reason.c_str() : disconnect_reason(reason));
             convert2cube disc_reason_msg_cubeenc(disc_reason_msg);
-            defformatstring(discmsg, "client (%s) disconnected because: %s", ci->name, disc_reason_msg_cubeenc.str());
+            defformatstring(discmsg)("client (%s) disconnected because: %s", ci->name, disc_reason_msg_cubeenc.str());
             printf("%s\n", discmsg);
             if (!ci->spy)
             {
@@ -2624,7 +2672,7 @@ namespace server
         }
         else
         {
-            defformatstring(discmsg, "disconnected client (%s)", ci->name);
+            defformatstring(discmsg)("disconnected client (%s)", ci->name);
             puts(discmsg);
         }
         
@@ -2845,7 +2893,7 @@ namespace server
                 case N_CONNECT:
                 {
                     getstring(text, p);
-                    filtertext(text, text, false, false, MAXNAMELEN);
+                    filtertext(text, text, false, MAXNAMELEN);
                     if(!text[0]) copystring(text, "unnamed");
                     copystring(ci->name, text, MAXNAMELEN+1);
                     ci->playermodel = getint(p);
@@ -3199,7 +3247,7 @@ namespace server
             case N_TEXT:
             {
                 getstring(text, p);
-                filtertext(text, text, true, true);
+                filtertext(text, text, true);
                 
                 if(ci && (ci->privilege == PRIV_ADMIN || !message::limit(ci, &ci->n_text_millis, message::resend_time::text, "text")))
                 {
@@ -3232,9 +3280,9 @@ namespace server
             case N_SAYTEAM:
             {
                 getstring(text, p);
-                filtertext(text, text, true, true);
+                filtertext(text, text, true);
                 if(!ci || !cq || (ci->state.state==CS_SPECTATOR && !ci->privilege) || !m_teammode || !cq->team[0] || message::limit(ci, &ci->n_sayteam_millis, message::resend_time::sayteam, "team chat") || ci->spy) break;
-                filtertext(text, text, true, true);
+                filtertext(text, text, true);
                 convert2utf8 utf8text(text);
                 if(event_sayteam(event_listeners(), std::make_tuple(ci->clientnum, utf8text.str())) == false)
                 {
@@ -3251,7 +3299,7 @@ namespace server
             case N_SWITCHNAME:
             {
                 getstring(text, p);
-                filtertext(text, text, false, false, MAXNAMELEN);
+                filtertext(text, text, false, MAXNAMELEN);
                 if(!text[0]) copystring(text, "unnamed");
                 convert2utf8 newnameutf8(text);
           
@@ -3312,7 +3360,7 @@ namespace server
             case N_SWITCHTEAM:
             {
                 getstring(text, p);
-                filtertext(text, text, false, false, MAXTEAMLEN);
+                filtertext(text, text, false, MAXTEAMLEN);
                 convert2utf8 newteamutf8(text);
                 convert2utf8 oldteamutf8(ci->team);
                 
@@ -3335,7 +3383,7 @@ namespace server
             case N_MAPCHANGE:
             {
                 getstring(text, p);
-                filtertext(text, text, false, false);
+                filtertext(text, text, false);
                 int reqmode = getint(p);
                 if(type!=N_MAPVOTE && !mapreload) break;
                 if(!ci->local && !m_mp(reqmode)) reqmode = 0;
@@ -3452,7 +3500,7 @@ namespace server
                     }
                     else
                     {
-                        defformatstring(s, "mastermode %d is disabled on this server", mm);
+                        defformatstring(s)("mastermode %d is disabled on this server", mm);
                         sendf(sender, 1, "ris", N_SERVMSG, s);
                     }
                 }
@@ -3472,7 +3520,7 @@ namespace server
             {
                 int victim = getint(p);
                 getstring(text, p);
-                filtertext(text, text, false, false);
+                filtertext(text, text, false);
                 trykick(ci, victim, text);
                 break;
             }
@@ -3499,7 +3547,7 @@ namespace server
             {
                 int who = getint(p);
                 getstring(text, p);
-                filtertext(text, text, false, false, MAXTEAMLEN);
+                filtertext(text, text, false, MAXTEAMLEN);
                 if(!ci->privilege && !ci->local) break;
                 clientinfo *wi = getinfo(who);
                 if(!m_teammode || !text[0] || !wi || !wi->connected || !strcmp(wi->team, text)) break;
@@ -3649,7 +3697,7 @@ namespace server
                 getstring(name, p, sizeof(name));
                 int victim = getint(p);
                 getstring(text, p);
-                filtertext(text, text, false, false);
+                filtertext(text, text, false);
 
                 tryauth(ci, name, desc, victim);
 

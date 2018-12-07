@@ -164,7 +164,7 @@ void sendstring(const char *t, ucharbuf &p) { sendstring_(t, p); }
 void sendstring(const char *t, packetbuf &p) { sendstring_(t, p); }
 void sendstring(const char *t, vector<uchar> &p) { sendstring_(t, p); }
 
-void getstring(char *text, ucharbuf &p, size_t len)
+void getstring(char *text, ucharbuf &p, int len)
 {
     char *t = text;
     do
@@ -176,7 +176,7 @@ void getstring(char *text, ucharbuf &p, size_t len)
     while(*t++);
 }
 
-void filtertext(char *dst, const char *src, bool whitespace, bool forcespace, size_t len)
+void filtertext(char *dst, const char *src, bool whitespace, int len)
 {
     for(int c = uchar(*src); c; c = uchar(*++src))
     {
@@ -185,13 +185,11 @@ void filtertext(char *dst, const char *src, bool whitespace, bool forcespace, si
             if(!*++src) break;
             continue;
         }
-        if(!iscubeprint(c))
+        if(iscubeprint(c) || (iscubespace(c) && whitespace))
         {
-            if(!iscubespace(c) || !whitespace) continue;
-            if(forcespace) c = ' ';
+            *dst++ = c;
+            if(!--len) break;
         }
-        *dst++ = c;
-        if(!--len) break;
     }
     *dst = '\0';
 }

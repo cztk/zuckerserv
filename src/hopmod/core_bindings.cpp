@@ -22,6 +22,7 @@ void push(lua_State * L, __uid_t value);
 #include <vector>
 #include <string>
 
+
 /*
     Lua value io functions for cube2 types
 */
@@ -198,6 +199,83 @@ void bind_core_functions(lua_State * L, int T)
     bind_function(L, T, "net_ban_list", hopmod::netbans::ban_list);
 
     bind_function(L, T, "votedbestmap", server::votedbestmap);
+
+    // NoobMOD ...
+    bind_function(L, T, "block_cn", server::block_cn);
+    bind_function(L, T, "unblock_cn", server::unblock_cn);
+    bind_function(L, T, "send_fake_connect", server::send_fake_connect);
+    bind_function(L, T, "send_fake_disconnect", server::send_fake_disconnect);
+    bind_function(L, T, "send_entity", server::send_entity);
+    bind_function(L, T, "player_send_entity", server::player_send_entity);
+    bind_function(L, T, "reset_entity", server::reset_entity);
+    bind_function(L, T, "player_reset_entity", server::player_reset_entity);
+    // ... NoobMOD
+
+    // NoobMOD ...
+    bind_function(L, T, "send_fake_connect", server::send_fake_connect);
+    bind_function(L, T, "send_fake_disconnect", server::send_fake_disconnect);
+//    bind_function(L, T, "send_fake_text", server::send_fake_text);
+//    bind_function(L, T, "disc_reason", server::player_disc_reason);
+//    bind_function(L, T, "nm_checkauth", server::player_nm_checkauth );
+//    bind_function(L, T, "player_mapcrc", server::player_mapcrc);
+//    bind_function(L, T, "lastposupdate", server::player_lastposupdate);
+    bind_function(L, T, "send_entity", server::send_entity);
+    bind_function(L, T, "player_send_entity", server::player_send_entity);
+    bind_function(L, T, "reset_entity", server::reset_entity);
+    bind_function(L, T, "player_reset_entity", server::player_reset_entity);
+    bind_function(L, T, "send_shotfx", server::send_shotfx);
+    bind_function(L, T, "player_send_fake_shotfx", server::player_send_fake_shotfx);
+//    bind_function(L, T, "blah", server::blah);
+//    bind_function(L, T, "player_mov", server::player_mov);
+//    bind_function(L, T, "player_vel", server::player_vel);
+//    bind_function(L, T, "player_ypr", server::player_ypr);
+//    bind_function(L, T, "set_player_pos", server::set_player_pos);
+//    bind_function(L, T, "set_player_mov", server::set_player_mov);
+//    bind_function(L, T, "set_player_vel", server::set_player_vel);
+//    bind_function(L, T, "set_player_ypr", server::set_player_ypr);
+    bind_function(L, T, "player_send_fake_npos", server::player_send_fake_npos);
+//    bind_function(L, T, "player_send_fake_spectator", server::player_send_fake_spectator);
+//    bind_function(L, T, "player_sendmap", server::player_sendmap);
+//    bind_function(L, T, "player_sendmap_from_file", server::player_sendmap_from_file);
+//    bind_function(L, T, "player_editvari", server::player_editvari);
+//    bind_function(L, T, "player_editvarf", server::player_editvarf);
+//    bind_function(L, T, "player_editvars", server::player_editvars);
+//    bind_function(L, T, "send_editmode", server::send_editmode);
+//    bind_function(L, T, "send_fake_editmode", server::send_fake_editmode);
+//    bind_function(L, T, "spawn_player", server::spawn_player);
+    bind_function(L, T, "player_send_fake_spawn", server::player_send_fake_spawn);
+//    bind_function(L, T, "player_send_fake_slay", server::player_send_fake_slay);
+//    bind_function(L, T, "player_send_fake_ping", server::player_send_fake_ping);
+//    bind_function(L, T, "player_send_fake_gunselect", server::player_send_fake_gunselect);
+//    bind_function(L, T, "player_hitpush", server::player_hitpush);
+    bind_function(L, T, "block_cn", server::block_cn);
+    bind_function(L, T, "unblock_cn", server::unblock_cn);
+//    bind_function(L, T, "update_health", server::update_health);
+//    bind_function(L, T, "send_health", server::send_health);
+//    bind_function(L, T, "player_gamestate_ammo", server::player_gamestate_ammo);
+//    bind_function(L, T, "player_gamestate_health", server::player_gamestate_health);
+//    bind_function(L, T, "player_gamestate_armour", server::player_gamestate_armour);
+//    bind_function(L, T, "player_gamestate_gunselect", server::player_gamestate_gunselect);
+//    bind_function(L, T, "player_send_spawnstate", server::player_send_spawnstate);
+    bind_function(L, T, "send_fake_damage", server::send_fake_damage);
+    bind_function(L, T, "player_send_fake_damage", server::player_send_fake_damage);
+    bind_function(L, T, "do_fake_damage", server::do_fake_damage);
+    bind_function(L, T, "player_send_fake_rename", server::player_send_fake_rename);
+    bind_function(L, T, "player_send_fake_playermodel", server::player_send_fake_playermodel);
+//    bind_function(L, T, "ctf_reset_flags", server::ctf_reset_flags);
+//    bind_function(L, T, "ctf_send_flag_update", server::ctf_send_flag_update);
+//    bind_function(L, T, "ctf_add_flag", server::ctf_add_flag);
+//    bind_function(L, T, "ctf_set_flag", server::ctf_set_flag);
+//    bind_function(L, T, "ctf_get_flag", server::ctf_get_flag);
+//    bind_function(L, T, "player_changemap", server::player_changemap);
+//    bind_function(L, T, "set_gamespeed", server::set_gamespeed);
+//    bind_function(L, T, "player_gamespeed", server::player_gamespeed);
+//    bind_function(L, T, "player_force_changeteam", server::player_force_changeteam);
+//    bind_function(L, T, "player_fake_changeteam", server::player_fake_changeteam);
+//    bind_function(L, T, "player_force_specmsg", server::player_force_specmsg);
+    // ... NoobMOD
+
+
 }
 
 template<int Constant>
@@ -468,5 +546,37 @@ void bind_core_variables(lua_State * L, int T)
     bind_var(L, T, "mapcrc", server::mcrc);
 
     bind_prop<int>(L, T, "mastermode", server::get_mastermode, server::set_mastermode);
+
+    // NoobMOD ...
+    bind_var(L, T, "ent_id", server::ent_id);
+    bind_var(L, T, "ent_x", server::ent_x);
+    bind_var(L, T, "ent_y", server::ent_y);
+    bind_var(L, T, "ent_z", server::ent_z);
+    bind_var(L, T, "ent_type", server::ent_type);
+    bind_var(L, T, "ent_attr1", server::ent_attr1);
+    bind_var(L, T, "ent_attr2", server::ent_attr2);
+    bind_var(L, T, "ent_attr3", server::ent_attr3);
+    bind_var(L, T, "ent_attr4", server::ent_attr4);
+    bind_var(L, T, "ent_attr5", server::ent_attr5);
+    bind_var(L, T, "shotfx_from_x", server::shotfx_from_x);
+    bind_var(L, T, "shotfx_from_y", server::shotfx_from_y);
+    bind_var(L, T, "shotfx_from_z", server::shotfx_from_z);
+    bind_var(L, T, "shotfx_to_x", server::shotfx_to_x);
+    bind_var(L, T, "shotfx_to_y", server::shotfx_to_y);
+    bind_var(L, T, "shotfx_to_z", server::shotfx_to_z);
+    bind_var(L, T, "npos_pos_x", server::npos_pos_x);
+    bind_var(L, T, "npos_pos_y", server::npos_pos_y);
+    bind_var(L, T, "npos_pos_z", server::npos_pos_z);
+    bind_var(L, T, "npos_vel_x", server::npos_vel_x);
+    bind_var(L, T, "npos_vel_y", server::npos_vel_y);
+    bind_var(L, T, "npos_vel_z", server::npos_vel_z);
+    bind_var(L, T, "npos_yaw", server::npos_yaw);
+    bind_var(L, T, "npos_pitch", server::npos_pitch);
+    bind_var(L, T, "npos_roll", server::npos_roll);
+    bind_var(L, T, "npos_move", server::npos_move);
+    bind_var(L, T, "npos_strafe", server::npos_strafe);
+    // ... NoobMOD
+
+
 }
 

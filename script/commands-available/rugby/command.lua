@@ -12,6 +12,7 @@ local help = function(cn, command)
     server.player_msg(cn, green("#" .. command .. " 3 ") .. blue("enables rugby with extended list of weapons, see #guns for a cheat sheet"))
     server.player_msg(cn, green("#" .. command .. " 4 ") .. blue("same as 3 and credits +1 flagscore to carriers"))
     server.player_msg(cn, green("#" .. command .. " 4 04 ") .. blue("allows chainsaw(0) and rifle(4) passing"))
+    server.player_msg(cn, red(">>> ") .. orange("press") .. white(" F11") .. orange(" to expand"))
 
 end
 

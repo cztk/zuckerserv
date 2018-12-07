@@ -74,6 +74,9 @@ function server.parse_message(cn, text, vars)
 	end
 
 	if server.enable_timezone == 1 then
+                if not server.player_vars(cn).timezone then
+                    server.log_error("parse_message " .. cn .. " has no timezone ")
+                end
 		if messages.USE_LUATZ then
 			messages.FORMAT_TABLE.time = os.date("!"..messages.TIME_STRING, server.player_vars(cn).timezone:localise(luatz.time()))
 		else

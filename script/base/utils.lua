@@ -84,6 +84,12 @@ setfenv = setfenv or function(f, t)
     end
 end 
 
+function used_cn(cn)
+    local cn = tonumber(cn)
+    return server.player_sessionid(cn or -1) ~= -1
+end
+
+dofile("./script/base/utils/noobmod.lua")
 dofile("./script/base/utils/apps.lua")
 dofile("./script/base/utils/file.lua")
 if not server.is_authserver then dofile("./script/base/utils/gamemode.lua") end

@@ -26,6 +26,19 @@ exec(script_base_dir.."/serverexec.lua")
 exec(script_base_dir.."/config.lua")
 exec(script_base_dir.."/utils.lua")
 exec(script_base_dir.."/tables.lua")
+
+
+exec_if_found("conf/server_conf.lua")
+exec("base/saveconf.lua")
+
+
+-- noobmod
+exec(script_base_dir .. "/db.lua")
+exec(script_base_dir .. "/nm_messages.lua")
+exec(script_base_dir .. "/players.lua")
+exec(script_base_dir .. "/entities.lua")
+-- --
+
 exec(script_base_dir.."/module.lua")
 exec(script_base_dir.."/logging.lua")
 exec(script_base_dir.."/restart.lua")
@@ -43,8 +56,7 @@ exec(script_base_dir.."/kickban.lua")
 exec(script_base_dir.."/server_message.lua")
 exec(script_base_dir.."/cheat_detection.lua")
 
-exec_if_found("conf/server_conf.lua")
-exec("base/saveconf.lua")
+
 
 --server.event_handler("started", function()
 --    server.reload_maprotation()

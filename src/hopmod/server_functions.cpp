@@ -28,7 +28,7 @@ namespace message{
             *millis = curmillis;
         }
         else{
-            defformatstring(error_message, RED "Rejected %s message (wait %i seconds before resending)!", message_type, static_cast<int>(std::ceil((resend_time - wait)/1000.0)));
+            defformatstring(error_message)(RED "Rejected %s message (wait %i seconds before resending)!", message_type, static_cast<int>(std::ceil((resend_time - wait)/1000.0)));
             ci->sendprivtext(error_message);
         }
 
@@ -48,6 +48,310 @@ void player_add_flagcount(int cn, int i)
 }
 
 // RUGBY MOD END
+
+
+// NoObMoD
+
+void player_send_fake_rename(int to_cn, int pcn, const char *name)
+{
+    sendf(to_cn, 1, "ri4s", N_CLIENT, pcn, 100, N_SWITCHNAME, name);
+}
+
+void player_send_fake_playermodel(int to_cn, int pcn, int model)
+{
+    sendf(to_cn, 1, "ri5", N_CLIENT, pcn, 100, N_SWITCHMODEL, model);
+}
+
+void player_send_fake_npos(int to_cn, int pcn)
+{
+    packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
+    putint(p, N_POS);
+    putuint(p, pcn);
+    int lifesequence = 0; // TODO
+    uchar physstate = PHYS_FLOAT | ((lifesequence&1)<<3) | ((npos_move&3)<<4) | ((npos_strafe&3)<<6);
+    p.put(physstate);
+
+    ivec o = ivec(npos_pos_x*DMF, npos_pos_y*DMF, npos_pos_z*DMF);
+    vec npos_vel = vec(npos_vel_x, npos_vel_x, npos_vel_z);
+    uint vel = min(int(npos_vel.magnitude()*DVELF), 0xFFFF);
+    // uint fall = 0; // , fall = min(int(d->falling.magnitude()*DVELF), 0xFFFF);
+
+    // 3 bits position, 1 bit velocity, 3 bits falling, 1 bit material
+    uint flags = 0;
+    if(o.x < 0 || o.x > 0xFFFF) flags |= 1<<0;
+    if(o.y < 0 || o.y > 0xFFFF) flags |= 1<<1;
+    if(o.z < 0 || o.z > 0xFFFF) flags |= 1<<2;
+    if(vel > 0xFF) flags |= 1<<3;
+    /*
+    if(fall > 0)
+    {
+        flags |= 1<<4;
+        if(fall > 0xFF) flags |= 1<<5;
+        if(d->falling.x || d->falling.y || d->falling.z > 0) flags |= 1<<6;
+    }
+    */
+    // if((lookupmaterial(d->feetpos())&MATF_CLIP) == MAT_GAMECLIP) flags |= 1<<7;
+    putuint(p, flags);
+
+    // position vector
+    loopk(3)
+    {
+        p.put(o[k]&0xFF);
+        p.put((o[k]>>8)&0xFF);
+        if(o[k] < 0 || o[k] > 0xFFFF) p.put((o[k]>>16)&0xFF);
+    }
+
+    uint dir = (npos_yaw < 0 ? 360 + int(npos_yaw)%360 : int(npos_yaw)%360) + clamp(int(npos_pitch+90), 0, 180)*360;
+    p.put(dir&0xFF);
+    p.put((dir>>8)&0xFF);
+    p.put(clamp(int(npos_roll+90), 0, 180));
+    p.put(vel&0xFF);
+    if(vel > 0xFF) p.put((vel>>8)&0xFF);
+    float velyaw = -atan2(npos_vel.x, npos_vel.y)/RAD;
+    float velpitch = asin(npos_vel.z/npos_vel.magnitude())/RAD;
+    uint veldir = (velyaw < 0 ? 360 + int(velyaw)%360 : int(velyaw)%360) + clamp(int(velpitch+90), 0, 180)*360;
+    p.put(veldir&0xFF);
+    p.put((veldir>>8)&0xFF);
+    /*
+    if(fall > 0)
+    {
+        p.put(fall&0xFF);
+        if(fall > 0xFF) p.put((fall>>8)&0xFF);
+        if(d->falling.x || d->falling.y || d->falling.z > 0)
+        {
+            float fallyaw, fallpitch;
+            vectoyawpitch(d->falling, fallyaw, fallpitch);
+            uint falldir = (fallyaw < 0 ? 360 + int(fallyaw)%360 : int(fallyaw)%360) + clamp(int(fallpitch+90), 0, 180)*360;
+            p.put(falldir&0xFF);
+            p.put((falldir>>8)&0xFF);
+        }
+    }
+    */
+    sendpacket(to_cn, 0, p.finalize());
+}
+
+void send_fake_damage(int actor_cn, int target_cn, int damage)
+{
+    clientinfo * target = get_ci(target_cn);
+    if (!target) return;
+    gamestate &ts = target->state;
+    sendf(-1, 1, "ri6", N_DAMAGE, target->clientnum, actor_cn, damage, ts.armour, ts.health);
+}
+
+void player_send_fake_damage(int to_cn, int actor_cn, int target_cn, int damage)
+{
+    clientinfo * target = get_ci(target_cn);
+    if (!target) return;
+    gamestate &ts = target->state;
+    sendf(to_cn, 1, "ri6", N_DAMAGE, target->clientnum, actor_cn, damage, ts.armour, ts.health);
+}
+
+void do_fake_damage(int actor_cn, int target_cn, int damage, int gun)
+{
+    clientinfo * actor = getinfo(actor_cn); // actor_cn unchecked
+    clientinfo * target = get_ci(target_cn);
+    if (actor) {
+        event_damage(event_listeners(), std::make_tuple(target->clientnum, actor->clientnum, damage, gun, 0, 0, 0));
+    }
+
+    gamestate &ts = target->state;
+    ts.dodamage(damage);
+    if (actor) actor->state.damage += damage;
+    sendf(-1, 1, "ri6", N_DAMAGE, target->clientnum, actor_cn, damage, ts.armour, ts.health);
+    if(actor && target==actor) target->setpushed();
+    /* else if(actor && target!=actor && !hitpush.iszero())
+    {
+        ivec v = vec(hitpush).rescale(DNF);
+        sendf(ts.health<=0 ? -1 : target->ownernum, 1, "ri7", N_HITPUSH, target->clientnum, gun, damage, v.x, v.y, v.z);
+        target->setpushed();
+    } */
+
+        if(ts.health<=0)
+        {
+                target->state.deaths++;
+                if (actor)
+                {
+                        target->state.suicides += actor==target;
+                        if(actor!=target && isteam(actor->team, target->team))
+                        {
+                                actor->state.teamkills++;
+                                event_teamkill(event_listeners(), std::make_tuple(actor->clientnum, target->clientnum));
+                        }
+                        int fragvalue = smode ? smode->fragvalue(target, actor) : (target==actor || isteam(target->team, actor->team) ? -1 : 1);
+                        actor->state.frags += fragvalue;
+                        if(fragvalue>0)
+                        {
+                                int friends = 0, enemies = 0; // note: friends also includes the fragger
+                                if(m_teammode) loopv(clients) if(strcmp(clients[i]->team, actor->team)) enemies++; else friends++;
+                                else { friends = 1; enemies = clients.length()-1; }
+                                actor->state.effectiveness += fragvalue*friends/float(max(enemies, 1));
+                        }
+                        teaminfo *t = m_teammode ? teaminfos.access(actor->team) : NULL;
+                        if(t) t->frags += fragvalue;
+                        event_frag(event_listeners(), std::make_tuple(target->clientnum, actor->clientnum));
+                        sendf(-1, 1, "ri5", N_DIED, target->clientnum, actor->clientnum, actor->state.frags, t ? t->frags : 0);
+                } else {
+                        event_try_frag(event_listeners(), std::make_tuple(target->clientnum, actor_cn, gun, 0, 0, 0, 0, 0, 0));
+                        sendf(-1, 1, "ri5", N_DIED, target->clientnum, actor_cn, 0, 0);
+                }
+                target->position.setsize(0);
+                if(actor && smode) smode->died(target, actor);
+                ts.state = CS_DEAD;
+                ts.lastdeath = gamemillis;
+                ts.deadflush = ts.lastdeath + DEATHMILLIS;
+        }
+}
+
+
+/**
+ * Sends a shot fx to all clients.
+ * Hanack; 17-Apr-2013
+ */
+bool send_shotfx(int cn, int gun, int id)
+{
+        // warning: no check, if the client number exists!
+        // exclude the actor
+    sendf(-1, 1, "rii9x", N_SHOTFX, cn, gun, id,
+        (int)(shotfx_from_x*DMF), (int)(shotfx_from_y*DMF), (int)(shotfx_from_z*DMF),
+        (int)(shotfx_to_x*DMF), (int)(shotfx_to_y*DMF), (int)(shotfx_to_z*DMF), cn);
+    return true;
+}
+
+void player_send_fake_shotfx(int to_cn, int pcn, int gun, int id)
+{
+    sendf(to_cn, 1, "rii9", N_SHOTFX, pcn, gun, id,
+        (int)(shotfx_from_x*DMF), (int)(shotfx_from_y*DMF), (int)(shotfx_from_z*DMF),
+        (int)(shotfx_to_x*DMF), (int)(shotfx_to_y*DMF), (int)(shotfx_to_z*DMF));
+}
+/**
+ * Added by Hanack; 22-Apr-2013
+ */
+void player_send_fake_spawn(int to_cn, int pcn, int health, int maxhealth, int gunselect)
+{
+        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
+        putint(p, N_SPAWNSTATE);
+        putint(p, pcn); // unchecked, can be a fake player
+        putint(p, 0); // lifesequence
+        putint(p, health);
+        putint(p, maxhealth);
+        putint(p, 0); // armour
+        putint(p, 0); // armourtype
+        putint(p, gunselect);
+        loopi(6) putint(p, 1); // ammo
+        sendpacket(to_cn, 1, p.finalize());
+}
+
+/**
+ * Added by Hanack; 08-Mai-2012
+ * Migrated by Hankus; 10-Apr-2013
+ */
+bool send_entity(int id)
+{
+    if(id < 0) return false;
+    server_entity se = { NOTUSED, 0, false };
+    int start = sents.length();
+    for(int i=start; i<=id; i++) sents.add(se);
+    sents[id].type = ent_type;
+    sents[id].spawned = true;
+    loopv(clients) { 
+        sendf(-1, 1, "ri4ii3ii5", N_CLIENT, clients[i]->clientnum, 100, N_EDITENT, id, (int)(ent_x*DMF), (int)(ent_y*DMF), (int)(ent_z*DMF), ent_type, ent_attr1, ent_attr2, ent_attr3, ent_attr4, ent_attr5);
+        sendf(-1, 1, "ri4i", N_CLIENT, clients[i]->clientnum, 100, N_ITEMSPAWN, id);
+    }
+    //defformatstring(themsg)("id: %i -- x: %i y: %i z: %i -- type: %i -- attr1: %i attr2: %i attr3: %i attr4: %i attr5: %i", id, ent_x, ent_y, ent_z, ent_type, ent_attr1, ent_attr2, ent_attr3, ent_attr4, ent_attr5);
+    //sendservmsg(themsg);
+    return true;
+}
+
+/**
+ * Added by Hanack; 12-Mai-2012
+ * Migrated by Hankus; 10-Apr-2013
+ */
+bool player_send_entity(int cn, int id)
+{
+        if(id < 0) return false;
+    clientinfo * ci = getinfo(cn);
+    if(ci)
+    {
+        server_entity se = { NOTUSED, 0, false };
+        int start = sents.length();
+        for(int i=start; i<=id; i++) sents.add(se);
+        sents[id].type = ent_type;
+        sents[id].spawned = true;
+        sendf(-1, 1, "ri4ii3ii5", N_CLIENT, cn, 100, N_EDITENT, id, (int)(ent_x*DMF), (int)(ent_y*DMF), (int)(ent_z*DMF), ent_type, ent_attr1, ent_attr2, ent_attr3, ent_attr4, ent_attr5);
+        sendf(-1, 1, "ri4i", N_CLIENT, cn, 100, N_ITEMSPAWN, id);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Idea by Hanack; 14-Apr-2013
+ * Integrated by Hankus; 14-Apr-2013
+ */
+bool reset_entity(int id)
+{
+    if(id < 0) return false;
+    loopv(clients) {
+        sendf(-1, 1, "ri4ii3ii5", N_CLIENT, clients[i]->clientnum, 100, N_EDITENT, id, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        sendf(-1, 1, "ri4i", N_CLIENT, clients[i]->clientnum, 100, N_ITEMSPAWN, id);
+    }
+    return true;
+}
+
+/**
+ * Idea by Hanack; 14-Apr-2013
+ * Integrated by Hankus; 14-Apr-2013
+ */
+bool player_reset_entity(int cn, int id)
+{
+        if(id < 0) return false;
+    clientinfo * ci = getinfo(cn);
+    if(ci)
+    {
+        sendf(-1, 1, "ri4ii3ii5", N_CLIENT, cn, 100, N_EDITENT, id, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        sendf(-1, 1, "ri4i", N_CLIENT, cn, 100, N_ITEMSPAWN, id);
+        return true;
+    }
+    return false;
+}
+
+
+void send_fake_connect(int cn, int ocn, const char * name, const char * team)
+{
+        packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
+        putint(p, N_INITCLIENT);
+        putint(p, ocn);
+        sendstring(name, p);
+        sendstring(team, p);
+        putint(p, 0); // playermodel
+        // putint(p, N_SPECTATOR);
+        // putint(p, ocn);
+        // putint(p, 1);
+        sendpacket(cn, 1, p.finalize());
+}
+
+void send_fake_disconnect(int cn, int ocn)
+{
+        sendf(cn, 1, "ri2", N_CDIS, ocn);
+}
+
+
+/**
+ * Added by Hanack; 21-Apr-2013
+ */
+enum { ST_EMPTY, ST_LOCAL, ST_TCPIP, ST_BLOCKED };
+void block_cn(int cn)
+{
+        setclienttype(cn, ST_BLOCKED);
+}
+
+void unblock_cn(int cn)
+{
+        setclienttype(cn, ST_EMPTY);
+}
+
+
+//nOoBmOd
 
 void set_spawn_state(int health, int armour,int armourtype,int quadmillis,int gunselect)
 {
@@ -696,7 +1000,7 @@ void unsetmaster()
         clientinfo * master = clients[i];
         if(master->privilege != PRIV_MASTER) continue;
         
-        defformatstring(msg, "The server has revoked your master privilege.");
+        defformatstring(msg)("The server has revoked your master privilege.");
         master->sendprivtext(msg);
         
         master->privilege = PRIV_NONE;
@@ -743,7 +1047,7 @@ void set_player_privilege(int cn, int priv_code, bool public_priv = false)
     else
         change = (old_priv < player->privilege ? "\fs\f2raised\fr" : "\fs\f0lowered\fr");
     
-    defformatstring(msg, message::set_player_privilege, change, public_priv ? "" : "\fs\f4invisible\fr ", privname(priv_code));
+    defformatstring(msg)(message::set_player_privilege, change, public_priv ? "" : "\fs\f4invisible\fr ", privname(priv_code));
     player->sendprivtext(msg);
     
     send_currentmaster();

@@ -84,44 +84,6 @@ extern const uchar uni2cubechars[878] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
-extern const uchar cubelowerchars[256] =
-{
-    0, 130, 131, 132, 133, 134, 135, 136, 137, 9, 10, 11, 12, 13, 138, 139,
-    140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155,
-    32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
-    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
-    64, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
-    112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 91, 92, 93, 94, 95,
-    96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
-    112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 156,
-    157, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143,
-    144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 160,
-    160, 162, 162, 164, 164, 166, 166, 168, 168, 170, 170, 172, 172, 105, 174, 176,
-    176, 178, 178, 180, 180, 182, 182, 184, 184, 186, 186, 188, 188, 190, 190, 192,
-    192, 194, 194, 196, 196, 198, 198, 158, 201, 201, 203, 203, 205, 205, 206, 207,
-    208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223,
-    224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
-    240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255
-};
-extern const uchar cubeupperchars[256] =
-{
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-    16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-    32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
-    48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
-    64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
-    80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
-    96, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
-    80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 123, 124, 125, 126, 127,
-    128, 129, 1, 2, 3, 4, 5, 6, 7, 8, 14, 15, 16, 17, 18, 19,
-    20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127, 128, 199, 159,
-    159, 161, 161, 163, 163, 165, 165, 167, 167, 169, 169, 171, 171, 173, 73, 175,
-    175, 177, 177, 179, 179, 181, 181, 183, 183, 185, 185, 187, 187, 189, 189, 191,
-    191, 193, 193, 195, 195, 197, 197, 199, 200, 200, 202, 202, 204, 204, 206, 207,
-    208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223,
-    224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
-    240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255
-};
 
 size_t decodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry)
 {
@@ -176,8 +138,170 @@ decode:
     if(carry) *carry += src - srcbuf;
     return dst - dstbuf;
 }
-
 size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srclen, size_t *carry)
+{
+    uchar *dst = dstbuf, *dstend = &dstbuf[dstlen];
+    const uchar *src = srcbuf, *srcend = &srcbuf[srclen];
+    if(src < srcend && dst < dstend) do
+    {
+        int uni = cube2uni(*src);
+        if(uni <= 0x7F)
+        {
+            if(dst >= dstend) goto done;
+            const uchar *end = min(srcend, &src[dstend-dst]);
+            do
+            {
+                if(uni == '\f')
+                {
+                    if(++src >= srcend) goto done;
+                    goto uni1;
+                }
+                *dst++ = uni;
+                if(++src >= end) goto done;
+                uni = cube2uni(*src);
+            }
+            while(uni <= 0x7F);
+        }
+        if(uni <= 0x7FF) { if(dst + 2 > dstend) goto done; *dst++ = 0xC0 | (uni>>6); goto uni2; }
+        else if(uni <= 0xFFFF) { if(dst + 3 > dstend) goto done; *dst++ = 0xE0 | (uni>>12); goto uni3; }
+        else if(uni <= 0x1FFFFF) { if(dst + 4 > dstend) goto done; *dst++ = 0xF0 | (uni>>18); goto uni4; }
+        else if(uni <= 0x3FFFFFF) { if(dst + 5 > dstend) goto done; *dst++ = 0xF8 | (uni>>24); goto uni5; }
+        else if(uni <= 0x7FFFFFFF) { if(dst + 6 > dstend) goto done; *dst++ = 0xFC | (uni>>30); goto uni6; }
+        else goto uni1;
+    uni6: *dst++ = 0x80 | ((uni>>24)&0x3F);
+    uni5: *dst++ = 0x80 | ((uni>>18)&0x3F);
+    uni4: *dst++ = 0x80 | ((uni>>12)&0x3F);
+    uni3: *dst++ = 0x80 | ((uni>>6)&0x3F);
+    uni2: *dst++ = 0x80 | (uni&0x3F);
+    uni1:;
+    }
+    while(++src < srcend);
+
+done:
+    if(carry) *carry += src - srcbuf;
+    return dst - dstbuf;
+}
+const char *decodeutf8(const char *src, std::string &buf) {
+
+    const uchar *iter = (const uchar *)src;
+    while (*iter) {
+        int c = *iter;
+        if (c < 0x80) { // ASCII char
+            buf += c;
+        } else if (c >= 0xC0) { // multi-byte char
+            int uni;
+            if (c >= 0xE0) {
+                if (c >= 0xF0) {
+                    uni = c & 0x7;
+                    if (!*++iter) break;
+                    c = *iter;
+                    if ((c & 0xC0) != 0x80) continue;
+                    uni = (uni<<6) | (c & 0x3F);
+                } else {
+                    uni = c & 0xF;
+                }
+                if (!*++iter) break;
+                c = *iter;
+                if ((c & 0xC0) != 0x80) continue;
+                uni = (uni<<6) | (c & 0x3F);
+            } else {
+                uni = c & 0x1F;
+            }
+            if (!*++iter) break;
+            c = *iter;
+            if ((c & 0xC0) != 0x80) continue;
+            uni = (uni<<6) | (c & 0x3F);
+            c = uni2cube(uni);
+            if(!c) continue;
+            buf += c;
+        }
+        iter++;
+    }
+
+    return buf.c_str();
+}
+
+const char *encodeutf8(const char *src, std::string &buf) {
+
+    for (; *src; src++) {
+        int uni = cube2uni(*src);
+        if (uni < 0x80) { // ASCII char
+            buf += uni;
+        } else if (uni < 0x800) { // 2-byte char
+            buf += 0xC0 | (uni>>6);
+            buf += 0x80 | (uni & 0x3F);
+        } else if (uni < 0x10000) { // 3-byte char
+            buf += 0xE0 | (uni>>12);
+            buf += 0x80 | (uni>>6 & 0x3F);
+            buf += 0x80 | (uni & 0x3F);
+        } else if (uni < 0x110000) { // 4-byte char (no longer exist yet)
+            buf += 0xF0 | (uni>>18);
+            buf += 0x80 | (uni>>12 & 0x3F);
+            buf += 0x80 | (uni>>6 & 0x3F);
+            buf += 0x80 | (uni & 0x3F);
+        }
+    }
+
+    return buf.c_str();
+}
+
+
+
+int decodeutf8(uchar *dstbuf, int dstlen, const uchar *srcbuf, int srclen, int *carry)
+{
+    uchar *dst = dstbuf, *dstend = &dstbuf[dstlen];
+    const uchar *src = srcbuf, *srcend = &srcbuf[srclen];
+    if(dstbuf == srcbuf)
+    {
+        int len = min(dstlen, srclen);
+        for(const uchar *end4 = &srcbuf[len&~3]; src < end4; src += 4) if(*(const int *)src & 0x80808080) goto decode;
+        for(const uchar *end = &srcbuf[len]; src < end; src++) if(*src & 0x80) goto decode;
+        if(carry) *carry += len;
+        return len;
+    }
+
+decode:
+    dst += src - srcbuf;
+    while(src < srcend && dst < dstend)
+    {
+        int c = *src++;
+        if(c < 0x80) *dst++ = c;
+        else if(c >= 0xC0)
+        {
+            int uni;
+            if(c >= 0xE0)
+            {
+                if(c >= 0xF0)
+                {
+                    if(c >= 0xF8)
+                    {
+                        if(c >= 0xFC)
+                        {
+                            if(c >= 0xFE) continue;
+                            uni = c&1; if(srcend - src < 5) break;
+                            c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+                        }
+                        else { uni = c&3; if(srcend - src < 4) break; }
+                        c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+                    }
+                    else { uni = c&7; if(srcend - src < 3) break; }
+                    c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+                }
+                else { uni = c&0xF; if(srcend - src < 2) break; }
+                c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+            }
+            else { uni = c&0x1F; if(srcend - src < 1) break; }
+            c = *src; if((c&0xC0) != 0x80) continue; src++; uni = (uni<<6) | (c&0x3F);
+            c = uni2cube(uni);
+            if(!c) continue;
+            *dst++ = c;
+        }
+    }
+    if(carry) *carry += src - srcbuf;
+    return dst - dstbuf;
+}
+
+int encodeutf8(uchar *dstbuf, int dstlen, const uchar *srcbuf, int srclen, int *carry)
 {
     uchar *dst = dstbuf, *dstend = &dstbuf[dstlen];
     const uchar *src = srcbuf, *srcend = &srcbuf[srclen];
@@ -190,11 +314,6 @@ size_t encodeutf8(uchar *dstbuf, size_t dstlen, const uchar *srcbuf, size_t srcl
             const uchar *end = min(srcend, &src[dstend-dst]);
             do 
             { 
-                if(uni == '\f')
-                {
-                    if(++src >= srcend) goto done;
-                    goto uni1;
-                }
                 *dst++ = uni; 
                 if(++src >= end) goto done; 
                 uni = cube2uni(*src); 
@@ -221,70 +340,6 @@ done:
     return dst - dstbuf;
 }
 
-const char *decodeutf8(const char *src, std::string &buf) {
-
-    const uchar *iter = (const uchar *)src;
-    while (*iter) {
-        int c = *iter;
-        if (c < 0x80) { // ASCII char
-            buf += c;
-        } else if (c >= 0xC0) { // multi-byte char
-            int uni;
-            if (c >= 0xE0) {
-                if (c >= 0xF0) {
-                    uni = c & 0x7;
-                    if (!*++iter) break; 
-                    c = *iter;
-                    if ((c & 0xC0) != 0x80) continue;
-                    uni = (uni<<6) | (c & 0x3F);
-                } else { 
-                    uni = c & 0xF; 
-                }
-                if (!*++iter) break; 
-                c = *iter; 
-                if ((c & 0xC0) != 0x80) continue;
-                uni = (uni<<6) | (c & 0x3F);
-            } else { 
-                uni = c & 0x1F;
-            }
-            if (!*++iter) break; 
-            c = *iter; 
-            if ((c & 0xC0) != 0x80) continue;
-            uni = (uni<<6) | (c & 0x3F);
-            c = uni2cube(uni);
-            if(!c) continue;
-            buf += c;
-        }
-        iter++;
-    }
-    
-    return buf.c_str();
-}
-
-const char *encodeutf8(const char *src, std::string &buf) {
-    
-    for (; *src; src++) {
-        int uni = cube2uni(*src);
-        if (uni < 0x80) { // ASCII char
-            buf += uni;
-        } else if (uni < 0x800) { // 2-byte char
-            buf += 0xC0 | (uni>>6);
-            buf += 0x80 | (uni & 0x3F);
-        } else if (uni < 0x10000) { // 3-byte char
-            buf += 0xE0 | (uni>>12);
-            buf += 0x80 | (uni>>6 & 0x3F);
-            buf += 0x80 | (uni & 0x3F);
-        } else if (uni < 0x110000) { // 4-byte char (no longer exist yet)
-            buf += 0xF0 | (uni>>18);
-            buf += 0x80 | (uni>>12 & 0x3F);
-            buf += 0x80 | (uni>>6 & 0x3F);
-            buf += 0x80 | (uni & 0x3F);
-        }
-    }
-    
-    return buf.c_str();
-}
-
 ///////////////////////// file system ///////////////////////
 
 #ifdef WIN32
@@ -300,7 +355,7 @@ string homedir = "";
 struct packagedir
 {
     char *dir, *filter;
-    size_t dirlen, filterlen;
+    int dirlen, filterlen;
 };
 vector<packagedir> packagedirs;
 
@@ -322,7 +377,7 @@ char *makerelpath(const char *dir, const char *file, const char *prefix, const c
     if(cmd) concatstring(tmp, cmd);
     if(dir)
     {
-        defformatstring(pname, "%s/%s", dir, file);
+        defformatstring(pname)("%s/%s", dir, file);
         concatstring(tmp, pname);
     }
     else concatstring(tmp, file);
@@ -357,11 +412,6 @@ char *path(char *s)
             {
                 if(prevdir+2==curdir && prevdir[0]=='.' && prevdir[1]=='.') continue;
                 memmove(prevdir, curdir+4, strlen(curdir+4)+1);
-                if(prevdir-2 >= curpart && prevdir[-1]==PATHDIV)
-                {
-                    prevdir -= 2;
-                    while(prevdir-1 >= curpart && prevdir[-1] != PATHDIV) --prevdir;
-                }
                 curdir = prevdir;
             }
         }
@@ -398,9 +448,9 @@ bool fileexists(const char *path, const char *mode)
     bool exists = true;
     if(mode[0]=='w' || mode[0]=='a') path = parentdir(path);
 #ifdef WIN32
-    if(GetFileAttributes(path[0] ? path : ".\\") == INVALID_FILE_ATTRIBUTES) exists = false;
+    if(GetFileAttributes(path) == INVALID_FILE_ATTRIBUTES) exists = false;
 #else
-    if(access(path[0] ? path : ".", mode[0]=='w' || mode[0]=='a' ? W_OK : (mode[0]=='d' ? X_OK : R_OK)) == -1) exists = false;
+    if(access(path, R_OK | (mode[0]=='w' || mode[0]=='a' ? W_OK : 0)) == -1) exists = false;
 #endif
     return exists;
 }
@@ -447,8 +497,8 @@ bool subhomedir(char *dst, int len, const char *src)
         if(!home || !home[0]) return false;
 #endif
         dst[sub-src] = '\0';
-        concatstring(dst, home, len);
-        concatstring(dst, sub+(*sub == '~' ? 1 : strlen("$HOME")), len);
+        concatstring(dst, home);
+        concatstring(dst, sub+(*sub == '~' ? 1 : strlen("$HOME")));
     }
     return true;
 }
@@ -489,7 +539,7 @@ const char *findfile(const char *filename, const char *mode)
     static string s;
     if(homedir[0])
     {
-        formatstring(s, "%s%s", homedir, filename);
+        formatstring(s)("%s%s", homedir, filename);
         if(fileexists(s, mode)) return s;
         if(mode[0]=='w' || mode[0]=='a')
         {
@@ -499,7 +549,7 @@ const char *findfile(const char *filename, const char *mode)
             while(dir)
             {
                 *dir = '\0';
-                if(!fileexists(dirs, "d") && !createdir(dirs)) return s;
+                if(!fileexists(dirs, "r") && !createdir(dirs)) return s;
                 *dir = PATHDIV;
                 dir = strchr(dir+1, PATHDIV);
             }
@@ -511,18 +561,17 @@ const char *findfile(const char *filename, const char *mode)
     {
         packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(filename, pf.filter, pf.filterlen)) continue;
-        formatstring(s, "%s%s", pf.dir, filename);
+        formatstring(s)("%s%s", pf.dir, filename);
         if(fileexists(s, mode)) return s;
     }
-    if(mode[0]=='e') return NULL;
     return filename;
 }
 
 bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &files)
 {
-    size_t extsize = ext ? strlen(ext)+1 : 0;
-#ifdef WIN32
-    defformatstring(pathname, rel ? ".\\%s\\*.%s" : "%s\\*.%s", dirname, ext ? ext : "*");
+    int extsize = ext ? (int)strlen(ext)+1 : 0;
+    #ifdef WIN32
+    defformatstring(pathname)(rel ? ".\\%s\\*.%s" : "%s\\*.%s", dirname, ext ? ext : "*");
     WIN32_FIND_DATA FindFileData;
     HANDLE Find = FindFirstFile(pathname, &FindFileData);
     if(Find != INVALID_HANDLE_VALUE)
@@ -531,20 +580,16 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
             if(!ext) files.add(newstring(FindFileData.cFileName));
             else
             {
-                size_t namelen = strlen(FindFileData.cFileName); 
-                if(namelen > extsize) 
-                { 
-                    namelen -= extsize;
-                    if(FindFileData.cFileName[namelen] == '.' && strncmp(FindFileData.cFileName+namelen+1, ext, extsize-1)==0)
-                        files.add(newstring(FindFileData.cFileName, namelen));
-                }
+                int namelength = (int)strlen(FindFileData.cFileName) - extsize; 
+                if(namelength > 0 && FindFileData.cFileName[namelength] == '.' && strncmp(FindFileData.cFileName+namelength+1, ext, extsize-1)==0)
+                    files.add(newstring(FindFileData.cFileName, namelength));
             }
         } while(FindNextFile(Find, &FindFileData));
         FindClose(Find);
         return true;
     }
-#else
-    defformatstring(pathname, rel ? "./%s" : "%s", dirname);
+    #else
+    defformatstring(pathname)(rel ? "./%s" : "%s", dirname);
     DIR *d = opendir(pathname);
     if(d)
     {
@@ -554,19 +599,15 @@ bool listdir(const char *dirname, bool rel, const char *ext, vector<char *> &fil
             if(!ext) files.add(newstring(de->d_name));
             else
             {
-                size_t namelen = strlen(de->d_name);
-                if(namelen > extsize)
-                {
-                    namelen -= extsize;
-                    if(de->d_name[namelen] == '.' && strncmp(de->d_name+namelen+1, ext, extsize-1)==0)
-                        files.add(newstring(de->d_name, namelen));
-                }
+                int namelength = (int)strlen(de->d_name) - extsize;
+                if(namelength > 0 && de->d_name[namelength] == '.' && strncmp(de->d_name+namelength+1, ext, extsize-1)==0)
+                    files.add(newstring(de->d_name, namelength));
             }
         }
         closedir(d);
         return true;
     }
-#endif
+    #endif
     else return false;
 }
 
@@ -575,14 +616,14 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
     string dirname;
     copystring(dirname, dir);
     path(dirname);
-    size_t dirlen = strlen(dirname);
+    int dirlen = (int)strlen(dirname);
     while(dirlen > 1 && dirname[dirlen-1] == PATHDIV) dirname[--dirlen] = '\0';
     int dirs = 0;
     if(listdir(dirname, true, ext, files)) dirs++;
     string s;
     if(homedir[0])
     {
-        formatstring(s, "%s%s", homedir, dirname);
+        formatstring(s)("%s%s", homedir, dirname);
         if(listdir(s, false, ext, files)) dirs++;
     }
     loopv(packagedirs)
@@ -590,7 +631,7 @@ int listfiles(const char *dir, const char *ext, vector<char *> &files)
         packagedir &pf = packagedirs[i];
         if(pf.filter && strncmp(dirname, pf.filter, dirlen == pf.filterlen-1 ? dirlen : pf.filterlen))
             continue;
-        formatstring(s, "%s%s", pf.dir, dirname);
+        formatstring(s)("%s%s", pf.dir, dirname);
         if(listdir(s, false, ext, files)) dirs++;
     }
 #ifndef STANDALONE
@@ -645,7 +686,7 @@ stream::offset stream::size()
     return pos == endpos || seek(pos, SEEK_SET) ? endpos : -1;
 }
 
-bool stream::getline(char *str, size_t len)
+bool stream::getline(char *str, int len)
 {
     loopi(len-1)
     {
@@ -656,24 +697,22 @@ bool stream::getline(char *str, size_t len)
     return true;
 }
 
-size_t stream::printf(const char *fmt, ...)
+int stream::printf(const char *fmt, ...)
 {
     char buf[512];
     char *str = buf;
     va_list args;
 #if defined(WIN32) && !defined(__GNUC__)
     va_start(args, fmt);
-    int len = _vscprintf(fmt, args);
-    if(len <= 0) { va_end(args); return 0; }
-    if(len >= (int)sizeof(buf)) str = new char[len+1];
+    size_t len = _vscprintf(fmt, args);
+    if(len >= sizeof(buf)) str = new char[len+1];
     _vsnprintf(str, len+1, fmt, args);
     va_end(args);
 #else
     va_start(args, fmt);
-    int len = vsnprintf(buf, sizeof(buf), fmt, args);
+    size_t len = vsnprintf(buf, sizeof(buf), fmt, args);
     va_end(args);
-    if(len <= 0) return 0;
-    if(len >= (int)sizeof(buf))
+    if(len >= sizeof(buf))
     {
         str = new char[len+1];
         va_start(args, fmt);
@@ -681,7 +720,7 @@ size_t stream::printf(const char *fmt, ...)
         va_end(args);
     }
 #endif
-    size_t n = write(str, len);
+    int n = write(str, len);
     if(str != buf) delete[] str;
     return n;
 }
@@ -742,21 +781,20 @@ struct filestream : stream
 #endif
     }
 
-    size_t read(void *buf, size_t len) { return fread(buf, 1, len, file); }
-    size_t write(const void *buf, size_t len) { return fwrite(buf, 1, len, file); }
-    bool flush() { return !fflush(file); }
+    int read(void *buf, int len) { return (int)fread(buf, 1, len, file); }
+    int write(const void *buf, int len) { return (int)fwrite(buf, 1, len, file); }
     int getchar() { return fgetc(file); }
     bool putchar(int c) { return fputc(c, file)!=EOF; }
-    bool getline(char *str, size_t len) { return fgets(str, len, file)!=NULL; }
+    bool getline(char *str, int len) { return fgets(str, len, file)!=NULL; }
     bool putstring(const char *str) { return fputs(str, file)!=EOF; }
 
-    size_t printf(const char *fmt, ...)
+    int printf(const char *fmt, ...)
     {
         va_list v;
         va_start(v, fmt);
         int result = vfprintf(file, fmt, v);
         va_end(v);
-        return max(result, 0);
+        return result;
     }
 };
 
@@ -789,7 +827,7 @@ struct gzstream : stream
     uchar *buf;
     bool reading, writing, autoclose;
     uint crc;
-    size_t headersize;
+    int headersize;
 
     gzstream() : file(NULL), buf(NULL), reading(false), writing(false), autoclose(false), crc(0), headersize(0)
     {
@@ -811,15 +849,15 @@ struct gzstream : stream
         file->write(header, sizeof(header));
     }
 
-    void readbuf(size_t size = BUFSIZE)
+    void readbuf(int size = BUFSIZE)
     {
         if(!zfile.avail_in) zfile.next_in = (Bytef *)buf;
-        size = min(size, size_t(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
-        size_t n = file->read(zfile.next_in + zfile.avail_in, size);
+        size = min(size, int(&buf[BUFSIZE] - &zfile.next_in[zfile.avail_in]));
+        int n = file->read(zfile.next_in + zfile.avail_in, size);
         if(n > 0) zfile.avail_in += n;
     }
 
-    uchar readbyte(size_t size = BUFSIZE)
+    int readbyte(int size = BUFSIZE)
     {
         if(!zfile.avail_in) readbuf(size);
         if(!zfile.avail_in) return 0;
@@ -827,11 +865,11 @@ struct gzstream : stream
         return *(uchar *)zfile.next_in++;
     }
 
-    void skipbytes(size_t n)
+    void skipbytes(int n)
     {
         while(n > 0 && zfile.avail_in > 0)
         {
-            size_t skipped = min(n, size_t(zfile.avail_in));
+            int skipped = min(n, (int)zfile.avail_in);
             zfile.avail_in -= skipped;
             zfile.next_in += skipped;
             n -= skipped;
@@ -844,19 +882,19 @@ struct gzstream : stream
     {
         readbuf(10);
         if(readbyte() != MAGIC1 || readbyte() != MAGIC2 || readbyte() != Z_DEFLATED) return false;
-        uchar flags = readbyte();
+        int flags = readbyte();
         if(flags & F_RESERVED) return false;
         skipbytes(6);
         if(flags & F_EXTRA)
         {
-            size_t len = readbyte(512);
-            len |= size_t(readbyte(512))<<8;
+            int len = readbyte(512);
+            len |= readbyte(512)<<8;
             skipbytes(len);
         }
         if(flags & F_NAME) while(readbyte(512));
         if(flags & F_COMMENT) while(readbyte(512));
         if(flags & F_CRC) skipbytes(2);
-        headersize = size_t(file->tell() - zfile.avail_in);
+        headersize = int(file->tell() - zfile.avail_in);
         return zfile.avail_in > 0 || !file->end();
     }
 
@@ -875,6 +913,7 @@ struct gzstream : stream
         else if(writing && deflateInit2(&zfile, level, Z_DEFLATED, -MAX_WBITS, min(MAX_MEM_LEVEL, 8), Z_DEFAULT_STRATEGY) != Z_OK) writing = false;
         if(!reading && !writing) return false;
 
+        autoclose = needclose;
         file = f;
         crc = crc32(0, NULL, 0);
         buf = new uchar[BUFSIZE];
@@ -884,8 +923,6 @@ struct gzstream : stream
             if(!checkheader()) { stopreading(); return false; }
         }
         else if(writing) writeheader();
-
-        autoclose = needclose;
         return true;
     }
 
@@ -922,7 +959,7 @@ struct gzstream : stream
         {
             int err = zfile.avail_out > 0 ? deflate(&zfile, Z_FINISH) : Z_OK;
             if(err != Z_OK && err != Z_STREAM_END) break;
-            flushbuf();
+            flush();
             if(err == Z_STREAM_END) break;
         }
         uchar trailer[8] =
@@ -951,8 +988,8 @@ struct gzstream : stream
     }
 
     bool end() { return !reading && !writing; }
-    offset tell() { return reading ? zfile.total_out : (writing ? zfile.total_in : offset(-1)); }
-    offset rawtell() { return file ? file->tell() : offset(-1); }
+    offset tell() { return reading ? zfile.total_out : (writing ? zfile.total_in : -1); }
+    offset rawtell() { return file ? file->tell() : -1; }
 
     offset size()
     {
@@ -960,10 +997,10 @@ struct gzstream : stream
         offset pos = tell();
         if(!file->seek(-4, SEEK_END)) return -1;
         uint isize = file->getlil<uint>();
-        return file->seek(pos, SEEK_SET) ? isize : offset(-1);
+        return file->seek(pos, SEEK_SET) ? isize : -1;
     }
 
-    offset rawsize() { return file ? file->size() : offset(-1); }
+    offset rawsize() { return file ? file->size() : -1; }
 
     bool seek(offset pos, int whence)
     {
@@ -998,7 +1035,7 @@ struct gzstream : stream
         uchar skip[512];
         while(pos > 0)
         {
-            size_t skipped = (size_t)min(pos, (offset)sizeof(skip));
+            int skipped = (int)min(pos, (offset)sizeof(skip));
             if(read(skip, skipped) != skipped) { stopreading(); return false; }
             pos -= skipped;
         }
@@ -1006,7 +1043,7 @@ struct gzstream : stream
         return true;
     }
 
-    size_t read(void *buf, size_t len)
+    int read(void *buf, int len)
     {
         if(!reading || !buf || !len) return 0;
         zfile.next_out = (Bytef *)buf;
@@ -1026,12 +1063,11 @@ struct gzstream : stream
         return len - zfile.avail_out;
     }
 
-    bool flushbuf(bool full = false)
+    bool flush()
     {
-        if(full) deflate(&zfile, Z_SYNC_FLUSH);
         if(zfile.next_out && zfile.avail_out < BUFSIZE)
         {
-            if(file->write(buf, BUFSIZE - zfile.avail_out) != BUFSIZE - zfile.avail_out || (full && !file->flush()))
+            if(file->write(buf, BUFSIZE - zfile.avail_out) != int(BUFSIZE - zfile.avail_out))
                 return false;
         }
         zfile.next_out = buf;
@@ -1039,16 +1075,14 @@ struct gzstream : stream
         return true;
     }
 
-    bool flush() { return flushbuf(true); }
-
-    size_t write(const void *buf, size_t len)
+    int write(const void *buf, int len)
     {
         if(!writing || !buf || !len) return 0;
         zfile.next_in = (Bytef *)buf;
         zfile.avail_in = len;
         while(zfile.avail_in > 0)
         {
-            if(!zfile.avail_out && !flushbuf()) { stopwriting(); break; }
+            if(!zfile.avail_out && !flush()) { stopwriting(); break; }
             int err = deflate(&zfile, Z_NO_FLUSH);
             if(err != Z_OK) { stopwriting(); break; }
         }
@@ -1065,7 +1099,7 @@ struct utf8stream : stream
     };
     stream *file;
     offset pos;
-    size_t bufread, bufcarry, buflen;
+    int bufread, bufcarry, buflen;
     bool reading, writing, autoclose;
     uchar buf[BUFSIZE]; 
 
@@ -1078,13 +1112,13 @@ struct utf8stream : stream
         close();
     }
 
-    bool readbuf(size_t size = BUFSIZE)
+    bool readbuf(int size = BUFSIZE)
     {
         if(bufread >= bufcarry) { if(bufcarry > 0 && bufcarry < buflen) memmove(buf, &buf[bufcarry], buflen - bufcarry); buflen -= bufcarry; bufread = bufcarry = 0; }
-        size_t n = file->read(&buf[buflen], min(size, BUFSIZE - buflen));
+        int n = file->read(&buf[buflen], min(size, BUFSIZE - buflen));
         if(n <= 0) return false;
         buflen += n;
-        size_t carry = bufcarry;
+        int carry = bufcarry;
         bufcarry += decodeutf8(&buf[bufcarry], BUFSIZE-bufcarry, &buf[bufcarry], buflen-bufcarry, &carry);
         if(carry > bufcarry && carry < buflen) { memmove(&buf[bufcarry], &buf[carry], buflen - carry); buflen -= carry - bufcarry; }
         return true;
@@ -1092,7 +1126,7 @@ struct utf8stream : stream
 
     bool checkheader()
     {
-        size_t n = file->read(buf, 3);
+        int n = file->read(buf, 3);
         if(n == 3 && buf[0] == 0xEF && buf[1] == 0xBB && buf[2] == 0xBF) return true;
         buflen = n; 
         return false;
@@ -1108,11 +1142,11 @@ struct utf8stream : stream
         }
         if(!reading && !writing) return false;
        
+        autoclose = needclose;
         file = f;
        
         if(reading) checkheader();
  
-        autoclose = needclose;
         return true;
     } 
 
@@ -1141,7 +1175,7 @@ struct utf8stream : stream
     }
 
     bool end() { return !reading && !writing; }
-    offset tell() { return reading || writing ? pos : offset(-1); }
+    offset tell() { return reading || writing ? pos : -1; }
 
     bool seek(offset off, int whence)
     {
@@ -1167,7 +1201,7 @@ struct utf8stream : stream
         uchar skip[512];
         while(off > 0)
         {
-            size_t skipped = (size_t)min(off, (offset)sizeof(skip));
+            int skipped = (int)min(off, (offset)sizeof(skip));
             if(read(skip, skipped) != skipped) { stopreading(); return false; }
             off -= skipped;
         }
@@ -1175,14 +1209,14 @@ struct utf8stream : stream
         return true;
     }
 
-    size_t read(void *dst, size_t len)
+    int read(void *dst, int len)
     {
         if(!reading || !dst || !len) return 0;
-        size_t next = 0;
+        int next = 0;
         while(next < len)
         {
             if(bufread >= bufcarry) { if(readbuf(BUFSIZE)) continue; stopreading(); break; }
-            size_t n = min(len - next, bufcarry - bufread);
+            int n = min(len - next, bufcarry - bufread);
             memcpy(&((uchar *)dst)[next], &buf[bufread], n);
             next += n;
             bufread += n;
@@ -1191,15 +1225,15 @@ struct utf8stream : stream
         return next;
     }
 
-    bool getline(char *dst, size_t len)
+    bool getline(char *dst, int len)
     {
         if(!reading || !dst || !len) return false;
         --len;
-        size_t next = 0;
+        int next = 0;
         while(next < len)
         {
             if(bufread >= bufcarry) { if(readbuf(BUFSIZE)) continue; stopreading(); if(!next) return false; break; }
-            size_t n = min(len - next, bufcarry - bufread);
+            int n = min(len - next, bufcarry - bufread);
             uchar *endline = (uchar *)memchr(&buf[bufread], '\n', n);
             if(endline) { n = endline+1 - &buf[bufread]; len = next + n; } 
             memcpy(&((uchar *)dst)[next], &buf[bufread], n);
@@ -1211,22 +1245,20 @@ struct utf8stream : stream
         return true;
     }
 
-    size_t write(const void *src, size_t len)
+    int write(const void *src, int len)
     {
         if(!writing || !src || !len) return 0;
         uchar dst[512];
-        size_t next = 0;
+        int next = 0;
         while(next < len)
         {
-            size_t carry = 0, n = encodeutf8(dst, sizeof(dst), &((uchar *)src)[next], len - next, &carry);
+            int carry = 0, n = encodeutf8(dst, sizeof(dst), &((uchar *)src)[next], len - next, &carry);
             if(n > 0 && file->write(dst, n) != n) { stopwriting(); break; }
             next += carry;
         }
         pos += next;
         return next;
     }
-
-    bool flush() { return file->flush(); }
 };
 
 stream *openrawfile(const char *filename, const char *mode)
@@ -1260,7 +1292,7 @@ stream *opengzfile(const char *filename, const char *mode, stream *file, int lev
     stream *source = file ? file : openfile(filename, mode);
     if(!source) return NULL;
     gzstream *gz = new gzstream;
-    if(!gz->open(source, mode, !file, level)) { if(!file) delete source; delete gz; return NULL; }
+    if(!gz->open(source, mode, !file, level)) { if(!file) delete source; return NULL; }
     return gz;
 }
 
@@ -1269,26 +1301,26 @@ stream *openutf8file(const char *filename, const char *mode, stream *file)
     stream *source = file ? file : openfile(filename, mode);
     if(!source) return NULL;
     utf8stream *utf8 = new utf8stream;
-    if(!utf8->open(source, mode, !file)) { if(!file) delete source; delete utf8; return NULL; }
+    if(!utf8->open(source, mode, !file)) { if(!file) delete source; return NULL; }
     return utf8;
 }
 
-char *loadfile(const char *fn, size_t *size, bool utf8)
+char *loadfile(const char *fn, int *size, bool utf8)
 {
     stream *f = openfile(fn, "rb");
     if(!f) return NULL;
-    size_t len = f->size();
+    int len = (int)f->size();
     if(len <= 0) { delete f; return NULL; }
     char *buf = new char[len+1];
     if(!buf) { delete f; return NULL; }
-    size_t offset = 0;
+    int offset = 0;
     if(utf8 && len >= 3)
     {
         if(f->read(buf, 3) != 3) { delete f; delete[] buf; return NULL; }
         if(((uchar *)buf)[0] == 0xEF && ((uchar *)buf)[1] == 0xBB && ((uchar *)buf)[2] == 0xBF) len -= 3;
         else offset += 3;
     } 
-    size_t rlen = f->read(&buf[offset], len-offset);
+    int rlen = f->read(&buf[offset], len-offset);
     delete f;
     if(rlen != len-offset) { delete[] buf; return NULL; }
     if(utf8) len = decodeutf8((uchar *)buf, len, (uchar *)buf, len);

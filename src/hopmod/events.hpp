@@ -68,6 +68,28 @@ extern lua::event< std::tuple<int, int, int, const char *> >              event_
 extern lua::event< std::tuple<int, int, int> >                          event_passflag; // RUGBY MOD
 extern lua::event< std::tuple<int, const char *, int, int, std::vector<rlPlayerCnType>> >        event_creditflaghelpers; // RUGBY MOD
 
+// NoobMOD ...
+//extern lua::event< boost::tuple<int,const char *> >                         event_limbotext;
+//extern lua::event< boost::tuple<int,int> >                                  event_extinfo;
+//extern lua::event< boost::tuple<int,int,int,long,long,long> >               event_teleport;
+//extern lua::event< boost::tuple<int,int,long,long,long> >                   event_jumppad;
+//extern lua::event< boost::tuple<int,int> >                                  event_gunselect;
+//extern lua::event< boost::tuple<int,int,int> >                              event_pickup;
+
+//extern lua::event< boost::tuple<int, int, int, int, int, int> >             event_editentpos; // cn, id, type, 3x pos == 6
+//extern lua::event< boost::tuple<int, int, int, int, int, int, int> >        event_editentattr; // cn, id, 5x attr == 7
+extern lua::event< std::tuple<int, int, int, int, int, int, int, int, int, int> > event_loadent; // id, type, 3x pos, 5x attr == 10
+//extern lua::event< boost::tuple<int, const char *, int> >                   event_editvari;
+//extern lua::event< boost::tuple<int, const char *, lua_Number> >            event_editvarf;
+//extern lua::event< boost::tuple<int, const char *, const char *> >          event_editvars;
+//extern lua::event< boost::tuple<int, int, int> >                            event_request_spectator;
+extern lua::event< std::tuple<int, int, int, int, int, int, int, int, int> > event_try_frag; // target_cn, actor_cn, gun, from.x, from.y, from.z, to.x, to.y, to.z
+//extern lua::event< boost::tuple<int> >                                      event_takeflag_request;
+//extern lua::event< boost::tuple<int> >                                      event_scoreflag_request;
+//extern lua::event< boost::tuple<int> >                                      event_try_spawn;
+//extern lua::event< boost::tuple<int, int, int> >                            event_sending_map;
+// ... NoobMOD
+
 void register_event_idents(lua::event_environment &);
 
 #endif

@@ -10,6 +10,10 @@ extern "C"{
 #include <string>
 #include <vector>
 
+// NoobMOD ...
+extern void setclienttype(int cn, int type);
+// ... NoobMOD
+
 namespace server
 {
     struct clientinfo;
@@ -64,6 +68,38 @@ namespace server
     extern bool enable_extinfo;
     
     extern int spectator_delay;
+
+    // NoobMOD ...
+    extern int ent_id;
+    extern int ent_x;
+    extern int ent_y;
+    extern int ent_z;
+    extern int ent_type;
+    extern int ent_attr1;
+    extern int ent_attr2;
+    extern int ent_attr3;
+    extern int ent_attr4;
+    extern int ent_attr5;
+    extern int shotfx_from_x;
+    extern int shotfx_from_y;
+    extern int shotfx_from_z;
+    extern int shotfx_to_x;
+    extern int shotfx_to_y;
+    extern int shotfx_to_z;
+    extern int npos_pos_x;
+    extern int npos_pos_y;
+    extern int npos_pos_z;
+    extern int npos_vel_x;
+    extern int npos_vel_y;
+    extern int npos_vel_z;
+    extern int npos_yaw;
+    extern int npos_pitch;
+    extern int npos_roll;
+    extern int npos_move;
+    extern int npos_strafe;
+    // ... NoobMOD
+
+
     
     namespace message{
 
@@ -240,6 +276,84 @@ namespace server
     bool send_item(int item_code, int recipient);
     
     void try_respawn(clientinfo * ci, clientinfo * cq);
+
+
+    //noobmod
+    void block_cn(int cn);
+    void unblock_cn(int cn);
+    void send_fake_connect(int, int, const char *, const char *);
+    void send_fake_disconnect(int, int);
+    bool send_entity(int id);
+    bool player_send_entity(int cn, int id);
+    bool reset_entity(int id);
+    bool player_reset_entity(int cn, int id);
+
+    // NoobMOD ...
+    void send_fake_connect(int, int, const char *, const char *);
+    void send_fake_disconnect(int, int);
+//    void send_fake_text(int, int, const char *);
+//    int player_disc_reason(int cn, int reason);
+//    int player_nm_checkauth(int cn, int reason);
+//    unsigned int player_mapcrc(int);
+//    int player_lastposupdate(int);
+    bool send_entity(int id);
+    bool player_send_entity(int cn, int id);
+    bool reset_entity(int id);
+    bool player_reset_entity(int cn, int id);
+    bool send_shotfx(int cn, int gun, int id);
+    void player_send_fake_shotfx(int to_cn, int pcn, int gun, int id);
+//    void blah(int, const char *);
+//    int player_mov(lua_State *);
+//    int player_vel(lua_State *);
+//    int player_ypr(lua_State *);
+//    void set_player_pos(int cn, int x, int y, int z);
+//    void set_player_mov(int cn, int move, int strafe);
+//    void set_player_vel(int cn, int x, int y, int z);
+//    void set_player_ypr(int cn, int yaw, int pitch, int roll);
+    void player_send_fake_npos(int to_cn, int pcn);
+//    void player_send_fake_spectator(int to_cn, int pcn, int val);
+//    bool player_sendmap(int cn);
+//        bool player_sendmap_from_file(int cn, const char *filename);
+//    void player_editvari(int cn, const char *var, int value);
+//    void player_editvarf(int cn, const char *var, lua_Number value);
+//    void player_editvars(int cn, const char *var, const char *value);
+//    void send_editmode(int cn, int val);
+//    void send_fake_editmode(int cn, int ocn, int val);
+//    void spawn_player(int cn);
+    void player_send_fake_spawn(int to_cn, int pcn, int health, int maxhealth, int gunselect);
+//    void player_send_fake_slay(int to_cn, int pcn);
+//    void player_send_fake_ping(int to_cn, int pcn, int ping);
+//    void player_send_fake_gunselect(int to_cn, int pcn, int gun);
+//    void player_hitpush(int pcn, int gun, int x, int y, int z);
+    void block_cn(int cn);
+    void unblock_cn(int cn);
+//    void update_health(int cn);
+//    void send_health(int cn, int health, int armour);
+//    void player_gamestate_ammo(int cn, int gun, int ammo);
+//    void player_gamestate_health(int cn, int health, int maxhealth);
+//    void player_gamestate_armour(int cn, int armour, int armourtype);
+//    void player_gamestate_gunselect(int cn, int gunselect);
+//    void player_send_spawnstate(int to_cn, int cn);
+    void send_fake_damage(int cn, int ocn, int damage);
+    void player_send_fake_damage(int to_cn, int actor_cn, int target_cn, int damage);
+    void do_fake_damage(int actor_cn, int target_cn, int damage, int gun);
+    void player_send_fake_rename(int to_cn, int pcn, const char *name);
+    void player_send_fake_playermodel(int to_cn, int pcn, int model);
+//    void ctf_reset_flags();
+//    void ctf_send_flag_update();
+//    int ctf_add_flag(int x, int y, int z, int team);
+//    bool ctf_set_flag(int id, int x, int y, int z, int team);
+//    int ctf_get_flag(lua_State *);
+//    void player_changemap(int to_cn, const char * map, const char * mode);
+//    void set_gamespeed(int speed);
+//    void player_gamespeed(int cn, int speed);
+//    void player_force_changeteam(int cn, const char * newteam);
+//    void player_fake_changeteam(int to_cn, int cn, const char * newteam);
+//    void player_force_specmsg(int cn, int val);
+    // ... NoobMOD
+
+
+
     
 } //namespace server
 

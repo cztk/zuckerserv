@@ -1,2 +1,2 @@
-global warning_limit 1
-global warning_bantime (mins 120)
+warning_limit = 1
+warning_bantime = mins(120)

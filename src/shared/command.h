@@ -94,73 +94,67 @@ typedef void (__cdecl *identfun)();
 
 struct ident
 {
-    uchar type; // one of ID_* above
-    union
-    {
-        uchar valtype; // ID_ALIAS
-        uchar numargs; // ID_COMMAND
-    };
-    ushort flags;
-    int index;
+    int type;           // one of ID_* above
     const char *name;
     union
     {
-        struct // ID_VAR, ID_FVAR, ID_SVAR
-        {
-            union
-            {
-                struct { int minval, maxval; };     // ID_VAR
-                struct { float minvalf, maxvalf; }; // ID_FVAR
-            };
-            identvalptr storage;
-            identval overrideval;
-        };
-        struct // ID_ALIAS
-        {
-            uint *code;
-            identval val;
-            identstack *stack;
-        };
-        struct // ID_COMMAND
-        {
-            const char *args;
-            uint argmask;
-        };
+        int minval;    // ID_VAR
+        float minvalf; // ID_FVAR
+        int valtype;   // ID_ALIAS
+    };
+    union
+    {
+        int maxval;    // ID_VAR
+        float maxvalf; // ID_FVAR
+        uint *code;    // ID_ALIAS
+    };
+    union
+    {
+        const char *args;    // ID_COMMAND
+        identval val;        // ID_ALIAS
+        identvalptr storage; // ID_VAR, ID_FVAR, ID_SVAR
+    };
+    union
+    {
+        identval overrideval; // ID_VAR, ID_FVAR, ID_SVAR
+        identstack *stack;    // ID_ALIAS
+        uint argmask;         // ID_COMMAND
     };
     identfun fun; // ID_VAR, ID_FVAR, ID_SVAR, ID_COMMAND
+    int flags, index;
     
     ident() {}
     // ID_VAR
     ident(int t, const char *n, int m, int x, int *s, void *f = NULL, int flags = 0)
-        : type(t), flags(flags | (m > x ? IDF_READONLY : 0)), name(n), minval(m), maxval(x), fun((identfun)f)
+        : type(t), name(n), minval(m), maxval(x), fun((identfun)f), flags(flags | (m > x ? IDF_READONLY : 0))
     { storage.i = s; }
     // ID_FVAR
     ident(int t, const char *n, float m, float x, float *s, void *f = NULL, int flags = 0)
-        : type(t), flags(flags | (m > x ? IDF_READONLY : 0)), name(n), minvalf(m), maxvalf(x), fun((identfun)f)
+        : type(t), name(n), minvalf(m), maxvalf(x), fun((identfun)f), flags(flags | (m > x ? IDF_READONLY : 0))
     { storage.f = s; }
     // ID_SVAR
     ident(int t, const char *n, char **s, void *f = NULL, int flags = 0)
-        : type(t), flags(flags), name(n), fun((identfun)f)
+        : type(t), name(n), fun((identfun)f), flags(flags)
     { storage.s = s; }
     // ID_ALIAS
     ident(int t, const char *n, char *a, int flags)
-        : type(t), valtype(VAL_STR), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), name(n), valtype(VAL_STR), code(NULL), stack(NULL), flags(flags) 
     { val.s = a; }
     ident(int t, const char *n, int a, int flags)
-        : type(t), valtype(VAL_INT), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), name(n), valtype(VAL_INT), code(NULL), stack(NULL), flags(flags)           
     { val.i = a; }
     ident(int t, const char *n, float a, int flags)
-        : type(t), valtype(VAL_FLOAT), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), name(n), valtype(VAL_FLOAT), code(NULL), stack(NULL), flags(flags)           
     { val.f = a; }
     ident(int t, const char *n, int flags)
-        : type(t), valtype(VAL_NULL), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), name(n), valtype(VAL_NULL), code(NULL), stack(NULL), flags(flags)
     {}
     ident(int t, const char *n, const tagval &v, int flags)
-        : type(t), valtype(v.type), flags(flags), name(n), code(NULL), stack(NULL)
+        : type(t), name(n), valtype(v.type), code(NULL), stack(NULL), flags(flags)
     { val = v; }
     // ID_COMMAND
-    ident(int t, const char *n, const char *args, uint argmask, int numargs, void *f = NULL, int flags = 0)
-        : type(t), numargs(numargs), flags(flags), name(n), args(args), argmask(argmask), fun((identfun)f)
+    ident(int t, const char *n, const char *args, uint argmask, void *f = NULL, int flags = 0)
+        : type(t), name(n), args(args), argmask(argmask), fun((identfun)f), flags(flags) 
     {}
 
     void changed() { if(fun) fun(); }
@@ -189,6 +183,8 @@ struct ident
     void getval(tagval &v) const;
 };
 
+static inline bool htcmp(const char *key, const ident &id) { return !strcmp(key, id.name); }
+
 extern void addident(ident *id);
 
 extern tagval *commandret;
@@ -202,7 +198,7 @@ extern void result(const char *s);
 
 static inline int parseint(const char *s)
 {
-    return int(strtoul(s, NULL, 0));
+    return int(strtol(s, NULL, 0));
 }
 
 static inline float parsefloat(const char *s)
@@ -212,9 +208,6 @@ static inline float parsefloat(const char *s)
     double val = strtod(s, &end);
     return val || end==s || (*end!='x' && *end!='X') ? float(val) : float(parseint(s));
 }
-
-static inline void intformat(char *buf, int v, int len = 20) { nformatstring(buf, len, "%d", v); }
-static inline void floatformat(char *buf, float v, int len = 20) { nformatstring(buf, len, v==int(v) ? "%.1f" : "%.7g", v); }
 
 static inline const char *getstr(const identval &v, int type) 
 {
@@ -267,8 +260,8 @@ inline void ident::getval(tagval &v) const
 }
 
 // nasty macros for registering script functions, abuses globals to avoid excessive infrastructure
-#define KEYWORD(name, type) UNUSED static bool __dummy_##name = addkeyword(type, #name)
-#define COMMANDN(name, fun, nargs) UNUSED static bool __dummy_##fun = addcommand(#name, (identfun)fun, nargs)
+#define KEYWORD(name, type) static bool __dummy_##name = addkeyword(type, #name)
+#define COMMANDN(name, fun, nargs) static bool __dummy_##fun = addcommand(#name, (identfun)fun, nargs)
 #define COMMAND(name, nargs) COMMANDN(name, name, nargs)
 
 #define _VAR(name, global, min, cur, max, persist)  int global = variable(#name, min, cur, max, &global, NULL, persist)

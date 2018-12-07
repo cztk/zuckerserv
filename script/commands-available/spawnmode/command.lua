@@ -21,6 +21,8 @@ local help = function(cn, command)
     server.player_msg(cn, green("#spawnmode save <preset>") .. " " .. blue("save a configuration for later reuse"))
     server.player_msg(cn, green("#spawnmode list") .. " " .. red("N/A yet, shall list existing presets"))
     server.player_msg(cn, green("#spawnmode disable"))
+    server.player_msg(cn, red(">>> ") .. orange("press") .. white(" F11") .. orange(" to expand"))
+
 
 end
 
