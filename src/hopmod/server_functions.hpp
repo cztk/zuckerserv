@@ -4,7 +4,7 @@
 #include "utils/time.hpp"
 
 extern "C"{
-#include <luajit-2.0/lua.h>
+#include <luajit-2.1/lua.h>
 }
 
 #include <string>

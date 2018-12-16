@@ -1,3 +1,4 @@
+#include <functional>
 #include "resolver.hpp"
 #include "weak_ref.hpp"
 #include "module.hpp"

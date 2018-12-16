@@ -1,4 +1,5 @@
 #include "file_stream.hpp"
+#include <functional>
 #include "weak_ref.hpp"
 #include "module.hpp"
 #include "../../register_class.hpp"
@@ -7,6 +8,7 @@
 #include "../../pcall.hpp"
 #include "../../error_handler.hpp"
 #include <asio.hpp>
+
 using namespace asio;
 
 namespace lua{
