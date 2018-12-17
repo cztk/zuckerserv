@@ -28,7 +28,7 @@ namespace message{
             *millis = curmillis;
         }
         else{
-            defformatstring(error_message)(RED "Rejected %s message (wait %i seconds before resending)!", message_type, static_cast<int>(std::ceil((resend_time - wait)/1000.0)));
+            defformatstring(error_message, RED "Rejected %s message (wait %i seconds before resending)!", message_type, static_cast<int>(std::ceil((resend_time - wait)/1000.0)));
             ci->sendprivtext(error_message);
         }
 
@@ -248,7 +248,7 @@ void player_send_fake_spawn(int to_cn, int pcn, int health, int maxhealth, int g
 bool send_entity(int id)
 {
     if(id < 0) return false;
-    server_entity se = { NOTUSED, 0, false };
+    entity se = { {0,0,0}, 0,0,0,0,0, NOTUSED, 0, 0, false, 0 };
     int start = sents.length();
     for(int i=start; i<=id; i++) sents.add(se);
     sents[id].type = ent_type;
@@ -272,7 +272,7 @@ bool player_send_entity(int cn, int id)
     clientinfo * ci = getinfo(cn);
     if(ci)
     {
-        server_entity se = { NOTUSED, 0, false };
+        entity se = { {0,0,0}, 0,0,0,0,0, NOTUSED, 0, 0, false, 0 };
         int start = sents.length();
         for(int i=start; i<=id; i++) sents.add(se);
         sents[id].type = ent_type;
@@ -1000,7 +1000,7 @@ void unsetmaster()
         clientinfo * master = clients[i];
         if(master->privilege != PRIV_MASTER) continue;
         
-        defformatstring(msg)("The server has revoked your master privilege.");
+        defformatstring(msg, "The server has revoked your master privilege.");
         master->sendprivtext(msg);
         
         master->privilege = PRIV_NONE;
@@ -1047,7 +1047,7 @@ void set_player_privilege(int cn, int priv_code, bool public_priv = false)
     else
         change = (old_priv < player->privilege ? "\fs\f2raised\fr" : "\fs\f0lowered\fr");
     
-    defformatstring(msg)(message::set_player_privilege, change, public_priv ? "" : "\fs\f4invisible\fr ", privname(priv_code));
+    defformatstring(msg, message::set_player_privilege, change, public_priv ? "" : "\fs\f4invisible\fr ", privname(priv_code));
     player->sendprivtext(msg);
     
     send_currentmaster();

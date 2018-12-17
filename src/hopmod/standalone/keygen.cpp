@@ -12,7 +12,7 @@ int))
         return -1;
 
     vector<char> privkey, pubkey;
-    genprivkey(seed, privkey, pubkey, sizeof(seed));
+    genprivkey(seed, privkey, pubkey);
     
     puts(privkey.getbuf());
     puts(pubkey.getbuf());

@@ -5,6 +5,7 @@ extern int lastmillis;                  // last time
 extern int elapsedtime;                 // elapsed frame time
 extern int totalmillis;                 // total elapsed time
 extern ullong startup;
+extern uint totalsecs;
 extern int gamespeed, paused;
 
 enum
@@ -295,6 +296,7 @@ extern vec worldpos, camdir, camright, camup;
 extern void disablezoom();
 
 extern vec calcavatarpos(const vec &pos, float dist);
+extern vec calcmodelpreviewpos(const vec &radius, float &yaw);
 
 extern void damageblend(int n);
 extern void damagecompass(int n, const vec &loc);
@@ -365,12 +367,12 @@ extern bool loadents(const char *fname, vector<entity> &ents, uint *crc = NULL);
 
 // physics
 extern vec collidewall;
-extern bool collideinside;
+extern int collideinside;
 extern physent *collideplayer;
 
 extern void moveplayer(physent *pl, int moveres, bool local);
 extern bool moveplayer(physent *pl, int moveres, bool local, int curtime);
-extern bool collide(physent *d, const vec &dir = vec(0, 0, 0), float cutoff = 0.0f, bool playercol = true);
+extern bool collide(physent *d, const vec &dir = vec(0, 0, 0), float cutoff = 0.0f, bool playercol = true, bool insideplayercol = false);
 extern bool bounce(physent *d, float secs, float elasticity, float waterfric, float grav);
 extern bool bounce(physent *d, float elasticity, float waterfric, float grav);
 extern void avoidcollision(physent *d, const vec &dir, physent *obstacle, float space);
@@ -501,7 +503,7 @@ extern void gets2c();
 extern void notifywelcome();
 
 // crypto
-extern void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr, int seedlength);
+extern void genprivkey(const char *seed, vector<char> &privstr, vector<char> &pubstr);
 extern bool hashstring(const char *str, char *result, int maxlen);
 extern void answerchallenge(const char *privstr, const char *challenge, vector<char> &answerstr);
 extern void *parsepubkey(const char *pubstr);
@@ -555,6 +557,7 @@ struct g3d_gui
     virtual int texture(VSlot &vslot, float scale, bool overlaid = true) = 0;
     virtual int playerpreview(int model, int team, int weap, float scale, bool overlaid = false) { return 0; }
     virtual int modelpreview(const char *name, int anim, float scale, bool overlaid = false) { return 0; }
+    virtual int prefabpreview(const char *prefab, const vec &color, float scale, bool overlaid = false) { return 0; }
     virtual void slider(int &val, int vmin, int vmax, int color, const char *label = NULL) = 0;
     virtual void separator() = 0;
 	virtual void progress(float percent) = 0;

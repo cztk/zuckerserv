@@ -5,19 +5,21 @@
 
 #ifdef SERVMODE
 
+
 struct ctfservmode : servmode
 #else
 struct ctfclientmode : clientmode
 #endif
 {
-    static const int BASERADIUS = 64;
-    static const int BASEHEIGHT = 24;
-    static const int MAXFLAGS = 20;
-    static const int FLAGRADIUS = 16;
-    static const int FLAGLIMIT = 10;
-    static const int MAXHOLDSPAWNS = 100;
-    static const int HOLDFLAGS = 1;
-    static const int RESPAWNSECS = 5;
+    int BASERADIUS = 64;
+    int BASEHEIGHT = 24;
+    int MAXFLAGS = 20;
+    int FLAGRADIUS = 16;
+    int FLAGLIMIT = 10;
+    int MAXHOLDSPAWNS = 100;
+    int HOLDSECS = 20;
+    int HOLDFLAGS = 1;
+    int RESPAWNSECS = 5;
 
     struct flag
     {
@@ -144,12 +146,9 @@ struct ctfclientmode : clientmode
             clientinfo *prevci = getinfo(f.owner);
             std::string teama (ci->team);
             std::string teamb (prevci->team);
-            
-            printf("teamdata: %s  %s\n", ci->team, prevci->team);
-            if (teamb.find(teama) == std::string::npos) 
-//            if( ci->team != prevci->team )
+
+            if (teamb.find(teama) == std::string::npos)
             {
-                printf(" reset f.starttimemssameteaminarow = totalmillis at ownflag team != team \n");
                 f.starttimemssameteaminarow = totalmillis;
             }
         }
@@ -211,7 +210,6 @@ struct ctfclientmode : clientmode
         f.dropper = dropper;
         f.owner = -1;
         f.starttimemssameteaminarow = 0;
-        printf(" reset f.starttimemssameteaminarow = 0 at dropflag\n");
         f.invistime = 0;
         f.tmillis = -1;
         f.drops++;
@@ -239,7 +237,6 @@ struct ctfclientmode : clientmode
         f.drops = 0;
         f.used_rugby = false; // RUGBY MOD
         f.starttimemssameteaminarow = 0;
-        printf(" reset f.starttimemssameteaminarow = 0 at returnflag \n");
         f.rugby_clients.clear(); // RUGBY MOD
         f.rugby_clients.resize(0); // RUGBY MOD
 #else
@@ -285,7 +282,8 @@ struct ctfclientmode : clientmode
     }
 
 #ifdef SERVMODE
-    static const int RESETFLAGTIME = 10000;
+    int RESETFLAGTIME = 10000;
+    int INVISFLAGTIME = 20000;
 
     bool notgotflags;
 
@@ -367,7 +365,7 @@ struct ctfclientmode : clientmode
                        f.rugby_clients[j].lastowntime = totalmillis;
                    }
                 }
-                if(f.rugby_clients.size() > 1) f.used_rugby = true; 
+                if(f.rugby_clients.size() > 1) f.used_rugby = true;
                 f.starttimemssameteaminarow = 0;
                 printf(" reset f.starttimemssameteaminarow = 00 at dropflagg \n");
 
@@ -391,8 +389,8 @@ struct ctfclientmode : clientmode
         loopv(flags) if(flags[i].dropper == ci->clientnum) { flags[i].dropper = -1; flags[i].dropcount = 0; }
     }
 
-    bool canspawn(clientinfo *ci, bool connecting) 
-    { 
+    bool canspawn(clientinfo *ci, bool connecting)
+    {
         return m_efficiency || !m_protect ? connecting || !ci->state.lastdeath || gamemillis+curtime-ci->state.lastdeath >= RESPAWNSECS*1000 : true;
     }
 
@@ -446,7 +444,7 @@ struct ctfclientmode : clientmode
         if(m_hold) spawnflag(goal);
         sendf(-1, 1, "rii9", N_SCOREFLAG, ci->clientnum, relay, relay >= 0 ? ++flags[relay].version : -1, goal, ++flags[goal].version, flags[goal].spawnindex, team, score, ci->state.flags);
         event_scoreflag(event_listeners(), std::make_tuple(ci->clientnum, ci->team, score, timetrial, flags[flagIndex].used_rugby));
-        
+
         if(score >= FLAGLIMIT) startintermission();
     }
 
@@ -547,7 +545,7 @@ struct ctfclientmode : clientmode
                 f.invistime = 0;
                 sendf(-1, 1, "ri3", N_INVISFLAG, i, 0);
             }
-            if(m_hold && f.owner>=0 && 
+            if(m_hold && f.owner>=0 &&
                 (
                   ( 0 == rugby_enabled && (lastmillis - f.owntime >= ctf_m_hold_HOLDSECS) ) ||
                   ( 1 == rugby_enabled && ( 0 < f.starttimemssameteaminarow && totalmillis - f.starttimemssameteaminarow >= ctf_m_hold_HOLDSECS) )

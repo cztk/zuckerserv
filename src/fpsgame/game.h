@@ -3,9 +3,7 @@
 
 #include "cube.h"
 
-
 #define PROTOCOL_VERSION 259            // bump when protocol changes
-
 
 // console message types
 
@@ -65,8 +63,8 @@ enum
 struct fpsentity : extentity
 {
     int triggerstate, lasttrigger;
-    
-    fpsentity() : triggerstate(TRIGGER_RESET), lasttrigger(0) {} 
+
+    fpsentity() : triggerstate(TRIGGER_RESET), lasttrigger(0) {}
 };
 
 enum { GUN_FIST = 0, GUN_SG, GUN_CG, GUN_RL, GUN_RIFLE, GUN_GL, GUN_PISTOL, GUN_FIREBALL, GUN_ICEBALL, GUN_SLIMEBALL, GUN_BITE, GUN_BARREL, NUMGUNS };
@@ -211,7 +209,7 @@ enum
     S_CHAINSAW_IDLE,
 
     S_HIT,
-    
+
     S_FLAGFAIL
 };
 
@@ -287,10 +285,6 @@ static const int msgsizes[] =               // size inclusive message token, 0 f
     -1
 };
 
-#define SAUERBRATEN_LANINFO_PORT 28784
-#define SAUERBRATEN_SERVER_PORT 28785
-#define SAUERBRATEN_SERVINFO_PORT 28786
-#define SAUERBRATEN_MASTER_PORT 28787
 #define DEMO_VERSION 1                  // bump when demo format changes
 #define DEMO_MAGIC "SAUERBRATEN_DEMO"
 
@@ -538,7 +532,7 @@ struct fpsstate
         }
         else if(m_sp)
         {
-            if(m_dmsp) 
+            if(m_dmsp)
             {
                 armourtype = A_BLUE;
                 armour = 25;
@@ -613,8 +607,7 @@ struct fpsent : dynent, fpsstate
     void hitpush(int damage, const vec &dir, fpsent *actor, int gun)
     {
         vec push(dir);
-        push.mul(80*damage/weight);
-        if(gun==GUN_RL || gun==GUN_GL) push.mul(actor==this ? 5 : (type==ENT_AI ? 3 : 2));
+        push.mul((actor==this && guns[gun].exprad ? EXP_SELFPUSH : 1.0f)*guns[gun].hitpush*damage/weight);
         vel.add(push);
     }
 
@@ -649,6 +642,7 @@ struct fpsent : dynent, fpsstate
         lastnode = -1;
     }
 };
+
 struct teamscore
 {
     const char *team;
@@ -706,6 +700,7 @@ namespace entities
 
 namespace game
 {
+
     struct clientmode
     {
         virtual ~clientmode() {}
@@ -720,7 +715,6 @@ namespace game
         virtual int respawnwait(fpsent *d) { return 0; }
         virtual void pickspawn(fpsent *d) { findplayerspawn(d); }
         virtual void senditems(packetbuf &p) {}
-        virtual const char *prefixnextmap() { return ""; }
         virtual void removeplayer(fpsent *d) {}
         virtual void gameover() {}
         virtual bool hidefrags() { return false; }
@@ -788,8 +782,11 @@ namespace game
     extern void sendmapinfo();
     extern void stopdemo();
     extern void changemap(const char *name, int mode);
+    extern void forceintermission();
     extern void c2sinfo(bool force = false);
     extern void sendposition(fpsent *d, bool reliable = false);
+
+    extern void printname();
 
     // monster
     struct monster;

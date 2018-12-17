@@ -95,7 +95,7 @@ bool vec_equal(vec a, vec b)
 extern bool anti_cheat_enabled;
 extern int is_invisible(int);
 extern void cheat(int cn, int cheat, int info1, const char *info2="");
-extern vector<server_entity> sents;
+extern vector<entity> sents;
 extern clientinfo *getinfo(int n);
 
 class anticheat
@@ -371,7 +371,7 @@ class anticheat
         if (initialized && lastspawn > -1 && totalmillis - lastspawn >= 2000)
         {
             //if (!is_item_mode() && impossible(1, item)) return;
-            defformatstring(info)("TRIED ITEM: %i ITEMLIST LENGTH: %i", item, len);
+            defformatstring(info, "TRIED ITEM: %i ITEMLIST LENGTH: %i", item, len);
             cheat(clientnum, 19, 0, info);
         }
     }
@@ -385,7 +385,7 @@ class anticheat
         if (initialized && lastspawn > -1 && totalmillis - lastspawn >= 2000)
         {
             //if (!is_item_mode() && impossible(0, item)) return; // There are item pick ups in insta. You just don't see them.
-            defformatstring(info)("TRIED ITEM: %i SPAWNTIME: %i", item, spawntime);
+            defformatstring(info, "TRIED ITEM: %i SPAWNTIME: %i", item, spawntime);
             cheat(clientnum, 20, 0, info);
         }
     }
@@ -833,7 +833,7 @@ void anti_cheat_parsepacket(int type, clientinfo *ci, clientinfo *cq, packetbuf 
             {
                 while((n = getint(p))>=0 && n<MAXENTS && !p.overread())
                 {
-                    int item_type = getint(p);
+                    unsigned int item_type = (uint)getint(p);
                     if(!sents.inrange(n))
                     {
                         ac->modified_map_items();

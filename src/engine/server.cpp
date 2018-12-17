@@ -6,7 +6,7 @@
 #include <signal.h>
 #include <asio.hpp>
 #include <asio/high_resolution_timer.hpp>
-
+#include "shared/server.h"
 using namespace asio;
 #include <hopmod/utils/time.hpp>
 #include <hopmod/net/address.hpp>

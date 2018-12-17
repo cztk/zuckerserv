@@ -69,6 +69,7 @@ namespace game
     extern void resetgamestate();
     extern void suicide(physent *d);
     extern void newmap(int size);
+    extern void loadingmap(const char *name);
     extern void startmap(const char *name);
     extern void preload();
     extern float abovegameplayhud(int w, int h);
@@ -110,7 +111,6 @@ namespace server
     extern void serverinit();
     extern void cleanup_fpsgame(int shutdown_type);
     extern int reserveclients();
-    extern int numchannels();
     extern void clientdisconnect(int n,int reason);
     extern int clientconnect(int n, uint ip);
     extern void localdisconnect(int n);
@@ -123,9 +123,6 @@ namespace server
     extern void serverinforeply(ucharbuf &req, ucharbuf &p);
     extern void serverupdate();
     extern bool servercompatible(char *name, char *sdec, char *map, int ping, const vector<int> &attr, int np);
-    extern int laninfoport();
-    extern int serverinfoport(int servport = -1);
-    extern int serverport(int infoport = -1);
     extern const char *defaultmaster();
     extern int masterport();
     extern void processmasterinput(const char *cmd, int cmdlen, const char *args);
@@ -133,8 +130,6 @@ namespace server
     extern void shutdown();
     extern void masterconnected();
     extern void masterdisconnected();
-    extern bool ispaused();
-    extern int scaletime(int t);
     extern bool ctftkpenalty;
     extern bool spec_slots;
     extern bool anti_cheat_enabled;

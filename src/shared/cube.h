@@ -3,18 +3,10 @@
 
 #define _FILE_OFFSET_BITS 64
 
-#ifdef __GNUC__
-#define gamma __gamma
-#endif
-
 #ifdef WIN32
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-
-#ifdef __GNUC__
-#undef gamma
-#endif
 
 #include <string.h>
 #include <stdio.h>
@@ -23,11 +15,6 @@
 #include <stdarg.h>
 #include <limits.h>
 #include <assert.h>
-#ifdef __GNUC__
-#include <new>
-#else
-#include <new.h>
-#endif
 #include <time.h>
 
 #ifdef WIN32
@@ -43,13 +30,22 @@
   #ifndef __GNUC__
     #include <eh.h>
     #include <dbghelp.h>
+    #include <intrin.h>
   #endif
   #define ZLIB_DLL
 #endif
 
 #ifndef STANDALONE
-#include <SDL.h>
-#include <SDL_opengl.h>
+  #ifdef __APPLE__
+    #include "SDL2/SDL.h"
+    #define GL_GLEXT_LEGACY
+    #define __glext_h_
+    #include <OpenGL/gl.h>
+    #define main SDL_main
+  #else
+    #include <SDL.h>
+    #include <SDL_opengl.h>
+  #endif
 #endif
 
 #include <enet/enet.h>
