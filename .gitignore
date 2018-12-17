@@ -13,3 +13,7 @@ script/package/luatz/
 certbot.log
 /share/
 /CMakeFiles
+src/enet/Makefile
+src/enet/Makefile.in
+src/enet/aclocal.m4
+src/enet/configure
