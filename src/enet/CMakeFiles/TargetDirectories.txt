@@ -1,7 +1,0 @@
-/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/install/strip.dir
-/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/install/local.dir
-/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/enet.dir
-/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/edit_cache.dir
-/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/rebuild_cache.dir
-/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/install.dir
-/home/suckerserv/orig/zuckerserv/src/enet/CMakeFiles/list_install_components.dir
