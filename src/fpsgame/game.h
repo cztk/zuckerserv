@@ -4,7 +4,7 @@
 #include "cube.h"
 
 #define PROTOCOL_VERSION 259            // bump when protocol changes
-
+#define ZUCKER_PROTOCOL_VERSION 1 // bump when ...
 // console message types
 
 enum
@@ -282,6 +282,18 @@ static const int msgsizes[] =               // size inclusive message token, 0 f
     N_INITTOKENS, 0, N_TAKETOKEN, 2, N_EXPIRETOKENS, 0, N_DROPTOKENS, 0, N_DEPOSITTOKENS, 2, N_STEALTOKENS, 0,
     N_SERVCMD, 0,
     N_DEMOPACKET, 0,
+    -1
+};
+
+enum
+{
+    Z_IDENT = 0,
+    NUMZUCKERMSG
+};
+
+static const int zuckermsgsizes[] =
+{
+    Z_IDENT, 1,
     -1
 };
 

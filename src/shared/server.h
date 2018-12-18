@@ -24,7 +24,7 @@ namespace server {
     inline int serverport(int infoport = -1) { return infoport < 0 ? SAUERBRATEN_SERVER_PORT : infoport-1; }
     inline const char *defaultmaster() { return "master.sauerbraten.org"; }
     inline int masterport() { return SAUERBRATEN_MASTER_PORT; }
-    inline int numchannels() { return 3; }
+    inline int numchannels() { return 4; }
     inline int scaletime(int t) { return t*gamespeed; }
     inline bool ispaused() { return gamepaused; }
 }

@@ -2276,11 +2276,34 @@ namespace server
         event_connect(event_listeners(), std::make_tuple(ci->clientnum, ci->spy));
     }
 
+    void parsezucker(int sender, int chan, packetbuf &p)
+    {
+        char text[MAXTRANS];
+        int type;
+        clientinfo *ci = sender>=0 ? getinfo(sender) : NULL, *cq = ci, *cm = ci;
+        if(ci && ci->connected)
+        {
+            while(p.length() < p.maxlen)
+            {
+                switch(getint(p))
+                {
+                    case Z_IDENT:
+                        ci->zucker_proto = (uint)getint(p);
+                        ci->sendprivtext(RED "Thank you for choosing quality zucker.");
+                    break;
+                }
+            }
+        }
+    }
+
     void parsepacket(int sender, int chan, packetbuf &p)     // has to parse exactly each byte of the packet
     {
-        timer parsepacket_time;
+        if(sender<0) return;
+        if(3 == chan) return parsezucker(sender, chan, p);
 
-        if(sender<0 || p.packet->flags&ENET_PACKET_FLAG_UNSEQUENCED || chan > 2) return;
+        if(p.packet->flags&ENET_PACKET_FLAG_UNSEQUENCED || chan > 2) return;
+
+        timer parsepacket_time;
         char text[MAXTRANS];
         int type;
         clientinfo *ci = sender>=0 ? getinfo(sender) : NULL, *cq = ci, *cm = ci;
@@ -2316,6 +2339,7 @@ namespace server
                         ci->connectauth = disc;
                     }
                     else connected(ci);
+                    sendf(ci->clientnum, 3, "rii", Z_IDENT, ZUCKER_PROTOCOL_VERSION);
                     break;
                 }
 

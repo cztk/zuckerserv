@@ -220,6 +220,7 @@ namespace server
 
     struct clientinfo
     {
+        uint zucker_proto;
         int n;
         int clientnum, ownernum, connectmillis, specmillis, sessionid, overflow, playerid;
         string name, team, mapvote;
@@ -272,6 +273,7 @@ namespace server
         bool allow_self_unspec;
         
         clientinfo():
+            zucker_proto(0),
             getdemo(NULL),
             getmap(NULL),
             clipboard(NULL),
