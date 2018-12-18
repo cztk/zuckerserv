@@ -8,11 +8,6 @@ mkdir server
 cd server
 wget https://to.tbmc.party/gitlist/zuckerserv/tarball/master -O zuckerserv.tar.gz
 tar xf zuckerserv.tar.gz
-cd src/enet
-automake
-./configure
-make
-sudo make install
 ./compile.sh --recompile
 exit
 mysql_secure_installation
