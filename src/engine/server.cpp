@@ -636,7 +636,7 @@ bool servererror(bool dedicated, const char *desc)
     return false;
 }
 
-int easyEnet_host_connect_cookies(ENetHost* host, int connectingPeerTimeout, unsigned char windowRatio)
+/*int easyEnet_host_connect_cookies(ENetHost* host, int connectingPeerTimeout, unsigned char windowRatio)
 {
     static ENetRandom random{
       0, [](void*)
@@ -648,7 +648,7 @@ int easyEnet_host_connect_cookies(ENetHost* host, int connectingPeerTimeout, uns
     };
     return connectingPeerTimeout >= 0 ? enet_host_connect_cookies(host, &random, connectingPeerTimeout, windowRatio) : enet_host_connect_cookies(host, 0, 0, 0);
 }
-
+*/
 bool setuplistenserver(bool dedicated)
 {
     ENetAddress address = { ENET_HOST_ANY, serverport <= 0 ? static_cast<enet_uint16>(server::serverport()) : static_cast<enet_uint16>(serverport) };
@@ -673,11 +673,11 @@ bool setuplistenserver(bool dedicated)
     }
     serverhost->duplicatePeers = 10;
 
-    if (0 != easyEnet_host_connect_cookies(serverhost, 500, 0))
+/*    if (0 != easyEnet_host_connect_cookies(serverhost, 500, 0))
     {
         return servererror(dedicated, "could not enable cookies");
     }
-
+*/
     if (enet_socket_set_option(serverhost->socket, ENET_SOCKOPT_RCVBUF, 5000000) == -1)
     {
         std::cout<<"Cannot set receive buffer size"<<std::endl;
