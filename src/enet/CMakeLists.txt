@@ -1,94 +1,94 @@
-project(enet C)
+cmake_minimum_required(VERSION 2.6)
 
-option(USE_CRC32 "Whether to use CRC32 packet verification")
+project(enet)
 
-if(USE_CRC32)
-    add_definitions(-DUSE_CRC32)
-endif(USE_CRC32)
-
+# The "configure" step.
 include(CheckFunctionExists)
+include(CheckStructHasMember)
 include(CheckTypeSize)
+check_function_exists("fcntl" HAS_FCNTL)
+check_function_exists("poll" HAS_POLL)
+check_function_exists("getaddrinfo" HAS_GETADDRINFO)
+check_function_exists("getnameinfo" HAS_GETNAMEINFO)
+check_function_exists("gethostbyname_r" HAS_GETHOSTBYNAME_R)
+check_function_exists("gethostbyaddr_r" HAS_GETHOSTBYADDR_R)
+check_function_exists("inet_pton" HAS_INET_PTON)
+check_function_exists("inet_ntop" HAS_INET_NTOP)
+check_struct_has_member("struct msghdr" "msg_flags" "sys/types.h;sys/socket.h" HAS_MSGHDR_FLAGS)
+set(CMAKE_EXTRA_INCLUDE_FILES "sys/types.h" "sys/socket.h")
+check_type_size("socklen_t" HAS_SOCKLEN_T BUILTIN_TYPES_ONLY)
+unset(CMAKE_EXTRA_INCLUDE_FILES)
+if(MSVC)
+	add_definitions(-W3)
+else()
+	add_definitions(-Wno-error)
+endif()
 
-check_function_exists(getaddrinfo     GETADDRINFO_FUNCTION_FOUND)
-check_function_exists(getnameinfo     GETNAMEINFO_FUNCTION_FOUND)
-check_function_exists(gethostbyaddr_r GETHOSTBYADDR_R_FUNCTION_FOUND)
-check_function_exists(gethostbyname_r GETHOSTBYNAME_R_FUNCTION_FOUND)
-check_function_exists(poll            POLL_FUNCTION_FOUND)
-check_function_exists(fcntl           FCNTL_FUNCTION_FOUND)
-check_function_exists(inet_pton       INET_PTON_FUNCTION_FOUND)
-check_function_exists(inet_ntop       INET_NTOP_FUNCTION_FOUND)
-
-if(GETADDRINFO_FUNCTION_FOUND)
-    add_definitions(-DHAS_GETADDRINFO)
-endif(GETADDRINFO_FUNCTION_FOUND)
-
-if(GETNAMEINFO_FUNCTION_FOUND)
-    add_definitions(-DHAS_GETNAMEINFO)
-endif(GETNAMEINFO_FUNCTION_FOUND)
-
-if(GETHOSTBYADDR_R_FUNCTION_FOUND)
-    add_definitions(-DHAS_GETHOSTBYADDR_R)
-endif(GETHOSTBYADDR_R_FUNCTION_FOUND)
-
-if(GETHOSTBYNAME_R_FUNCTION_FOUND)
-    add_definitions(-DHAS_GETHOSTBYNAME_R)
-endif(GETHOSTBYNAME_R_FUNCTION_FOUND)
-
-if(POLL_FUNCTION_FOUND)
-    add_definitions(-DHAS_POLL)
-endif(POLL_FUNCTION_FOUND)
-
-if(FCNTL_FUNCTION_FOUND)
-    add_definitions(-DHAS_FCNTL)
-endif(FCNTL_FUNCTION_FOUND)
-
-if(INET_PTON_FUNCTION_FOUND)
-    add_definitions(-DHAS_INET_PTON)
-endif(INET_PTON_FUNCTION_FOUND)
-
-if(INET_NTOP_FUNCTION_FOUND)
-    add_definitions(-DHAS_INET_NTOP)
-endif(INET_NTOP_FUNCTION_FOUND)
-
-set(CMAKE_EXTRA_INCLUDE_FILES sys/types.h sys/socket.h)
-check_type_size(socklen_t HAS_SOCKLEN_T)
-set(CMAKE_EXTRA_INCLUDE_FILES)
-
+if(HAS_FCNTL)
+    add_definitions(-DHAS_FCNTL=1)
+endif()
+if(HAS_POLL)
+    add_definitions(-DHAS_POLL=1)
+endif()
+if(HAS_GETNAMEINFO)
+    add_definitions(-DHAS_GETNAMEINFO=1)
+endif()
+if(HAS_GETADDRINFO)
+    add_definitions(-DHAS_GETADDRINFO=1)
+endif()
+if(HAS_GETHOSTBYNAME_R)
+    add_definitions(-DHAS_GETHOSTBYNAME_R=1)
+endif()
+if(HAS_GETHOSTBYADDR_R)
+    add_definitions(-DHAS_GETHOSTBYADDR_R=1)
+endif()
+if(HAS_INET_PTON)
+    add_definitions(-DHAS_INET_PTON=1)
+endif()
+if(HAS_INET_NTOP)
+    add_definitions(-DHAS_INET_NTOP=1)
+endif()
+if(HAS_MSGHDR_FLAGS)
+    add_definitions(-DHAS_MSGHDR_FLAGS=1)
+endif()
 if(HAS_SOCKLEN_T)
-    add_definitions(-DHAS_SOCKLEN_T)
-endif(HAS_SOCKLEN_T)
+    add_definitions(-DHAS_SOCKLEN_T=1)
+endif()
 
-set(ENET_LIBRARY 
-    enet 
-    CACHE INTERNAL "enet library")
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
-set(ENET_INCLUDE_DIRS 
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    CACHE INTERNAL "enet public include directories")
+set(INCLUDE_FILES_PREFIX include/enet)
+set(INCLUDE_FILES
+    ${INCLUDE_FILES_PREFIX}/callbacks.h
+    ${INCLUDE_FILES_PREFIX}/enet.h
+    ${INCLUDE_FILES_PREFIX}/list.h
+    ${INCLUDE_FILES_PREFIX}/protocol.h
+    ${INCLUDE_FILES_PREFIX}/time.h
+    ${INCLUDE_FILES_PREFIX}/types.h
+    ${INCLUDE_FILES_PREFIX}/unix.h
+    ${INCLUDE_FILES_PREFIX}/utility.h
+    ${INCLUDE_FILES_PREFIX}/win32.h
+)
 
-IF(NOT CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-    add_definitions( -O2)
-ENDIF(NOT CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+set(SOURCE_FILES
+    callbacks.c
+    compress.c
+    host.c
+    list.c
+    packet.c
+    peer.c
+    protocol.c
+    unix.c
+    win32.c)
 
-set(ENET_SOURCES
-	host.c
-	list.c
-	callbacks.c
-	compress.c
-	packet.c
-	peer.c
-	protocol.c
-	unix.c
-	win32.c)
+source_group(include FILES ${INCLUDE_FILES})
+source_group(source FILES ${SOURCE_FILES})
 
-include_directories(${ENET_INCLUDE_DIRS})
+add_library(enet STATIC
+    ${INCLUDE_FILES}
+    ${SOURCE_FILES}
+)
 
-add_library(${ENET_LIBRARY} STATIC ${ENET_SOURCES})
-
-install(TARGETS 
-            ${ENET_LIBARY} 
-       LIBRARY DESTINATION
-            ${INSTALL_LIBRARY_DIR} 
-       ARCHIVE DESTINATION
-            ${INSTALL_LIBRARY_DIR})
-
+if (MINGW)
+    target_link_libraries(enet winmm ws2_32)
+endif()

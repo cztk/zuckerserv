@@ -62,8 +62,7 @@ typedef enum _ENetSocketOption
    ENET_SOCKOPT_RCVTIMEO  = 6,
    ENET_SOCKOPT_SNDTIMEO  = 7,
    ENET_SOCKOPT_ERROR     = 8,
-   ENET_SOCKOPT_NODELAY   = 9,
-   ENET_SOCKOPT_PKTINFO   = 10
+   ENET_SOCKOPT_NODELAY   = 9
 } ENetSocketOption;
 
 typedef enum _ENetSocketShutdown
@@ -144,7 +143,6 @@ typedef void (ENET_CALLBACK * ENetPacketFreeCallback) (struct _ENetPacket *);
  *    (instead of reliable) sends if it exceeds the MTU
  *
  *    ENET_PACKET_FLAG_SENT - whether the packet has been sent from all queues it has been entered into
- 
    @sa ENetPacketFlag
  */
 typedef struct _ENetPacket
@@ -217,10 +215,6 @@ enum
    ENET_HOST_DEFAULT_MTU                  = 1400,
    ENET_HOST_DEFAULT_MAXIMUM_PACKET_SIZE  = 32 * 1024 * 1024,
    ENET_HOST_DEFAULT_MAXIMUM_WAITING_DATA = 32 * 1024 * 1024,
-   ENET_HOST_DEFAULT_CONNECTING_PEER_TIMEOUT = 2000,
-   ENET_HOST_CONNECTS_TIME_DELTA          = 100,
-   ENET_HOST_CONNECTS_CLEANUP_SIZE        = 1024 * 1024,
-   ENET_HOST_DEFAULT_CONNECTS_WINDOW_RATIO = 10,
 
    ENET_PEER_DEFAULT_ROUND_TRIP_TIME      = 500,
    ENET_PEER_DEFAULT_PACKET_THROTTLE      = 32,
@@ -241,8 +235,7 @@ enum
    ENET_PEER_FREE_UNSEQUENCED_WINDOWS     = 32,
    ENET_PEER_RELIABLE_WINDOWS             = 16,
    ENET_PEER_RELIABLE_WINDOW_SIZE         = 0x1000,
-   ENET_PEER_FREE_RELIABLE_WINDOWS        = 8,
-   ENET_PEER_MINIMUM_TIME_SENT_MASK       = 3
+   ENET_PEER_FREE_RELIABLE_WINDOWS        = 8
 };
 
 typedef struct _ENetChannel
@@ -257,26 +250,6 @@ typedef struct _ENetChannel
    ENetList     incomingUnreliableCommands;
 } ENetChannel;
 
-typedef struct _ENetConnectingPeer
-{
-   ENetAddress   address;
-   ENetAddress   localAddress;
-   enet_uint32   realTimeSent;
-   enet_uint32   connectID;
-   enet_uint32   incomingBandwidth;
-   enet_uint32   outgoingBandwidth;
-   enet_uint32   packetThrottleAcceleration;
-   enet_uint32   packetThrottleDeceleration;
-   enet_uint32   packetThrottleInterval;
-   enet_uint32   eventData;
-   enet_uint32   mtu;
-   enet_uint16   windowSize;
-   enet_uint16   randomTimeSent;
-   enet_uint16   outgoingPeerID;
-   enet_uint8    channelCount;
-   enet_uint8    outgoingSessionID;
-} ENetConnectingPeer;
-
 /**
  * An ENet peer which data packets may be sent or received from. 
  *
@@ -286,8 +259,6 @@ typedef struct _ENetPeer
 { 
    ENetListNode  dispatchList;
    struct _ENetHost * host;
-   ENetConnectingPeer (* connectingPeers) [ENET_PROTOCOL_TOTAL_SESSIONS];
-   enet_uint32   connectingPeersTimeMask;
    enet_uint16   outgoingPeerID;
    enet_uint16   incomingPeerID;
    enet_uint32   connectID;
@@ -346,9 +317,6 @@ typedef struct _ENetPeer
    enet_uint32   unsequencedWindow [ENET_PEER_UNSEQUENCED_WINDOW_SIZE / 32]; 
    enet_uint32   eventData;
    size_t        totalWaitingData;
-   ENetAddress   localAddress;
-   ENetSocket    ownSocket;
-   char          timedOut;
 } ENetPeer;
 
 /** An ENet packet compressor for compressing UDP packets before socket sends or receives.
@@ -371,13 +339,6 @@ typedef enet_uint32 (ENET_CALLBACK * ENetChecksumCallback) (const ENetBuffer * b
 /** Callback for intercepting received raw UDP packets. Should return 1 to intercept, 0 to ignore, or -1 to propagate an error. */
 typedef int (ENET_CALLBACK * ENetInterceptCallback) (struct _ENetHost * host, struct _ENetEvent * event);
  
-typedef struct _ENetRandom
-{
-   void * context;
-   enet_uint32 (ENET_CALLBACK * generate) (void * context);
-   void (ENET_CALLBACK * destroy) (void * context);
-} ENetRandom;
-
 /** An ENet host for communicating with peers.
   *
   * No fields should be modified unless otherwise stated.
@@ -406,17 +367,6 @@ typedef struct _ENetHost
    int                  recalculateBandwidthLimits;
    ENetPeer *           peers;                       /**< array of peers allocated for this host */
    size_t               peerCount;                   /**< number of peers allocated for this host */
-   enet_uint32          connectingPeerTimeout;
-   enet_uint32          connectsWindow;
-   enet_uint32          connectsWindowRatio;
-   enet_uint32 *        connectsData;
-   size_t               connectsDataIndex;
-   enet_uint32          connectsDataIndexTimestamp;
-   enet_uint32          connectsInWindow;
-   enet_uint16 *        busyPeersList;
-   enet_uint16 *        idlePeersList;
-   size_t               idlePeers;
-   ENetRandom           randomFunction;
    size_t               channelLimit;                /**< maximum number of channels allowed for connected peers */
    enet_uint32          serviceTime;
    ENetList             dispatchQueue;
@@ -443,7 +393,6 @@ typedef struct _ENetHost
    size_t               duplicatePeers;              /**< optional number of allowed peers from duplicate IPs, defaults to ENET_PROTOCOL_MAXIMUM_PEER_ID */
    size_t               maximumPacketSize;           /**< the maximum allowable packet size that may be sent or received on a peer */
    size_t               maximumWaitingData;          /**< the maximum aggregate amount of buffer space a peer may use waiting for packets to be delivered */
-   enet_uint8           noTimeouts;                  /**< debug flag to allow the peers to be frozen e.g. in a debugger breakpoint */
 } ENetHost;
 
 /**
@@ -547,9 +496,7 @@ ENET_API int        enet_socket_listen (ENetSocket, int);
 ENET_API ENetSocket enet_socket_accept (ENetSocket, ENetAddress *);
 ENET_API int        enet_socket_connect (ENetSocket, const ENetAddress *);
 ENET_API int        enet_socket_send (ENetSocket, const ENetAddress *, const ENetBuffer *, size_t);
-ENET_API int        enet_socket_send_local (ENetSocket, const ENetAddress *, const ENetBuffer *, size_t, ENetAddress *);
 ENET_API int        enet_socket_receive (ENetSocket, ENetAddress *, ENetBuffer *, size_t);
-ENET_API int        enet_socket_receive_local (ENetSocket, ENetAddress *, ENetBuffer *, size_t, ENetAddress *);
 ENET_API int        enet_socket_wait (ENetSocket, enet_uint32 *, enet_uint32);
 ENET_API int        enet_socket_set_option (ENetSocket, ENetSocketOption, int);
 ENET_API int        enet_socket_get_option (ENetSocket, ENetSocketOption, int *);
@@ -621,7 +568,6 @@ ENET_API void       enet_host_compress (ENetHost *, const ENetCompressor *);
 ENET_API int        enet_host_compress_with_range_coder (ENetHost * host);
 ENET_API void       enet_host_channel_limit (ENetHost *, size_t);
 ENET_API void       enet_host_bandwidth_limit (ENetHost *, enet_uint32, enet_uint32);
-ENET_API int        enet_host_connect_cookies(ENetHost *, const ENetRandom *, enet_uint32, enet_uint8);
 extern   void       enet_host_bandwidth_throttle (ENetHost *);
 extern  enet_uint32 enet_host_random_seed (void);
 

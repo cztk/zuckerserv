@@ -271,47 +271,15 @@ enet_protocol_remove_sent_reliable_command (ENetPeer * peer, enet_uint16 reliabl
     return commandNumber;
 } 
 
-static void
-enet_peer_try_create_own_socket (ENetPeer * peer)
-{
-#ifdef SO_REUSEPORT
-    if (peer -> localAddress.host)
-    {
-        ENetAddress localBind;
-        localBind.host = peer -> localAddress.host;
-        localBind.port = peer -> host -> address.port;
-        peer -> ownSocket = enet_socket_create(ENET_SOCKET_TYPE_DATAGRAM);
-        int y = 1;
-        if (peer -> ownSocket == ENET_SOCKET_NULL ||
-                setsockopt (peer -> ownSocket, SOL_SOCKET, SO_REUSEPORT, & y, sizeof (y)) ||
-                enet_socket_bind (peer -> ownSocket, & localBind) ||
-                enet_socket_connect (peer -> ownSocket, & peer -> address))
-        {
-            enet_socket_destroy (peer -> ownSocket);
-            peer -> ownSocket = ENET_SOCKET_NULL;
-            return;
-        }
-        enet_socket_set_option (peer -> ownSocket, ENET_SOCKOPT_NONBLOCK, 1);
-        int tos = 4;
-        setsockopt (peer -> ownSocket, IPPROTO_IP, IP_TOS, & tos, sizeof (tos));
-    }
-#endif
-}
-
 static ENetPeer *
-enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENetProtocol * command, ENetAddress * localAddress)
+enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENetProtocol * command)
 {
-    enet_uint8 incomingSessionID, outgoingSessionID = 0;
+    enet_uint8 incomingSessionID, outgoingSessionID;
     enet_uint32 mtu, windowSize;
     ENetChannel * channel;
     size_t channelCount, duplicatePeers = 0;
-    ENetPeer * currentPeer, * peer = NULL, * realPeer = NULL, dummyPeer;
+    ENetPeer * currentPeer, * peer = NULL;
     ENetProtocol verifyCommand;
-    enet_uint16 randomTimeSent = 0;
-    ENetConnectingPeer * cookie = NULL;
-    ENetProtocolHeader responseHeader;
-    enet_uint32 checksum;
-    ENetBuffer buffers[3];
 
     channelCount = ENET_NET_TO_HOST_32 (command -> connect.channelCount);
 
@@ -319,65 +287,25 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
         channelCount > ENET_PROTOCOL_MAXIMUM_CHANNEL_COUNT)
       return NULL;
 
-    if (! host -> connectingPeerTimeout)
+    for (currentPeer = host -> peers;
+         currentPeer < & host -> peers [host -> peerCount];
+         ++ currentPeer)
     {
-        if (! host -> idlePeers)
-            return NULL;
-        size_t iPeer;
-        for (iPeer = 0; iPeer < host -> peerCount - host -> idlePeers; ++ iPeer)
+        if (currentPeer -> state == ENET_PEER_STATE_DISCONNECTED)
         {
-            currentPeer = & host -> peers [host -> busyPeersList [iPeer]];
-            if (currentPeer -> state != ENET_PEER_STATE_CONNECTING &&
-                currentPeer -> address.host == host -> receivedAddress.host)
-            {
-                if (currentPeer -> address.port == host -> receivedAddress.port &&
-                    currentPeer -> connectID == command -> connect.connectID)
-                  return NULL;
-
-                ++ duplicatePeers;
-            }
+            if (peer == NULL)
+              peer = currentPeer;
         }
-        peer = & host -> peers [host -> idlePeersList [host -> idlePeers - 1]];
-    }
-    else
-    {
-      if (! host -> idlePeers) return NULL;
-      enet_uint32 random = host -> randomFunction.generate (host -> randomFunction.context), randomTry = random;
-      retry:
-      outgoingSessionID = randomTry % ENET_PROTOCOL_TOTAL_SESSIONS;
-      randomTry /= ENET_PROTOCOL_TOTAL_SESSIONS;
-      randomTimeSent = randomTry;
-      randomTry >>= 16;
-      realPeer = & host -> peers [host -> idlePeersList [randomTry % host -> idlePeers]];
-      if (realPeer -> connectingPeers)
-      {
-        cookie = & realPeer -> connectingPeers [randomTimeSent & realPeer -> connectingPeersTimeMask] [outgoingSessionID];
-        if (cookie -> address.host)
+        else 
+        if (currentPeer -> state != ENET_PEER_STATE_CONNECTING &&
+            currentPeer -> address.host == host -> receivedAddress.host)
         {
-          if (host -> serviceTime - cookie -> realTimeSent > host -> connectingPeerTimeout)
-            cookie -> address.host = 0;
-          else
-          {
-            if ((host -> connectsInWindow * 100) / host -> connectsWindow < host -> connectsWindowRatio)
-            {
-              randomTry = ++ random;
-              goto retry;
-            }
-            if (realPeer -> connectingPeersTimeMask == (enet_uint16)-1)
+            if (currentPeer -> address.port == host -> receivedAddress.port &&
+                currentPeer -> connectID == command -> connect.connectID)
               return NULL;
-            else
-            {
-              enet_uint16 extraBit;
-              extraBit = realPeer -> connectingPeersTimeMask + 1;
-              randomTimeSent = (randomTimeSent & ~extraBit) | (~(cookie -> randomTimeSent) & extraBit);
-              cookie = NULL;
-            }
-          }
+
+            ++ duplicatePeers;
         }
-      }
-      peer = & dummyPeer;
-      peer -> outgoingSessionID = realPeer -> outgoingSessionID;
-      peer -> incomingPeerID = realPeer -> incomingPeerID;
     }
 
     if (peer == NULL || duplicatePeers >= host -> duplicatePeers)
@@ -385,12 +313,9 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
 
     if (channelCount > host -> channelLimit)
       channelCount = host -> channelLimit;
-    if (! host -> connectingPeerTimeout)
-    {
-      peer -> channels = (ENetChannel *) enet_malloc (channelCount * sizeof (ENetChannel));
-      if (peer -> channels == NULL)
-        return NULL;
-    }
+    peer -> channels = (ENetChannel *) enet_malloc (channelCount * sizeof (ENetChannel));
+    if (peer -> channels == NULL)
+      return NULL;
     peer -> channelCount = channelCount;
     peer -> state = ENET_PEER_STATE_ACKNOWLEDGING_CONNECT;
     peer -> connectID = command -> connect.connectID;
@@ -402,7 +327,6 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
     peer -> packetThrottleAcceleration = ENET_NET_TO_HOST_32 (command -> connect.packetThrottleAcceleration);
     peer -> packetThrottleDeceleration = ENET_NET_TO_HOST_32 (command -> connect.packetThrottleDeceleration);
     peer -> eventData = ENET_NET_TO_HOST_32 (command -> connect.data);
-    peer -> localAddress.host = localAddress -> host;
 
     incomingSessionID = command -> connect.incomingSessionID == 0xFF ? peer -> outgoingSessionID : command -> connect.incomingSessionID;
     incomingSessionID = (incomingSessionID + 1) & (ENET_PROTOCOL_HEADER_SESSION_MASK >> ENET_PROTOCOL_HEADER_SESSION_SHIFT);
@@ -410,21 +334,16 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
       incomingSessionID = (incomingSessionID + 1) & (ENET_PROTOCOL_HEADER_SESSION_MASK >> ENET_PROTOCOL_HEADER_SESSION_SHIFT);
     peer -> outgoingSessionID = incomingSessionID;
 
-    if (! host -> connectingPeerTimeout)
-    {
-      outgoingSessionID = command -> connect.outgoingSessionID == 0xFF ? peer -> incomingSessionID : command -> connect.outgoingSessionID;
+    outgoingSessionID = command -> connect.outgoingSessionID == 0xFF ? peer -> incomingSessionID : command -> connect.outgoingSessionID;
+    outgoingSessionID = (outgoingSessionID + 1) & (ENET_PROTOCOL_HEADER_SESSION_MASK >> ENET_PROTOCOL_HEADER_SESSION_SHIFT);
+    if (outgoingSessionID == peer -> incomingSessionID)
       outgoingSessionID = (outgoingSessionID + 1) & (ENET_PROTOCOL_HEADER_SESSION_MASK >> ENET_PROTOCOL_HEADER_SESSION_SHIFT);
-      if (outgoingSessionID == peer -> incomingSessionID)
-        outgoingSessionID = (outgoingSessionID + 1) & (ENET_PROTOCOL_HEADER_SESSION_MASK >> ENET_PROTOCOL_HEADER_SESSION_SHIFT);
-    }
     peer -> incomingSessionID = outgoingSessionID;
 
-    if (! host -> connectingPeerTimeout)
-    {
-      for (channel = peer -> channels;
-           channel < & peer -> channels [channelCount];
+    for (channel = peer -> channels;
+         channel < & peer -> channels [channelCount];
          ++ channel)
-      {
+    {
         channel -> outgoingReliableSequenceNumber = 0;
         channel -> outgoingUnreliableSequenceNumber = 0;
         channel -> incomingReliableSequenceNumber = 0;
@@ -435,7 +354,6 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
 
         channel -> usedReliableWindows = 0;
         memset (channel -> reliableWindows, 0, sizeof (channel -> reliableWindows));
-      }
     }
 
     mtu = ENET_NET_TO_HOST_32 (command -> connect.mtu);
@@ -483,8 +401,6 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
     if (windowSize > ENET_PROTOCOL_MAXIMUM_WINDOW_SIZE)
       windowSize = ENET_PROTOCOL_MAXIMUM_WINDOW_SIZE;
 
-    peer -> timedOut = 0;
-
     verifyCommand.header.command = ENET_PROTOCOL_COMMAND_VERIFY_CONNECT | ENET_PROTOCOL_COMMAND_FLAG_ACKNOWLEDGE;
     verifyCommand.header.channelID = 0xFF;
     verifyCommand.verifyConnect.outgoingPeerID = ENET_HOST_TO_NET_16 (peer -> incomingPeerID);
@@ -500,92 +416,9 @@ enet_protocol_handle_connect (ENetHost * host, ENetProtocolHeader * header, ENet
     verifyCommand.verifyConnect.packetThrottleDeceleration = ENET_HOST_TO_NET_32 (peer -> packetThrottleDeceleration);
     verifyCommand.verifyConnect.connectID = peer -> connectID;
 
-    if (! host -> connectingPeerTimeout)
-    {
-      host -> busyPeersList [host -> peerCount - host -> idlePeers --] = peer -> incomingPeerID;
-      enet_peer_try_create_own_socket (peer);
-      enet_peer_queue_outgoing_command (peer, & verifyCommand, NULL, 0, 0);
+    enet_peer_queue_outgoing_command (peer, & verifyCommand, NULL, 0, 0);
 
-      return peer;
-    }
-
-    responseHeader.peerID = ENET_HOST_TO_NET_16(peer -> outgoingPeerID | (peer -> outgoingSessionID << ENET_PROTOCOL_HEADER_SESSION_SHIFT) | ENET_PROTOCOL_HEADER_FLAG_SENT_TIME);
-    responseHeader.sentTime = randomTimeSent;
-    verifyCommand.verifyConnect.header.reliableSequenceNumber = ENET_HOST_TO_NET_16(1);
-    buffers[0].data = & responseHeader;
-    buffers[0].dataLength = sizeof (responseHeader);
-    if (host -> checksum != NULL)
-    {
-      buffers[1].data = & checksum;
-      buffers[1].dataLength = sizeof (enet_uint32);
-      buffers[2].data = & verifyCommand;
-      buffers[2].dataLength = commandSizes [ENET_PROTOCOL_COMMAND_VERIFY_CONNECT];
-      checksum = peer -> connectID;
-      checksum = host -> checksum (buffers, 3);
-    }
-    else
-    {
-      buffers[1].data = & verifyCommand;
-      buffers[1].dataLength = commandSizes [ENET_PROTOCOL_COMMAND_VERIFY_CONNECT];
-    }
-    if (enet_socket_send_local (host -> socket, & peer -> address, buffers, 2 + (host -> checksum != NULL), localAddress) < 0)
-      return NULL;
-
-    host -> totalSentData += sizeof (responseHeader) + sizeof (enet_uint32) * (host -> checksum != NULL) + commandSizes [ENET_PROTOCOL_COMMAND_VERIFY_CONNECT];
-    ++ host -> totalSentPackets;
-    if (! cookie)
-    {
-      if (! realPeer -> connectingPeers)
-      {
-        realPeer -> connectingPeers = enet_malloc (sizeof (ENetConnectingPeer) * ENET_PROTOCOL_TOTAL_SESSIONS * (ENET_PEER_MINIMUM_TIME_SENT_MASK + 1));
-        memset (realPeer -> connectingPeers, 0, sizeof (ENetConnectingPeer) * ENET_PROTOCOL_TOTAL_SESSIONS * (ENET_PEER_MINIMUM_TIME_SENT_MASK + 1));
-        if (! realPeer -> connectingPeers)
-          return NULL;
-        realPeer -> connectingPeersTimeMask = ENET_PEER_MINIMUM_TIME_SENT_MASK;
-        host -> connectsWindow += ENET_PROTOCOL_TOTAL_SESSIONS * (ENET_PEER_MINIMUM_TIME_SENT_MASK + 1);
-      }
-      else
-      {
-        size_t iCookie, iSession, oldLength = realPeer -> connectingPeersTimeMask + 1;
-        ENetConnectingPeer (* newConnectingPeers) [ENET_PROTOCOL_TOTAL_SESSIONS] = enet_malloc (sizeof (ENetConnectingPeer) * ENET_PROTOCOL_TOTAL_SESSIONS * (oldLength * 2));
-        if (! newConnectingPeers)
-          return NULL;
-        memset (newConnectingPeers, 0, sizeof (ENetConnectingPeer) * ENET_PROTOCOL_TOTAL_SESSIONS * (oldLength * 2));
-        realPeer -> connectingPeersTimeMask |= oldLength;
-        for (iCookie = 0; iCookie < oldLength; ++ iCookie)
-          for (iSession = 0; iSession < ENET_PROTOCOL_TOTAL_SESSIONS; ++ iSession)
-          {
-            ENetConnectingPeer * oldCookie = & realPeer -> connectingPeers [iCookie] [iSession];
-            if (oldCookie -> address.host)
-              newConnectingPeers [oldCookie -> randomTimeSent & realPeer -> connectingPeersTimeMask] [iSession] = * oldCookie;
-          }
-        enet_free (realPeer -> connectingPeers);
-        realPeer -> connectingPeers = newConnectingPeers;
-        host -> connectsWindow += ENET_PROTOCOL_TOTAL_SESSIONS * oldLength;
-      }
-      cookie = & realPeer -> connectingPeers [randomTimeSent & realPeer -> connectingPeersTimeMask] [outgoingSessionID];
-    }
-
-    cookie -> address = peer -> address;
-    cookie -> localAddress.host = peer -> localAddress.host;
-    cookie -> randomTimeSent = randomTimeSent;
-    cookie -> realTimeSent = host -> serviceTime;
-    cookie -> channelCount = peer -> channelCount;
-    cookie -> connectID = peer -> connectID;
-    cookie -> outgoingPeerID = peer -> outgoingPeerID;
-    cookie -> incomingBandwidth = peer -> incomingBandwidth;
-    cookie -> outgoingBandwidth = peer -> outgoingBandwidth;
-    cookie -> packetThrottleInterval = peer -> packetThrottleInterval;
-    cookie -> packetThrottleAcceleration = peer -> packetThrottleAcceleration;
-    cookie -> packetThrottleDeceleration = peer -> packetThrottleDeceleration;
-    cookie -> eventData = peer -> eventData;
-    cookie -> outgoingSessionID = peer -> outgoingSessionID;
-    cookie -> mtu = peer -> mtu;
-    cookie -> windowSize = peer -> windowSize - 1;
-    ++ host -> connectsInWindow;
-    ++ host -> connectsData [host -> connectsDataIndex];
-    return NULL;
-
+    return peer;
 }
 
 static int
@@ -991,107 +824,23 @@ enet_protocol_handle_disconnect (ENetHost * host, ENetPeer * peer, const ENetPro
 }
 
 static int
-enet_protocol_handle_acknowledge (ENetHost * host, ENetEvent * event, ENetPeer * peer, const ENetProtocol * command, enet_uint8 sessionID, const ENetAddress * localAddress)
+enet_protocol_handle_acknowledge (ENetHost * host, ENetEvent * event, ENetPeer * peer, const ENetProtocol * command)
 {
     enet_uint32 roundTripTime,
            receivedSentTime,
            receivedReliableSequenceNumber;
     ENetProtocolCommand commandNumber;
-    int cookieRestored = 0;
 
-    if (peer -> state == ENET_PEER_STATE_ZOMBIE)
+    if (peer -> state == ENET_PEER_STATE_DISCONNECTED || peer -> state == ENET_PEER_STATE_ZOMBIE)
       return 0;
 
-    if (peer -> state == ENET_PEER_STATE_DISCONNECTED)
-    {
-      ENetConnectingPeer * cookie;
-      size_t iPeer, duplicatePeers = 0;
-      ENetChannel * channel;
-      if (! host -> connectingPeerTimeout ||
-          ! peer -> connectingPeers ||
-          command -> header.channelID != 0xFF ||
-          command -> acknowledge.receivedReliableSequenceNumber != ENET_HOST_TO_NET_16(1))
-        return -1;
-      receivedSentTime = command -> acknowledge.receivedSentTime;
-      cookie = & peer -> connectingPeers [receivedSentTime & peer -> connectingPeersTimeMask] [sessionID];
-      if (cookie -> randomTimeSent != receivedSentTime ||
-          cookie -> address.host != host -> receivedAddress.host ||
-          cookie -> address.port != host -> receivedAddress.port ||
-          cookie -> localAddress.host != localAddress -> host)
-        return -1;
-      cookie -> address.host = 0;
-      if (host -> serviceTime - cookie -> realTimeSent > host -> connectingPeerTimeout)
-        return -1;
-      for (iPeer = 0; iPeer < host -> peerCount && duplicatePeers < host -> duplicatePeers; ++ iPeer)
-        if (host -> peers [iPeer].address.host == host -> receivedAddress.host)
-          ++ duplicatePeers;
-      if (duplicatePeers > host -> duplicatePeers)
-        return -1;
-      peer -> channels = (ENetChannel *) enet_malloc (cookie -> channelCount * sizeof (ENetChannel));
-      if (peer -> channels == NULL)
-        return -1;
-      for (iPeer = 0; iPeer < host -> idlePeers; ++ iPeer)
-        if (host -> idlePeersList [iPeer] == peer -> incomingPeerID)
-        {
-          host -> busyPeersList [host -> peerCount - host -> idlePeers] = peer -> incomingPeerID;
-          host -> idlePeersList [iPeer] = host -> idlePeersList [-- host -> idlePeers];
-          break;
-        }
-      for (channel = peer -> channels;
-           channel < & peer -> channels [cookie -> channelCount];
-         ++ channel)
-      {
-        channel -> outgoingReliableSequenceNumber = 0;
-        channel -> outgoingUnreliableSequenceNumber = 0;
-        channel -> incomingReliableSequenceNumber = 0;
-        channel -> incomingUnreliableSequenceNumber = 0;
+    receivedSentTime = ENET_NET_TO_HOST_16 (command -> acknowledge.receivedSentTime);
+    receivedSentTime |= host -> serviceTime & 0xFFFF0000;
+    if ((receivedSentTime & 0x8000) > (host -> serviceTime & 0x8000))
+        receivedSentTime -= 0x10000;
 
-        enet_list_clear (& channel -> incomingReliableCommands);
-        enet_list_clear (& channel -> incomingUnreliableCommands);
-
-        channel -> usedReliableWindows = 0;
-        memset (channel -> reliableWindows, 0, sizeof (channel -> reliableWindows));
-      }
-      peer -> state = ENET_PEER_STATE_ACKNOWLEDGING_CONNECT;
-      peer -> address = host -> receivedAddress;
-      peer -> localAddress.host = cookie -> localAddress.host;
-      peer -> incomingSessionID = sessionID;
-      peer -> channelCount = cookie -> channelCount;
-      peer -> connectID = cookie -> connectID;
-      peer -> outgoingPeerID = cookie -> outgoingPeerID;
-      peer -> incomingBandwidth = cookie -> incomingBandwidth;
-      peer -> outgoingBandwidth = cookie -> outgoingBandwidth;
-      peer -> packetThrottleInterval = cookie -> packetThrottleInterval;
-      peer -> packetThrottleAcceleration = cookie -> packetThrottleAcceleration;
-      peer -> packetThrottleDeceleration = cookie -> packetThrottleDeceleration;
-      peer -> eventData = cookie -> eventData;
-      peer -> outgoingSessionID = cookie -> outgoingSessionID;
-      peer -> mtu = cookie -> mtu;
-      peer -> windowSize = cookie -> windowSize + 1;
-      peer -> outgoingReliableSequenceNumber = 1;
-      peer -> packetsSent = 1;
-      peer -> outgoingDataTotal = sizeof (ENetProtocolHeader) + sizeof (enet_uint32) * (host -> checksum != 0) + sizeof (ENetProtocolConnect);
-      peer -> incomingDataTotal = host -> receivedDataLength;
-      peer -> lastSendTime = cookie -> realTimeSent;
-      peer -> timedOut = 0;
-      receivedSentTime = cookie -> realTimeSent;
-      cookieRestored = 1;
-      commandNumber = ENET_PROTOCOL_COMMAND_VERIFY_CONNECT;
-      enet_free (peer -> connectingPeers);
-      peer -> connectingPeers = NULL;
-      enet_peer_try_create_own_socket (peer);
-      host -> connectsWindow -= ENET_PROTOCOL_TOTAL_SESSIONS * (peer -> connectingPeersTimeMask + 1);
-    }
-    else
-    {
-      receivedSentTime = ENET_NET_TO_HOST_16 (command -> acknowledge.receivedSentTime);
-      receivedSentTime |= host -> serviceTime & 0xFFFF0000;
-      if ((receivedSentTime & 0x8000) > (host -> serviceTime & 0x8000))
-          receivedSentTime -= 0x10000;
-
-      if (ENET_TIME_LESS (host -> serviceTime, receivedSentTime))
-        return 0;
-    }
+    if (ENET_TIME_LESS (host -> serviceTime, receivedSentTime))
+      return 0;
 
     peer -> lastReceiveTime = host -> serviceTime;
     peer -> earliestTimeout = 0;
@@ -1129,12 +878,9 @@ enet_protocol_handle_acknowledge (ENetHost * host, ENetEvent * event, ENetPeer *
         peer -> packetThrottleEpoch = host -> serviceTime;
     }
 
-    if (!cookieRestored)
-    {
-      receivedReliableSequenceNumber = ENET_NET_TO_HOST_16 (command -> acknowledge.receivedReliableSequenceNumber);
+    receivedReliableSequenceNumber = ENET_NET_TO_HOST_16 (command -> acknowledge.receivedReliableSequenceNumber);
 
-      commandNumber = enet_protocol_remove_sent_reliable_command (peer, receivedReliableSequenceNumber, command -> header.channelID);
-    }
+    commandNumber = enet_protocol_remove_sent_reliable_command (peer, receivedReliableSequenceNumber, command -> header.channelID);
 
     switch (peer -> state)
     {
@@ -1229,7 +975,7 @@ enet_protocol_handle_verify_connect (ENetHost * host, ENetEvent * event, ENetPee
 }
 
 static int
-enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event, ENetAddress * localAddress)
+enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event)
 {
     ENetProtocolHeader * header;
     ENetProtocol * command;
@@ -1262,18 +1008,11 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event, ENet
     {
        peer = & host -> peers [peerID];
 
-       if (peer -> state == ENET_PEER_STATE_DISCONNECTED)
-       {
-         if (! host -> connectingPeerTimeout || !peer -> connectingPeers)
-           return 0;
-       }
-       else if (peer -> state == ENET_PEER_STATE_ZOMBIE ||
-           (peer -> ownSocket != ENET_SOCKET_NULL ? peer -> incomingPeerID != peerID :
-           (((host -> receivedAddress.host != peer -> address.host ||
+       if (peer -> state == ENET_PEER_STATE_DISCONNECTED ||
+           peer -> state == ENET_PEER_STATE_ZOMBIE ||
+           ((host -> receivedAddress.host != peer -> address.host ||
              host -> receivedAddress.port != peer -> address.port) &&
              peer -> address.host != ENET_HOST_BROADCAST) ||
-           (peer -> localAddress.host != 0 && localAddress -> host != 0 &&
-            peer -> localAddress.host != localAddress -> host))) ||
            (peer -> outgoingPeerID < ENET_PROTOCOL_MAXIMUM_PEER_ID &&
             sessionID != peer -> incomingSessionID))
          return 0;
@@ -1298,7 +1037,7 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event, ENet
         host -> receivedDataLength = headerSize + originalSize;
     }
 
-    if (host -> checksum != NULL && !(host -> connectingPeerTimeout && peer -> state == ENET_PEER_STATE_DISCONNECTED))
+    if (host -> checksum != NULL)
     {
         enet_uint32 * checksum = (enet_uint32 *) & host -> receivedData [headerSize - sizeof (enet_uint32)],
                     desiredChecksum = * checksum;
@@ -1313,7 +1052,7 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event, ENet
           return 0;
     }
        
-    if (peer != NULL && peer -> state != ENET_PEER_STATE_DISCONNECTED)
+    if (peer != NULL)
     {
        peer -> address.host = host -> receivedAddress.host;
        peer -> address.port = host -> receivedAddress.port;
@@ -1342,7 +1081,7 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event, ENet
 
        currentData += commandSize;
 
-       if (peer == NULL && (commandNumber != ENET_PROTOCOL_COMMAND_CONNECT || currentData < & host -> receivedData [host -> receivedDataLength]))
+       if (peer == NULL && commandNumber != ENET_PROTOCOL_COMMAND_CONNECT)
          break;
          
        command -> header.reliableSequenceNumber = ENET_NET_TO_HOST_16 (command -> header.reliableSequenceNumber);
@@ -1350,15 +1089,17 @@ enet_protocol_handle_incoming_commands (ENetHost * host, ENetEvent * event, ENet
        switch (commandNumber)
        {
        case ENET_PROTOCOL_COMMAND_ACKNOWLEDGE:
-          if (enet_protocol_handle_acknowledge (host, event, peer, command, sessionID, localAddress))
+          if (enet_protocol_handle_acknowledge (host, event, peer, command))
             goto commandError;
           break;
 
        case ENET_PROTOCOL_COMMAND_CONNECT:
           if (peer != NULL)
             goto commandError;
-          enet_protocol_handle_connect (host, header, command, localAddress);
-          return 0;
+          peer = enet_protocol_handle_connect (host, header, command);
+          if (peer == NULL)
+            goto commandError;
+          break;
 
        case ENET_PROTOCOL_COMMAND_VERIFY_CONNECT:
           if (enet_protocol_handle_verify_connect (host, event, peer, command))
@@ -1452,90 +1193,67 @@ commandError:
 }
  
 static int
-enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
+enet_protocol_receive_incoming_commands (ENetHost * host, ENetEvent * event)
 {
-    size_t iPeer;
-    for (iPeer = 0; iPeer <= host -> peerCount - host -> idlePeers; ++ iPeer)
+    int packets;
+
+    for (packets = 0; packets < 256; ++ packets)
     {
-        ENetPeer * peer = NULL;
-        int packets = 0;
-        if (iPeer < host -> peerCount - host -> idlePeers)
-        {
-            peer = & host -> peers [host -> busyPeersList [iPeer]];
-            if (peer -> ownSocket == ENET_SOCKET_NULL)
-                continue;
-        }
+       int receivedLength;
+       ENetBuffer buffer;
 
-        for (;;)
-        {
-            int receivedLength;
-            ENetBuffer buffer;
-            ENetAddress localAddress;
+       buffer.data = host -> packetData [0];
+       buffer.dataLength = sizeof (host -> packetData [0]);
 
-            buffer.data = host -> packetData [0];
-            buffer.dataLength = host -> mtu;
-            if (! peer)
-            {
-                if (! (++ packets % 1000) && enet_time_get () >= timeout)
-                    return 0;
-                receivedLength = enet_socket_receive_local (host -> socket,
-                                                            & host -> receivedAddress,
-                                                            & buffer,
-                                                            1,
-                                                            & localAddress);
-            }
-            else
-            {
-                receivedLength = enet_socket_receive (peer -> ownSocket, NULL, & buffer, 1);
-                host -> receivedAddress = peer -> address;
-                localAddress = peer -> localAddress;
-            }
+       receivedLength = enet_socket_receive (host -> socket,
+                                             & host -> receivedAddress,
+                                             & buffer,
+                                             1);
 
-            if (receivedLength == -2)
-                continue;
+       if (receivedLength < 0)
+         return -1;
 
-            if (receivedLength <= 0)
-                break;
+       if (receivedLength == 0)
+         return 0;
 
-            host -> receivedData = host -> packetData [0];
-            host -> receivedDataLength = receivedLength;
+       host -> receivedData = host -> packetData [0];
+       host -> receivedDataLength = receivedLength;
+      
+       host -> totalReceivedData += receivedLength;
+       host -> totalReceivedPackets ++;
 
-            host -> totalReceivedData += receivedLength;
-            host -> totalReceivedPackets ++;
+       if (host -> intercept != NULL)
+       {
+          switch (host -> intercept (host, event))
+          {
+          case 1:
+             if (event != NULL && event -> type != ENET_EVENT_TYPE_NONE)
+               return 1;
 
-            if (host -> intercept != NULL)
-            {
-                switch (host -> intercept (host, event))
-                {
-                case 1:
-                    if (event != NULL && event -> type != ENET_EVENT_TYPE_NONE)
-                        return 1;
+             continue;
+          
+          case -1:
+             return -1;
+        
+          default:
+             break;
+          }
+       }
+        
+       switch (enet_protocol_handle_incoming_commands (host, event))
+       {
+       case 1:
+          return 1;
+       
+       case -1:
+          return -1;
 
-                    continue;
-
-                case -1:
-                    return -1;
-
-                default:
-                    break;
-                }
-            }
-
-            switch (enet_protocol_handle_incoming_commands (host, event, & localAddress))
-            {
-            case 1:
-                return 1;
-
-            case -1:
-                return -1;
-
-            default:
-                break;
-            }
-        }
+       default:
+          break;
+       }
     }
 
-    return 0;
+    return -1;
 }
 
 static void
@@ -1714,12 +1432,11 @@ enet_protocol_check_timeouts (ENetHost * host, ENetPeer * peer, ENetEvent * even
            ENET_TIME_LESS (outgoingCommand -> sentTime, peer -> earliestTimeout))
          peer -> earliestTimeout = outgoingCommand -> sentTime;
 
-       if (peer -> earliestTimeout != 0 && ! host -> noTimeouts &&
+       if (peer -> earliestTimeout != 0 &&
              (ENET_TIME_DIFFERENCE (host -> serviceTime, peer -> earliestTimeout) >= peer -> timeoutMaximum ||
                (outgoingCommand -> roundTripTimeout >= outgoingCommand -> roundTripTimeoutLimit &&
                  ENET_TIME_DIFFERENCE (host -> serviceTime, peer -> earliestTimeout) >= peer -> timeoutMinimum)))
        {
-		  peer -> timedOut = 1;
           enet_protocol_notify_disconnect (host, peer, event);
 
           return 1;
@@ -1730,7 +1447,7 @@ enet_protocol_check_timeouts (ENetHost * host, ENetPeer * peer, ENetEvent * even
           
        ++ peer -> packetsLost;
 
-       outgoingCommand -> roundTripTimeout *= host -> noTimeouts ? 1 : 2;
+       outgoingCommand -> roundTripTimeout *= 2;
 
        enet_list_insert (insertPosition, enet_list_remove (& outgoingCommand -> outgoingCommandList));
 
@@ -1878,15 +1595,17 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
     ENetPeer * currentPeer;
     int sentLength;
     size_t shouldCompress = 0;
-    size_t iPeer;
  
     host -> continueSending = 1;
 
     while (host -> continueSending)
-    for (host -> continueSending = 0, iPeer = 0; iPeer < host -> peerCount - host -> idlePeers; ++ iPeer)
+    for (host -> continueSending = 0,
+           currentPeer = host -> peers;
+         currentPeer < & host -> peers [host -> peerCount];
+         ++ currentPeer)
     {
-        currentPeer = & host -> peers [host -> busyPeersList [iPeer]];
-        if (currentPeer -> state == ENET_PEER_STATE_ZOMBIE)
+        if (currentPeer -> state == ENET_PEER_STATE_DISCONNECTED ||
+            currentPeer -> state == ENET_PEER_STATE_ZOMBIE)
           continue;
 
         host -> headerFlags = 0;
@@ -2003,12 +1722,7 @@ enet_protocol_send_outgoing_commands (ENetHost * host, ENetEvent * event, int ch
 
         currentPeer -> lastSendTime = host -> serviceTime;
 
-#ifdef SO_REUSEPORT
-        if (currentPeer -> ownSocket != ENET_SOCKET_NULL)
-            sentLength = enet_socket_send (currentPeer -> ownSocket, NULL, host -> buffers, host -> bufferCount);
-        else
-#endif
-        sentLength = enet_socket_send_local (host -> socket, & currentPeer -> address, host -> buffers, host -> bufferCount, & currentPeer -> localAddress);
+        sentLength = enet_socket_send (host -> socket, & currentPeer -> address, host -> buffers, host -> bufferCount);
 
         enet_protocol_remove_sent_unreliable_commands (currentPeer);
 
@@ -2099,30 +1813,6 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
     }
 
     host -> serviceTime = enet_time_get ();
-    if (host -> connectingPeerTimeout)
-    {
-        while (host -> serviceTime - host -> connectsDataIndexTimestamp > ENET_HOST_CONNECTS_TIME_DELTA)
-        {
-            host -> connectsDataIndex = (host -> connectsDataIndex + 1) % (host -> connectingPeerTimeout / ENET_HOST_CONNECTS_TIME_DELTA + 1);
-            host -> connectsInWindow -= host -> connectsData [host -> connectsDataIndex];
-            host -> connectsData [host -> connectsDataIndex] = 0;
-            host -> connectsDataIndexTimestamp += ENET_HOST_CONNECTS_TIME_DELTA;
-        }
-        if (! host -> connectsInWindow && host -> connectsWindow * sizeof (ENetConnectingPeer) > ENET_HOST_CONNECTS_CLEANUP_SIZE)
-        {
-            size_t iPeer;
-            for (iPeer = 0; iPeer < host -> idlePeers; ++ iPeer)
-            {
-                ENetPeer * peer = & host -> peers [host -> idlePeersList [iPeer]];
-                if (peer -> connectingPeers)
-                {
-                    enet_free (peer -> connectingPeers);
-                    peer -> connectingPeers = NULL;
-                }
-            }
-            host -> connectsWindow = 0;
-        }
-    }
     
     timeout += host -> serviceTime;
 
@@ -2147,7 +1837,7 @@ enet_host_service (ENetHost * host, ENetEvent * event, enet_uint32 timeout)
           break;
        }
 
-       switch (enet_protocol_receive_incoming_commands (host, event, timeout))
+       switch (enet_protocol_receive_incoming_commands (host, event))
        {
        case 1:
           return 1;
